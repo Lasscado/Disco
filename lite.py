@@ -42,7 +42,7 @@ class DiscoLite(AutoShardedBot):
                 try:
                     self.load_extension('plugins.' + plugin)
                 except Exception as e:
-                    log.info(f'Falha ao carregar o plugin \'{plugin}\'\n-{e.__class__.__name__}: {e}\n-')
+                    log.error(f'Falha ao carregar o plugin \'{plugin}\'\n-\n{e.__class__.__name__}: {e}\n-')
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
             

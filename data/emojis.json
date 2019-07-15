@@ -1,0 +1,15 @@
+{
+    "true": "<:discoTrue:512912547108749312>",
+    "false": "<:discoFalse:512912546869673999>",
+    "play": "<:discoPlay:514567224783273986>",
+    "pause": "<:discoPause:514567337404268564>",
+    "download": "<:discoDownload:513235550350606346>",
+    "shuffle": "<:discoShuffle:514567580506259477>",
+    "repeatOne": "<:discoRepeatOne:514568614590808094>",
+    "volume": "<a:discoVolume:513915264774045696>",
+    "wireless": "<:discoWireless:512871778872459266>",
+    "plus": "<:discoPlus:513240253918740511>",
+    "alert": "<:discoAlert:512915236836081668>",
+    "poweroff": "<:discoPowerOFF:515321070010761225>",
+    "idle": "<:discoIdle:599659742993973249>"
+}

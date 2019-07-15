@@ -1,0 +1,6 @@
+python-dotenv==0.10.3
+cchardet==2.1.4
+wavelink==0.2.06
+discord.py==1.2.3
+coloredlogs==10.0
+humanize==0.5.1

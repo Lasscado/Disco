@@ -30,16 +30,17 @@ class Tasks(commands.Cog):
         self.lite.log.info('Procurando por players inativos')
         for player in self.lite.wavelink.players.values():
             guild = self.lite.get_guild(player.guild_id)
-            if not guild or not player.current and not player.queue or not self.has_listeners(guild):
+            if not guild or not guild.me.voice or not player.current and not player.queue or \
+                not self.has_listeners(guild):
                 self.lite.loop.create_task(self._disconnect_player(player))
     
     async def _disconnect_player(self, player):
         await sleep(60)
 
         guild = self.lite.get_guild(player.guild_id)
-        if not guild:
+        if not guild or not guild.me.voice:
             return await player.destroy()
-        elif ((player.current or player.queue) and guild.me.voice and self.has_listeners(guild)):
+        elif ((player.current or player.queue) and self.has_listeners(guild)):
             return
 
         self.lite.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')

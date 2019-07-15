@@ -11,8 +11,7 @@ class Music(commands.Cog, name='Música'):
     def __init__(self, lite):
         self.lite = lite
 
-        if not lite.wavelink.nodes:
-            lite.loop.create_task(self.initiate_nodes())
+        lite.loop.create_task(self.initiate_nodes())
     
     def cog_unload(self):
         for node in self.lite.wavelink.nodes.values():
@@ -185,7 +184,8 @@ class Music(commands.Cog, name='Música'):
                 'reprodução está vazia.')
 
         try:
-            track = player.queue.pop(index - 1)
+            player.queue = player.queue[index - 1:]
+            track = player.queue.pop(0)
         except IndexError:
             return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você '
                 'forneceu um valor inválido.')

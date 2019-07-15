@@ -107,5 +107,10 @@ class Events(commands.Cog):
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author}**, eu preciso das seguintes'
                 f' permissões para poder rodar esse comando.\n\n{perms}')
 
+    @commands.Cog.listener()
+    async def on_command(self, ctx):
+        self.lite.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
+            f'em {ctx.guild} {ctx.guild.id}')
+
 def setup(lite):
     lite.add_cog(Events(lite))

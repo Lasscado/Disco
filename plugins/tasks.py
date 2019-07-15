@@ -42,7 +42,7 @@ class Tasks(commands.Cog):
         elif ((player.current or player.queue) and guild.me.voice and self.has_listeners(guild)):
             return
 
-        self.lite.log.info(f'Iniciando verificação de inatividade em {guild} {guild.id}')
+        self.lite.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
 
         try:
             await player.disconnect()

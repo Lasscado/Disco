@@ -60,8 +60,8 @@ class Info(commands.Cog, name='Informações'):
         )
 
         for name, cog in self.lite.cogs.items():
-            cmds = cog.get_commands()
-            value = ', '.join([f'`{c}`' for c in cmds if not c.hidden])
+            cmds = [c for c in cog.get_commands() if not c.hidden]
+            value = ', '.join([f'`{c}`' for c in cmds])
 
             if value:
                 em.add_field(name=f'**Comandos de {name}**: ({len(cmds)})', value=value)

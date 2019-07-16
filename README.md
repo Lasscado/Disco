@@ -34,4 +34,5 @@ clear | d!clear | Limpa a fila de reprodução.
 stop | d!stop | Limpa a fila de reprodução e desconecta o bot do canal de voz.
 nowplaying | d!nowplaying | Mostra detalhes sobre a música que estiver tocando.
 pause | d!pause | Pausa e despausa a música que estiver tocando no momento.
+invite | d!invite | Envia o link de convite para adicionar o Bot.
 botinfo | d!botinfo | Mostra informações sobre o Bot.

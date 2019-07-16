@@ -120,5 +120,21 @@ class Info(commands.Cog, name='Informações'):
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
+    @commands.command(name='invite', aliases=['add', 'adicionar', 'convite', 'convidar'],
+        description='Envia o link de convite para adicionar o Bot.')
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.cooldown(1, 6, commands.BucketType.user)
+    async def _invite(self, ctx):
+        em = discord.Embed(
+            colour=self.lite.color[1],
+            description=f'[Clique aqui para adicionar o **Disco Lite** em seu servidor]' \
+                '(https://lite.discobot.site)'
+        ).set_author(
+            name=ctx.me.name,
+            icon_url=ctx.me.avatar_url
+        )
+
+        await ctx.send(content=ctx.author.mention, embed=em)
+
 def setup(lite):
     lite.add_cog(Info(lite))

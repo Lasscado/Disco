@@ -28,6 +28,7 @@ playat | d!playat <Posição> | Pula para uma faixa especifica.
 remove | d!remove <Posição> | Remove uma faixa especifica da fila de reprodução.
 forceskip | d!forceskip | Força pular a música que estiver tocando.
 shuffle | d!shuffle | Mistura as faixas da fila de reprodução.
+reverse | d!reverse | Inverte as faixas da fila de reprodução.
 skip | d!skip | Vota para pular a música que estiver tocando.
 clear | d!clear | Limpa a fila de reprodução.
 stop | d!stop | Limpa a fila de reprodução e desconecta o bot do canal de voz.

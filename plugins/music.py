@@ -318,6 +318,19 @@ class Music(commands.Cog, name='Música'):
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
+    @commands.command(name='reverse', aliases=['rev', 'inverter'],
+        description='Inverte as faixas da fila de reprodução.')
+    @checks.staffer_or_role('DJ')
+    @commands.cooldown(1, 8, commands.BucketType.user)
+    async def _reverse(self, ctx):
+        if not ctx.player.queue:
+            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
+                'reprodução está vazia.')
+
+        ctx.player.queue.reverse()
+        await ctx.player.send(f'{self.lite.emoji["shuffle"]} **{ctx.author.name}**, você inverteu'
+            ' a fila de reprodução.')
+
     @_shuffle.before_invoke
     @_repeat.before_invoke
     @_stop.before_invoke
@@ -329,6 +342,7 @@ class Music(commands.Cog, name='Música'):
     @_skip.before_invoke
     @_force_skip.before_invoke
     @_bass_boost.before_invoke
+    @_reverse.before_invoke
     async def _check_if_is_connected(self, ctx):
         if not ctx.me.voice:
             raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou '

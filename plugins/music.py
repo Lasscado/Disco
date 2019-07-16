@@ -155,7 +155,7 @@ class Music(commands.Cog, name='Música'):
         else:
             await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** despausou o player.')
 
-    @commands.command(name='remove', aliases=['r', 'remover'], usage='<Posição>',
+    @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'], usage='<Posição>',
         description='Remove uma faixa especifica da fila de reprodução.')
     @checks.staffer_or_role('DJ')
     @commands.cooldown(1, 4, commands.BucketType.user)
@@ -193,7 +193,7 @@ class Music(commands.Cog, name='Música'):
         player.queue.insert(0, track)
         await player.stop()
 
-    @commands.command(name='nowplaying', aliases=['np', 'tocandoagora'],
+    @commands.command(name='nowplaying', aliases=['np', 'tocandoagora', 'tocando', 'now'],
         description='Mostra detalhes sobre a música que estiver tocando.')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
@@ -241,7 +241,7 @@ class Music(commands.Cog, name='Música'):
             
             await ctx.player.stop()
 
-    @commands.command(name='forceskip', aliases=['fskip'],
+    @commands.command(name='forceskip', aliases=['fskip', 'pularagora'],
         description='Força pular a música que estiver tocando.')
     @checks.staffer_or_role('DJ')
     @commands.cooldown(1, 6, commands.BucketType.user)
@@ -255,7 +255,7 @@ class Music(commands.Cog, name='Música'):
         
         await ctx.player.stop()
 
-    @commands.command(name='bassboost', aliases=['bass', 'boost'],
+    @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'],
         description='Ativa e desativa o Modo Bass Boost (mais graves).')
     @checks.staffer_or_role('DJ')
     @commands.cooldown(1, 8, commands.BucketType.user)
@@ -275,7 +275,7 @@ class Music(commands.Cog, name='Música'):
 
         ctx.player.bass_boost = not ctx.player.bass_boost
 
-    @commands.command(name='queue', aliases=['q'], usage='[Página]',
+    @commands.command(name='queue', aliases=['q', 'fila', 'lista'], usage='[Página]',
         description='Lista todas as faixas da fila de reprodução.')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)

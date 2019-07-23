@@ -1,9 +1,7 @@
 from discord.ext import commands
 
-import re
 import os
 import sys
-import discord
 
 class Owner(commands.Cog):
     def __init__(self, lite):
@@ -17,7 +15,7 @@ class Owner(commands.Cog):
                 code = await eval(code[6:])
             else:
                 code = eval(code)
-        
+
             await ctx.send(f'```py\n{code}```')
         except Exception as e:
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')

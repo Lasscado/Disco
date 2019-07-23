@@ -1,10 +1,9 @@
-from discord.ext import commands, tasks
+from discord.ext import commands
 from utils import DiscoLitePlayer, DiscoLiteTrack, MusicError, web_url, get_length, checks
 from os import environ
 from random import shuffle
 from math import ceil
 
-import asyncio
 import discord
 
 class Music(commands.Cog, name='Música'):

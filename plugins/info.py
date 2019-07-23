@@ -1,6 +1,5 @@
 from discord.ext import commands
 from humanize import naturalsize
-from datetime import datetime
 from utils import get_length
 
 import discord
@@ -44,10 +43,12 @@ class Info(commands.Cog, name='Informações'):
             return await ctx.send(content=ctx.author.mention, embed=em)
 
         em = discord.Embed(
+            timestap=ctx.message.created_at,
             colour=self.lite.color[0],
             description='[**Servidor de Suporte**](https://discord.gg/qN5886E) | ' \
                 '[**Adicionar**](https://lite.discobot.site) | ' \
-                '[**Votar**](https://botsparadiscord.xyz/bots/discolite)\n\n' \
+                '[**Votar**](https://botsparadiscord.xyz/bots/discolite) | ' \
+                '[**GitHub**](https://github.com/Naegin/DiscoLite)\n\n'
                 '**[Prefixos]:** `d!comando`, `li comando`\n\u200b'
         ).set_author(
             name=ctx.me.name,
@@ -55,8 +56,8 @@ class Info(commands.Cog, name='Informações'):
         ).set_thumbnail(
             url=ctx.me.avatar_url
         ).set_footer(
-            text=f'Hospedado em 1 x Raspberry Pi 3B+',
-            icon_url='https://cdn.discordapp.com/emojis/599610426581450788.png'
+            text='Criado por Naegin#0049',
+            icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
         )
 
         for name, cog in self.lite.cogs.items():
@@ -92,8 +93,8 @@ class Info(commands.Cog, name='Informações'):
             name=ctx.me.name,
             icon_url=ctx.me.avatar_url
         ).set_footer(
-            text=f'Hospedado em 1 x Raspberry Pi 3B+',
-            icon_url='https://cdn.discordapp.com/emojis/599610426581450788.png'
+            text='Criado por Naegin#0049',
+            icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
         ).set_thumbnail(
             url=ctx.me.avatar_url
         ).add_field(

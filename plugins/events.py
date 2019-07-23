@@ -11,10 +11,10 @@ class Events(commands.Cog):
         self.lite = lite
 
         lite.loop.create_task(self._get_webhook())
-    
+
     async def _get_webhook(self):
         self.webhook = await self.lite.fetch_webhook(int(environ['GUILDS_WEBHOOK_ID']))
-    
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         humans = 0;bots = 0
@@ -92,12 +92,15 @@ class Events(commands.Cog):
             _, s = divmod(e.retry_after, 60)
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, aguarde **`{int(s)}`**'
                 ' segundo(s) para poder usar esse comando novamente.', delete_after=s+6)
-        
+
         elif isinstance(e, MissingRole):
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa do '
                 'cargo **`DJ`** para poder usar esse comando.')
-        
+
         elif isinstance(e, (ConversionError, UserInputError)):
+            if ctx.prefix == f'<@{ctx.me.id}> ':
+                ctx.prefix = f'@{ctx.me.name} '
+
             await ctx.send(f'{self.lite.emoji["false"]} Parece que você usou o comando de forma '
                 f'errada, **{ctx.author.name}**.\n**Uso correto: '
                 f'`{ctx.prefix}{ctx.invoked_with} {ctx.command.usage}`**')

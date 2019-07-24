@@ -5,6 +5,10 @@ class BanManager:
     def __init__(self, collection):
         self.db = collection
 
+    @property
+    def total(self):
+        return self.db.count_documents({})
+
     def find(self, **kwargs):
         query = self.db.find(kwargs)
         if not query:

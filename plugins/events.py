@@ -10,13 +10,15 @@ class Events(commands.Cog):
     def __init__(self, lite):
         self.lite = lite
 
-        lite.loop.create_task(self._get_webhook())
+        self.lite.loop.create_task(self._fetch_logs_channels())
 
-    async def _get_webhook(self):
-        self.webhook = await self.lite.fetch_webhook(int(environ['GUILDS_WEBHOOK_ID']))
+    async def _fetch_logs_channels(self):
+        self.guild_logs = await self.lite.fetch_channel(int(environ['GUILDS_CHANNEL_ID']))
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        self.lite._guilds.get(guild.id)
+
         humans = 0;bots = 0
         for member in guild.members:
             if member.bot: bots+=1
@@ -47,10 +49,12 @@ class Events(commands.Cog):
             value=f'Humanos: {humans}\nBots: {bots}'
         )
 
-        await self.webhook.send(embed=em)
+        await self.guild_logs.send(embed=em)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        self.lite._guilds.get(guild.id)
+        
         humans = 0;bots = 0
         for member in guild.members:
             if member.bot: bots+=1
@@ -81,7 +85,7 @@ class Events(commands.Cog):
             value=f'Humanos: {humans}\nBots: {bots}'
         )
 
-        await self.webhook.send(embed=em)
+        await self.guild_logs.send(embed=em)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, e):

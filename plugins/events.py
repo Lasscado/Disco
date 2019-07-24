@@ -95,7 +95,7 @@ class Events(commands.Cog):
 
         elif isinstance(e, MissingRole):
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa do '
-                'cargo **`DJ`** para poder usar esse comando.')
+                f'cargo **`{e.missing_role[0] or "DJ"}`** para poder usar esse comando.')
 
         elif isinstance(e, (ConversionError, UserInputError)):
             if ctx.prefix == f'<@{ctx.me.id}> ':
@@ -105,10 +105,15 @@ class Events(commands.Cog):
                 f'errada, **{ctx.author.name}**.\n**Uso correto: '
                 f'`{ctx.prefix}{ctx.invoked_with} {ctx.command.usage}`**')
 
+        elif isinstance(e, MissingPermissions):
+            perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{p.upper().replace("_", " ")}`**' for p in e.missing_perms])
+            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa das seguintes'
+                f' permissões para poder usar esse comando:\n\n{perms}')
+
         elif isinstance(e, BotMissingPermissions):
             perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{p.upper().replace("_", " ")}`**' for p in e.missing_perms])
-            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author}**, eu preciso das seguintes'
-                f' permissões para poder rodar esse comando.\n\n{perms}')
+            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu preciso das seguintes'
+                f' permissões para poder rodar esse comando:\n\n{perms}')
 
     @commands.Cog.listener()
     async def on_command(self, ctx):

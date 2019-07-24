@@ -76,7 +76,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='shuffle', aliases=['misturar'],
         description='Mistura as faixas da fila de reprodução.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
@@ -85,7 +85,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='repeat', aliases=['loop', 'repetir'],
         description='Coloca em loop, a música que estiver tocando.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _repeat(self, ctx):
         if not ctx.player.current:
@@ -103,7 +103,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'],
         description='Limpa a fila de reprodução e desconecta o bot do canal de voz.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _stop(self, ctx):
         vc = ctx.me.voice.channel
@@ -114,7 +114,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='volume', aliases=['vol', 'v'], usage='<1-150>',
         description='Aumenta ou diminui o volume do player.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _volume(self, ctx, vol: int):
         if not 0 < vol < 151:
@@ -127,7 +127,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='clear', aliases=['reset', 'limpar'],
         description='Limpa a fila de reprodução.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _clear(self, ctx):
         if not ctx.player.queue:
@@ -140,7 +140,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='pause', aliases=['pausar'],
         description='Pausa e despausa a música que estiver tocando no momento.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _pause(self, ctx):
         if not ctx.player.current:
@@ -156,7 +156,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'], usage='<Posição>',
         description='Remove uma faixa especifica da fila de reprodução.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _remove(self, ctx, index: int):
         if not ctx.player.queue:
@@ -174,7 +174,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='playat', aliases=['pa', 'pularpara', 'skt', 'skipto'], usage='<Posição>',
         description='Pula para uma faixa especifica.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play_at(self, ctx, index: int):
         player = ctx.player
@@ -242,7 +242,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='forceskip', aliases=['fskip', 'pularagora'],
         description='Força pular a música que estiver tocando.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _force_skip(self, ctx):
         if not ctx.player.current:
@@ -256,7 +256,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'],
         description='Ativa e desativa o Modo Bass Boost (mais graves).')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bass_boost(self, ctx):
         if not ctx.player.current:
@@ -319,7 +319,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='reverse', aliases=['rev', 'inverter'],
         description='Inverte as faixas da fila de reprodução.')
-    @checks.staffer_or_role('DJ')
+    @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _reverse(self, ctx):
         if not ctx.player.queue:

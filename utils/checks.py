@@ -4,9 +4,9 @@ import discord
 
 class Checks:
     @staticmethod
-    def staffer_or_role(name):
+    def staffer_or_dj_role():
         async def predicate(ctx):
-            role = discord.utils.find(lambda r: r.name.lower() == name.lower(), ctx.guild.roles)
+            role = ctx.guild.get_role(ctx._guild.data['options']['djRole'])
             if ctx.author.guild_permissions.manage_guild or role in ctx.author.roles:
                 return True
 

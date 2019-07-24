@@ -2,6 +2,7 @@ from discord.ext import commands
 
 import os
 import sys
+import discord
 
 class Owner(commands.Cog):
     def __init__(self, lite):

@@ -3,6 +3,7 @@ from utils import emojis
 from os import environ, listdir
 from datetime import datetime
 from discord import Game
+from database import BanManager, GuildManager, db
 
 import logging
 import wavelink
@@ -23,13 +24,18 @@ class DiscoLite(AutoShardedBot):
             activity=Game(f'Prefixo: {prefixes[0]}')
         )
 
+        self.db = db
+        self._bans = BanManager(db.bans)
+        self._guilds = GuildManager(db.guilds)
         self.log = log
         self.emoji = emojis
-        self.color = [0x1CFA48, 0x1ED743]
+        self.color = [0xffff00, 0x03001b]
         self.loaded = False
         self.launched_shards = []
         self.started = datetime.utcnow()
         self.wavelink = wavelink.Client(self)
+        self.guild_blacklist = set()
+        self.user_blacklist = set()
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:
@@ -40,8 +46,6 @@ class DiscoLite(AutoShardedBot):
 
     async def on_ready(self):
         if not self.loaded:
-            log.info('Carregando plugins...')
-
             for plugin in [p[:-3] for p in listdir('plugins') if p.endswith('.py')]:
                 try:
                     self.load_extension('plugins.' + plugin)
@@ -49,7 +53,17 @@ class DiscoLite(AutoShardedBot):
                     log.error(f'Falha ao carregar o plugin \'{plugin}\'\n-\n{e.__class__.__name__}: {e}\n-')
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
+            
+            log.info('Fim de carregamento dos plugins.')
 
+            for ban in self._bans.find(ignore=False):
+                if ban.is_guild:
+                    self.guild_blacklist.add(ban.target_id)
+                else:
+                    self.user_blacklist.add(ban.target_id)
+
+            log.info('Lista de banidos carregada.')
+            
             self.loaded = True
 
         log.info('Sente o GRAVE!')
@@ -59,7 +73,17 @@ class DiscoLite(AutoShardedBot):
             return
 
         ctx = await self.get_context(message)
-        if not ctx.valid or ctx.command.hidden and ctx.author.id != self.owner_id:
+        if (not ctx.valid or ctx.command.hidden and ctx.author.id != self.owner_id
+            or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):
+            return
+
+        ctx._guild = self._guilds.get(ctx.guild.id)
+        options = ctx._guild.data['options']
+        if ((ctx.channel.id in options['disabledChannels']
+            or ctx.command.name in options['disabledCommands']
+            or ctx.author.id in options['bannedMembers']
+            or any(r for r in ctx.author.roles if r.id in options['disabledRoles']))
+            and not ctx.author.guild_permissions.manage_guild):
             return
 
         try:

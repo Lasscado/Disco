@@ -1,5 +1,6 @@
 from discord.ext import commands
-from utils import DiscoLitePlayer, DiscoLiteTrack, MusicError, web_url, get_length, checks
+from utils import MusicError, web_url, get_length, checks
+from models import DiscoPlayer, DiscoTrack
 from os import environ
 from random import shuffle
 from math import ceil
@@ -17,7 +18,7 @@ class Music(commands.Cog, name='Música'):
             self.lite.loop.create_task(node.destroy())
 
     def get_player(self, guild_id: int):
-        return self.lite.wavelink.get_player(guild_id, cls=DiscoLitePlayer)
+        return self.lite.wavelink.get_player(guild_id, cls=DiscoPlayer)
 
     async def initiate_nodes(self):
         for node in eval(environ['LAVALINK_NODES']):
@@ -57,14 +58,14 @@ class Music(commands.Cog, name='Música'):
             total_length = 0
             for track in results.tracks[:1500-player.size]:
                 total_length += track.length
-                player.queue.append(DiscoLiteTrack(ctx.author, track.id, track.info))
+                player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
             name = results.data['playlistInfo']['name']
             await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(results.tracks)}** '
                 f'faixas `({get_length(total_length)})` da playlist **`{name}`** na fila.')
         else:
             track = results[0]
-            player.queue.append(DiscoLiteTrack(ctx.author, track.id, track.info))
+            player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
             await player.send(f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
                 f'`({get_length(track.length)})` na fila.')
 

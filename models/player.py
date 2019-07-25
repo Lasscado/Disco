@@ -1,14 +1,7 @@
-from wavelink.player import Track, Player
+from wavelink.player import Player
 from discord import Forbidden
 
-class DiscoLiteTrack(Track):
-    def __init__(self, requester, _id, info, query=None):
-        super().__init__(_id, info, query)
-
-        self.requester = requester
-        self.skip_votes = set()
-
-class DiscoLitePlayer(Player):
+class DiscoPlayer(Player):
     def __init__(self, bot, guild_id, node):
         super().__init__(bot, guild_id, node)
 

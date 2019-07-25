@@ -100,5 +100,22 @@ class Admin(commands.Cog):
             await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você proibiu o uso '
                 f'do comando **`{command}`** nesse servidor.')
 
+    @commands.command(name='botchannel', aliases=['bch', 'botch'], usage='<#Menção|Nome|ID>',
+        description='Restringe o uso do Bot para apenas um canal específico.')
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _bot_channel(self, ctx, *, channel: discord.TextChannel = None):
+        if not channel:
+            if not ctx._guild.data['options']['botChannel']:
+                raise commands.UserInputError()
+
+            ctx._guild.update({"options.botChannel": None})
+            return await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você resetou'
+                ' o **`Canal do Bot`** nesse servidor.')
+
+        ctx._guild.update({"options.botChannel": channel.id})
+        await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me restringiu para '
+            f'ser usado apenas no canal {channel.mention}.')
+
 def setup(lite):
     lite.add_cog(Admin(lite))

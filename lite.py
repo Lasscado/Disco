@@ -79,9 +79,11 @@ class DiscoLite(AutoShardedBot):
 
         ctx._guild = self._guilds.get(ctx.guild.id)
         options = ctx._guild.data['options']
+        bot_channel = options['botChannel']
         if ((ctx.channel.id in options['disabledChannels']
             or ctx.command.name in options['disabledCommands']
             or ctx.author.id in options['bannedMembers']
+            or bot_channel and bot_channel != ctx.channel.id
             or any(r for r in ctx.author.roles if r.id in options['disabledRoles']))
             and not ctx.author.guild_permissions.manage_guild):
             return

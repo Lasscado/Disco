@@ -67,46 +67,54 @@ class Music(commands.Cog, name='Música'):
             await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(results.tracks)}** '
                 f'faixas `({get_length(total_length)})` da playlist **`{name}`** na fila.')
         else:
-            self.waiting.add(ctx.author.id)
+            if len(results) == 1:
+                track = results[0]
 
-            tracks = results[:10]
-            options = ''
-            for i, track in enumerate(tracks, 1):
-                options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
+                player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
-            em = discord.Embed(
-                colour=self.lite.color[0],
-                title='Digite o número correspondente a faixa que você deseja ouvir',
-                description=options
-            ).set_author(
-                name='Resultados da Busca',
-                icon_url=ctx.guild.icon_url
-            ).set_thumbnail(
-                url=ctx.me.avatar_url
-            ).set_footer(
-                text='Digite "sair" para cancelar.'
-            )
+                await player.send(f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
+                    f'`({get_length(track.length)})` na fila.')
+            else:
+                self.waiting.add(ctx.author.id)
 
-            q = await player.send(content=ctx.author.mention, embed=em)
+                tracks = results[:10]
+                options = ''
+                for i, track in enumerate(tracks, 1):
+                    options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
 
-            try:
-                a = await self.lite.wait_for('message', timeout=120,
-                    check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
-                        and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
-                        or c.content.lower() == 'sair'))
-            except Timeout:
-                a = None
+                em = discord.Embed(
+                    colour=self.lite.color[0],
+                    title='Digite o número correspondente a faixa que você deseja ouvir',
+                    description=options
+                ).set_author(
+                    name='Resultados da Busca',
+                    icon_url=ctx.guild.icon_url
+                ).set_thumbnail(
+                    url=ctx.me.avatar_url
+                ).set_footer(
+                    text='Digite "sair" para cancelar.'
+                )
 
-            if not a or a.content.lower() == 'sair':
+                q = await player.send(content=ctx.author.mention, embed=em)
+
+                try:
+                    a = await self.lite.wait_for('message', timeout=120,
+                        check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
+                            and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
+                            or c.content.lower() == 'sair'))
+                except Timeout:
+                    a = None
+
+                if not a or a.content.lower() == 'sair':
+                    self.waiting.remove(ctx.author.id)
+                    return await q.delete()
+
+                track = tracks[int(a.content) - 1]
+
+                player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
                 self.waiting.remove(ctx.author.id)
-                return await q.delete()
-
-            track = tracks[int(a.content) - 1]
-
-            player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
-            self.waiting.remove(ctx.author.id)
-            await q.edit(content=f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
-                f'`({get_length(track.length)})` na fila.', embed=None)
+                await q.edit(content=f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
+                    f'`({get_length(track.length)})` na fila.', embed=None)
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))

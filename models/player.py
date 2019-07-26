@@ -14,8 +14,10 @@ class DiscoPlayer(Player):
     def size(self):
         return len(self.queue)
 
-    async def send(self, message):
+    async def send(self, content=None, embed=None):
         try:
-            await self.text_channel.send(message)
+            m = await self.text_channel.send(content=content, embed=embed)
         except Forbidden:
             pass
+        else:
+            return m

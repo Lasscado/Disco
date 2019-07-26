@@ -98,7 +98,7 @@ class Owner(commands.Cog):
         )
 
         await ctx.message.add_reaction(self.lite.emoji["true"])
-        
+
         em = discord.Embed(
             colour=0xb10448,
             title=f'Banimento Global #{self.lite._bans.total} | {target_type}',

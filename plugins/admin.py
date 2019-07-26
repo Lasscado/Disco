@@ -1,5 +1,4 @@
 from discord.ext import commands
-from utils import checks
 
 import discord
 
@@ -101,7 +100,7 @@ class Admin(commands.Cog):
                 f'do comando **`{command}`** nesse servidor.')
 
     @commands.command(name='botchannel', aliases=['bch', 'botch'], usage='<#Menção|Nome|ID>',
-        description='Restringe o uso do Bot para apenas um canal específico.')
+        description='Restringe o uso do Bot a apenas um canal específico.')
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _bot_channel(self, ctx, *, channel: discord.TextChannel = None):

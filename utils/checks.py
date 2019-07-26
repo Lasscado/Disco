@@ -1,7 +1,5 @@
 from discord.ext import commands
 
-import discord
-
 class Checks:
     @staticmethod
     def staffer_or_dj_role():

@@ -14,7 +14,7 @@ class Music(commands.Cog, name='Música'):
         self.waiting = set()
 
         lite.loop.create_task(self.initiate_nodes())
-    
+
     def cog_unload(self):
         for node in self.lite.wavelink.nodes.values():
             self.lite.loop.create_task(node.destroy())
@@ -37,7 +37,7 @@ class Music(commands.Cog, name='Música'):
             return await player.send(f'{self.lite.emoji["alert"]} A fila de reprodução acabou.')
 
         await player.play(track)
-        
+
         if not player.repeat:
             await player.send(f'{self.lite.emoji["download"]} Tocando agora: **`{track}`** '
                 f'`({get_length(track.length)})`. Requisitado por **{track.requester.name}**.')
@@ -97,7 +97,7 @@ class Music(commands.Cog, name='Música'):
                         or c.content.lower() == 'sair'))
             except Timeout:
                 a = None
-            
+
             if not a or a.content.lower() == 'sair':
                 self.waiting.remove(ctx.author.id)
                 return await q.delete()
@@ -132,7 +132,7 @@ class Music(commands.Cog, name='Música'):
         if not ctx.player.current:
             return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou'
                 ' tocando nada no momento.')
-        
+
         if ctx.player.repeat:
             ctx.player.repeat = None
             await ctx.player.send(f'{self.lite.emoji["repeatOne"]} **{ctx.author.name}**, você desativou o modo'
@@ -189,7 +189,7 @@ class Music(commands.Cog, name='Música'):
                 'estou tocando nada no momento.')
 
         await ctx.player.set_pause(not ctx.player.paused)
-        
+
         if ctx.player.paused:
             await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** pausou o player.')
         else:
@@ -264,13 +264,13 @@ class Music(commands.Cog, name='Música'):
         if track.requester.id == ctx.author.id:
             await ctx.player.send(f'{self.lite.emoji["alert"]} A faixa **`{track}`** foi pulada por '
                 f'quem a adicionou. (**{ctx.author.name}**)')
-            
+
             return await ctx.player.stop()
 
         elif ctx.author.id in track.skip_votes:
             return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você já '
                 'votou para pular essa faixa.')
-        
+
         track.skip_votes.add(ctx.author.id)
         await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** votou para pular '
             f'a música atual. **`({len(track.skip_votes)}/3)`**')
@@ -278,7 +278,7 @@ class Music(commands.Cog, name='Música'):
         if len(track.skip_votes) == 3:
             await ctx.player.send(f'{self.lite.emoji["alert"]} A faixa **`{track}`** foi pulada pois '
                 'atingiu a quantia de votos necessários.')
-            
+
             await ctx.player.stop()
 
     @commands.command(name='forceskip', aliases=['fskip', 'pularagora'],
@@ -292,7 +292,7 @@ class Music(commands.Cog, name='Música'):
 
         await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** pulou a faixa '
             f'**`{ctx.player.current}`** a força.')
-        
+
         await ctx.player.stop()
 
     @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'],
@@ -333,14 +333,14 @@ class Music(commands.Cog, name='Música'):
 
         skip = (page - 1) * 12
         current = player.current
-        
+
         txt = f'Tocando Agora: [**{current}**]({current.uri}) `[{get_length(current.length)}]` - {current.requester.mention}\n\n'
         for i in range(skip, skip + 12):
             try:
                 track = player.queue[i]
             except IndexError:
                 continue
-            
+
             txt += f'**`»`** `{i+1}` [**{track}**]({track.uri}) `[{get_length(track.length)}]` - {track.requester.mention}\n'
 
         em = discord.Embed(
@@ -391,7 +391,7 @@ class Music(commands.Cog, name='Música'):
         if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
             raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa '
                 'estar conectado ao meu canal de voz para usar esse comando.')
-        
+
         ctx.player = self.get_player(ctx.guild.id)
 
         return True
@@ -422,11 +422,11 @@ class Music(commands.Cog, name='Música'):
             player.text_channel = ctx.channel
             await player.connect(vc.id)
             await ctx.send(f'{self.lite.emoji["wireless"]} Me conectei ao canal de voz **`{vc}`**.')
-        
+
         elif not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
             raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa '
                 'estar conectado ao meu canal de voz para usar esse comando.')
-        
+
         elif player.size > 1499:
             raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila '
                  'de reprodução desse servidor está lotada! Remova alguma faixa ou tente '

@@ -55,7 +55,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         self.lite._guilds.get(guild.id)
-        
+
         humans = 0;bots = 0
         for member in guild.members:
             if member.bot: bots+=1

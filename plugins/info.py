@@ -88,7 +88,8 @@ class Info(commands.Cog, name='Informações'):
             title='Estatísticas',
             description='[**Servidor de Suporte**](https://discord.gg/qN5886E) | ' \
                 '[**Adicionar**](https://lite.discobot.site) | ' \
-                '[**Votar**](https://botsparadiscord.xyz/bots/discolite)\n\u200b'
+                '[**Votar**](https://botsparadiscord.xyz/bots/discolite) | ' \
+                '[**GitHub**](https://github.com/Naegin/DiscoLite)\n\u200b'
         ).set_author(
             name=ctx.me.name,
             icon_url=ctx.me.avatar_url

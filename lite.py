@@ -53,7 +53,7 @@ class DiscoLite(AutoShardedBot):
                     log.error(f'Falha ao carregar o plugin \'{plugin}\'\n-\n{e.__class__.__name__}: {e}\n-')
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
-            
+
             log.info('Fim de carregamento dos plugins.')
 
             for ban in self._bans.find(ignore=False):
@@ -63,7 +63,7 @@ class DiscoLite(AutoShardedBot):
                     self.user_blacklist.add(ban.target_id)
 
             log.info('Lista de banidos carregada.')
-            
+
             self.loaded = True
 
         log.info('Sente o GRAVE!')

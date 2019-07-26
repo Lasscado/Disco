@@ -14,6 +14,7 @@ class Events(commands.Cog):
 
     async def _fetch_logs_channels(self):
         self.guild_logs = await self.lite.fetch_channel(int(environ['GUILDS_CHANNEL_ID']))
+        self.error_logs = await self.lite.fetch_channel(int(environ['ERRORS_CHANNEL_ID']))
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -118,6 +119,21 @@ class Events(commands.Cog):
             perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{p.upper().replace("_", " ")}`**' for p in e.missing_perms])
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu preciso das seguintes'
                 f' permissões para poder rodar esse comando:\n\n{perms}')
+
+        else:
+            em = discord.Embed(
+                colour=0xFF0000,
+                timestamp=ctx.message.created_at,
+                description=f'> {ctx.message.content}\n```py\n{e.__class__.__name__}: {e}```'
+            ).set_author(
+                name=f'{ctx.author} ({ctx.author.id})',
+                icon_url=ctx.author.avatar_url
+            ).set_footer(
+                text=f'ID: {ctx.message.id}'
+            )
+
+            await self.error_logs.send(content=f'Comando executado no canal {ctx.channel} ({ctx.channel.id})'
+                f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
 
     @commands.Cog.listener()
     async def on_command(self, ctx):

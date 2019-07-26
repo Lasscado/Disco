@@ -59,12 +59,13 @@ class Music(commands.Cog, name='Música'):
 
         if hasattr(results, 'tracks'):
             total_length = 0
-            for track in results.tracks[:1500-player.size]:
+            tracks = results.tracks[:1500-player.size]
+            for track in tracks:
                 total_length += track.length
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
             name = results.data['playlistInfo']['name']
-            await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(results.tracks)}** '
+            await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(tracks)}** '
                 f'faixas `({get_length(total_length)})` da playlist **`{name}`** na fila.')
         else:
             if len(results) == 1:

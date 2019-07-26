@@ -137,6 +137,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
+        self.lite.invoked_commands += 1
+
         self.lite.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
             f'em {ctx.guild} {ctx.guild.id}')
 

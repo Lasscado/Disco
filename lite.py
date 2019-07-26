@@ -36,6 +36,7 @@ class DiscoLite(AutoShardedBot):
         self.wavelink = wavelink.Client(self)
         self.guild_blacklist = set()
         self.user_blacklist = set()
+        self.invoked_commands = 0
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:

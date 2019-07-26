@@ -84,7 +84,6 @@ class Info(commands.Cog, name='Informações'):
 
         em = discord.Embed(
             colour=self.lite.color[0],
-            timestamp=ctx.message.created_at,
             title='Estatísticas',
             description='[**Servidor de Suporte**](https://discord.gg/qN5886E) | ' \
                 '[**Adicionar**](https://lite.discobot.site) | ' \
@@ -104,7 +103,8 @@ class Info(commands.Cog, name='Informações'):
                 f'**Servidores**: {len(self.lite.guilds)}\n' \
                 f'**Membros**: {len(set(self.lite.get_all_members()))}\n' \
                 f'**Players**: {len(self.lite.wavelink.players)}\n' \
-                f'**Lavalink Nodes**: {len(self.lite.wavelink.nodes)}\n\u200b',
+                f'**Lavalink Nodes**: {len(self.lite.wavelink.nodes)}\n' \
+                f'**Comandos Executados**: {self.lite.invoked_commands}\n\u200b',
             inline=False
         )
 

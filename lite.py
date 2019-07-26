@@ -69,7 +69,8 @@ class DiscoLite(AutoShardedBot):
         log.info('Sente o GRAVE!')
 
     async def on_message(self, message):
-        if not self.loaded or not self.is_ready() or message.author.bot or not message.guild:
+        if (not self.loaded or not self.is_ready() or message.author.bot or not message.guild
+            or not message.channel.permissions_for(message.guild.me).send_messages):
             return
 
         ctx = await self.get_context(message)

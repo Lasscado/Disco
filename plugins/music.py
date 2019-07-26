@@ -71,9 +71,8 @@ class Music(commands.Cog, name='Música'):
 
             tracks = results[:10]
             options = ''
-            for i in range(len(tracks)):
-                track = tracks[i]
-                options += f'**`»`** `{i+1}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
+            for i, track in enumerate(tracks, 1):
+                options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
 
             em = discord.Embed(
                 colour=self.lite.color[0],
@@ -333,15 +332,11 @@ class Music(commands.Cog, name='Música'):
 
         skip = (page - 1) * 12
         current = player.current
+        tracks = player.queue[skip:skip+12]
 
         txt = f'Tocando Agora: [**{current}**]({current.uri}) `[{get_length(current.length)}]` - {current.requester.mention}\n\n'
-        for i in range(skip, skip + 12):
-            try:
-                track = player.queue[i]
-            except IndexError:
-                continue
-
-            txt += f'**`»`** `{i+1}` [**{track}**]({track.uri}) `[{get_length(track.length)}]` - {track.requester.mention}\n'
+        for i, track in enumerate(tracks, skip+1):
+            txt += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]` - {track.requester.mention}\n'
 
         em = discord.Embed(
             colour=self.lite.color[1],

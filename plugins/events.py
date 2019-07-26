@@ -93,7 +93,7 @@ class Events(commands.Cog):
         if isinstance(e, MusicError):
             await ctx.send(e)
 
-        if isinstance(e, CommandOnCooldown):
+        elif isinstance(e, CommandOnCooldown):
             _, s = divmod(e.retry_after, 60)
             await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, aguarde **`{int(s)}`**'
                 ' segundo(s) para poder usar esse comando novamente.', delete_after=s+6)

@@ -4,12 +4,14 @@ from models import DiscoPlayer, DiscoTrack
 from os import environ
 from random import shuffle
 from math import ceil
+from asyncio import TimeoutError as Timeout
 
 import discord
 
 class Music(commands.Cog, name='Música'):
     def __init__(self, lite):
         self.lite = lite
+        self.waiting = set()
 
         lite.loop.create_task(self.initiate_nodes())
     
@@ -42,6 +44,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='play', aliases=['p', 'tocar'], usage='<Nome|URL>',
         description='Busca e adiciona a música especificada na fila de reprodução.')
+    @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
         if not web_url(query):
@@ -64,16 +67,53 @@ class Music(commands.Cog, name='Música'):
             await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(results.tracks)}** '
                 f'faixas `({get_length(total_length)})` da playlist **`{name}`** na fila.')
         else:
-            track = results[0]
+            self.waiting.add(ctx.author.id)
+
+            tracks = results[:10]
+            options = ''
+            for i in range(len(tracks)):
+                track = tracks[i]
+                options += f'**`»`** `{i+1}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
+
+            em = discord.Embed(
+                colour=self.lite.color[0],
+                title='Digite o número correspondente a faixa que você deseja ouvir',
+                description=options
+            ).set_author(
+                name='Resultados da Busca',
+                icon_url=ctx.guild.icon_url
+            ).set_thumbnail(
+                url=ctx.me.avatar_url
+            ).set_footer(
+                text='Digite "sair" para cancelar.'
+            )
+
+            q = await player.send(content=ctx.author.mention, embed=em)
+
+            try:
+                a = await self.lite.wait_for('message', timeout=120,
+                    check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
+                        and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
+                        or c.content.lower() == 'sair'))
+            except Timeout:
+                a = None
+            
+            if not a or a.content.lower() == 'sair':
+                self.waiting.remove(ctx.author.id)
+                return await q.delete()
+
+            track = tracks[int(a.content) - 1]
+
             player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
-            await player.send(f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
-                f'`({get_length(track.length)})` na fila.')
+            self.waiting.remove(ctx.author.id)
+            await q.edit(content=f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
+                f'`({get_length(track.length)})` na fila.', embed=None)
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
             await player.send(f'{self.lite.emoji["download"]} Tocando agora: '
                 f'**`{player.current}`** `({get_length(player.current.length)})`. Requisitado por '
-                f'**{ctx.author.name}**.')
+                f'**{ctx.author.name}**.', embed=None)
 
     @commands.command(name='shuffle', aliases=['misturar'],
         description='Mistura as faixas da fila de reprodução.')
@@ -358,6 +398,10 @@ class Music(commands.Cog, name='Música'):
 
     @_play.before_invoke
     async def _before_play(self, ctx):
+        if ctx.author.id in self.waiting:
+            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você ainda não '
+                'selecionou uma faixa no comando anterior!')
+
         ctx.player = player = self.get_player(ctx.guild.id)
         if not ctx.me.voice:
             if not ctx.author.voice:

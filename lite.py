@@ -1,5 +1,5 @@
 from discord.ext.commands import AutoShardedBot, when_mentioned_or
-from utils import emojis
+from utils import emojis, checks
 from os import environ, listdir
 from datetime import datetime
 from discord import Game
@@ -54,6 +54,8 @@ class DiscoLite(AutoShardedBot):
                     log.error(f'Falha ao carregar o plugin \'{plugin}\'\n-\n{e.__class__.__name__}: {e}\n-')
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
+
+            self.get_command('play')._before_invoke = checks.before_play
 
             log.info('Fim de carregamento dos plugins.')
 

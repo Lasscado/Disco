@@ -127,6 +127,7 @@ class Music(commands.Cog, name='Música'):
         description='Mistura as faixas da fila de reprodução.')
     @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
+    @checks.is_voice_connected()
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
         await ctx.player.send(f'{self.lite.emoji["shuffle"]} **{ctx.author.name}**, você misturou '
@@ -135,6 +136,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='repeat', aliases=['loop', 'repetir'],
         description='Coloca em loop, a música que estiver tocando.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _repeat(self, ctx):
         if not ctx.player.current:
@@ -153,6 +155,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'],
         description='Limpa a fila de reprodução e desconecta o bot do canal de voz.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _stop(self, ctx):
         vc = ctx.me.voice.channel
@@ -164,6 +167,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='volume', aliases=['vol', 'v'], usage='<1-150>',
         description='Aumenta ou diminui o volume do player.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _volume(self, ctx, vol: int):
         if not 0 < vol < 151:
@@ -177,6 +181,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='clear', aliases=['reset', 'limpar'],
         description='Limpa a fila de reprodução.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _clear(self, ctx):
         if not ctx.player.queue:
@@ -190,6 +195,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='pause', aliases=['pausar'],
         description='Pausa e despausa a música que estiver tocando no momento.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _pause(self, ctx):
         if not ctx.player.current:
@@ -206,6 +212,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'], usage='<Posição>',
         description='Remove uma faixa especifica da fila de reprodução.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _remove(self, ctx, index: int):
         if not ctx.player.queue:
@@ -224,6 +231,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='playat', aliases=['pa', 'pularpara', 'skt', 'skipto'], usage='<Posição>',
         description='Pula para uma faixa especifica.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play_at(self, ctx, index: int):
         player = ctx.player
@@ -262,6 +270,7 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='skip', aliases=['s', 'sk', 'skp'],
         description='Vota para pular a música que estiver tocando.')
+    @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _skip(self, ctx):
         if not ctx.player.current:
@@ -292,6 +301,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='forceskip', aliases=['fskip', 'pularagora'],
         description='Força pular a música que estiver tocando.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _force_skip(self, ctx):
         if not ctx.player.current:
@@ -306,6 +316,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'],
         description='Ativa e desativa o Modo Bass Boost (mais graves).')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bass_boost(self, ctx):
         if not ctx.player.current:
@@ -365,6 +376,7 @@ class Music(commands.Cog, name='Música'):
     @commands.command(name='reverse', aliases=['rev', 'inverter'],
         description='Inverte as faixas da fila de reprodução.')
     @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _reverse(self, ctx):
         if not ctx.player.queue:
@@ -374,69 +386,6 @@ class Music(commands.Cog, name='Música'):
         ctx.player.queue.reverse()
         await ctx.player.send(f'{self.lite.emoji["shuffle"]} **{ctx.author.name}**, você inverteu'
             ' a fila de reprodução.')
-
-    @_shuffle.before_invoke
-    @_repeat.before_invoke
-    @_stop.before_invoke
-    @_volume.before_invoke
-    @_clear.before_invoke
-    @_pause.before_invoke
-    @_remove.before_invoke
-    @_play_at.before_invoke
-    @_skip.before_invoke
-    @_force_skip.before_invoke
-    @_bass_boost.before_invoke
-    @_reverse.before_invoke
-    async def _check_if_is_connected(self, ctx):
-        if not ctx.me.voice:
-            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou '
-                'conectado em nenhum canal de voz.')
-
-        if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
-            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa '
-                'estar conectado ao meu canal de voz para usar esse comando.')
-
-        ctx.player = self.get_player(ctx.guild.id)
-
-        return True
-
-    @_play.before_invoke
-    async def _before_play(self, ctx):
-        if ctx.author.id in self.waiting:
-            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você ainda não '
-                'selecionou uma faixa no comando anterior!')
-
-        ctx.player = player = self.get_player(ctx.guild.id)
-        if not ctx.me.voice:
-            if not ctx.author.voice:
-                raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, '
-                    'você precisa estar conectado em um canal de voz para usar esse comando.')
-
-            vc = ctx.author.voice.channel
-            perms = vc.permissions_for(ctx.me)
-
-            if not perms.connect or not perms.speak:
-                raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, '
-                    'eu preciso das permissões **`CONECTAR`** e **`FALAR`** no seu canal de voz.')
-
-            if vc.user_limit and len(vc.members) + 1 > vc.user_limit and not perms.administrator:
-                raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, '
-                    'seu canal de voz está lotado!')
-
-            player.text_channel = ctx.channel
-            await player.connect(vc.id)
-            await ctx.send(f'{self.lite.emoji["wireless"]} Me conectei ao canal de voz **`{vc}`**.')
-
-        elif not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
-            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa '
-                'estar conectado ao meu canal de voz para usar esse comando.')
-
-        elif player.size > 1499:
-            raise MusicError(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila '
-                 'de reprodução desse servidor está lotada! Remova alguma faixa ou tente '
-                 'novamente mais tarde.')
-
-        return True
 
 def setup(lite):
     lite.add_cog(Music(lite))

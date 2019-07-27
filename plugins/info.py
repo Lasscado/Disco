@@ -75,7 +75,7 @@ class Info(commands.Cog, name='Informações'):
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='botinfo', aliases=['ping', 'latency', 'nodes', 'bi', 'statistics'],
+    @commands.command(name='botinfo', aliases=['nodes', 'bi', 'statistics'],
         description='Mostra informações sobre o Bot.')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 8, commands.BucketType.user)
@@ -136,6 +136,13 @@ class Info(commands.Cog, name='Informações'):
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)
+
+    @commands.command(name='ping', aliases=['latency'], description='Mostra a latência entre a '
+        'conexão do Bot com o Discord.')
+    @commands.cooldown(1, 6, commands.BucketType.user)
+    async def _ping(self, ctx):
+        ping = int(self.lite.shards[ctx.guild.shard_id].ws.latency * 1000)
+        await ctx.send(f'{self.lite.emoji["wireless"]} **Ping**: **`{ping}ms`**')
 
 def setup(lite):
     lite.add_cog(Info(lite))

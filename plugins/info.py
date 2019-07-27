@@ -116,8 +116,7 @@ class Info(commands.Cog, name='Informações'):
                 value=f'**Região**: {node.region.title().replace("_", " ")}\n' \
                     f'**Uptime**: {get_length(stats.uptime, True)}\n' \
                     f'**Players Ativos**: {stats.playing_players}/{stats.players}\n' \
-                    f'**Memória Usada**: {naturalsize(stats.memory_used)}\n' \
-                    f'**Uso de CPU**: {int(stats.lavalink_load*1000)}%'
+                    f'**Memória Usada**: {naturalsize(stats.memory_used)}'
             )
 
         await ctx.send(content=ctx.author.mention, embed=em)

@@ -1,6 +1,6 @@
 from discord.ext import commands
 from .errors import MusicError
-
+from .locale import l
 
 class Checks:
     @staticmethod
@@ -18,12 +18,12 @@ class Checks:
     def is_voice_connected():
         async def predicate(ctx):
             if not ctx.me.voice:
-                raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, eu não estou '
-                    'conectado em nenhum canal de voz.')
+                raise MusicError(l(ctx, 'errors.notConnected') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
             if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
-                raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, você precisa '
-                    'estar conectado ao meu canal de voz para usar esse comando.')
+                raise MusicError(l(ctx, 'errors.notSameVoiceChannel') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
             ctx.player = ctx.cog.get_player(ctx.guild.id)
 
@@ -34,37 +34,38 @@ class Checks:
     @staticmethod
     async def before_play(cog, ctx):
         if ctx.author.id in cog.waiting:
-            raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, você ainda não '
-                'selecionou uma faixa no comando anterior!')
+            raise MusicError(l(ctx, 'errors.waitingForPreviousChoice') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
         ctx.player = player = cog.get_player(ctx.guild.id)
         if not ctx.me.voice:
             if not ctx.author.voice:
-                raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, '
-                    'você precisa estar conectado em um canal de voz para usar esse comando.')
+                raise MusicError(l(ctx, 'errors.userNotVoiceConnected') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
             vc = ctx.author.voice.channel
             perms = vc.permissions_for(ctx.me)
 
             if not perms.connect or not perms.speak:
-                raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, '
-                    'eu preciso das permissões **`CONECTAR`** e **`FALAR`** no seu canal de voz.')
+                raise MusicError(l(ctx, 'errors.notEnoughPermissionsToJoin') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
             if vc.user_limit and len(vc.members) + 1 > vc.user_limit and not perms.administrator:
-                raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, '
-                    'seu canal de voz está lotado!')
+                raise MusicError(l(ctx, 'errors.fullVoiceChannel') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
             player.text_channel = ctx.channel
+            player.locale = ctx.locale
             await player.connect(vc.id)
-            await ctx.send(f'{ctx.bot.emoji["wireless"]} Me conectei ao canal de voz **`{vc}`**.')
+            await ctx.send(l(ctx, 'commands.play.connected') % (
+                    ctx.bot.emoji["wireless"], vc))
 
         elif not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
-            raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, você precisa '
-                'estar conectado ao meu canal de voz para usar esse comando.')
+            raise MusicError(l(ctx, 'errors.notSameVoiceChannel') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
         elif player.size > 1499:
-            raise MusicError(f'{ctx.bot.emoji["false"]} **{ctx.author.name}**, a fila '
-                'de reprodução desse servidor está lotada! Remova alguma faixa ou tente '
-                'novamente mais tarde.')
+            raise MusicError(l(ctx, 'errors.fullQueue') % (
+                    ctx.bot.emoji["false"], ctx.author.name))
 
         return True

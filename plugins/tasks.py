@@ -1,6 +1,6 @@
 from discord.ext import commands, tasks
 from discord import Colour
-from utils import avatars
+from utils import avatars, l
 from random import choice
 from asyncio import sleep
 
@@ -45,8 +45,8 @@ class Tasks(commands.Cog):
         except KeyError:
             pass
 
-        await player.send(f'{self.lite.emoji["alert"]} Desconectei do canal de voz porque '
-            'ninguém estava me usando para ouvir música.')
+        await player.send(l(self.lite._guilds.get(guild.id).data['options']['language'],
+            'events.disconnectPlayer') % self.lite.emoji["alert"])
 
     @staticmethod
     def has_listeners(guild):

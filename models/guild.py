@@ -17,6 +17,7 @@ class DiscoGuild:
             "_id": self.guild_id,
             "firstSeen": datetime.utcnow().timestamp(),
             "options": {
+                "locale": "pt-BR",
                 "prefix": None,
                 "djRole": None,
                 "botChannel": None,

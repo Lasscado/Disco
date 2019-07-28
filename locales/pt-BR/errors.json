@@ -1,0 +1,17 @@
+{
+    "onCooldown": "%s **%s**, aguarde **`%s`** segundo(s) para poder usar esse comando novamente.",
+    "missingRole": "%s **%s**, você precisa do cargo **`%s`** para poder usar esse comando.",
+    "inputError": "%s Parece que você usou o comando de forma errada, **%s**.\n**Uso correto: `%s`**",
+    "missingPermissions": "%s **%s**, você precisa das seguintes permissões para poder usar esse comando:\n\n%s",
+    "botMissingPermissions": "%s **%s**, eu preciso das seguintes permissões para poder rodar esse comando:\n\n%s",
+    "notPlaying": "%s **%s**, eu não estou tocando nada no momento.",
+    "emptyQueue": "%s **%s**, a fila de reprodução está vazia.",
+    "invalidValue": "%s **%s**, você forneceu um valor inválido.",
+    "notConnected": "%s **%s**, eu não estou conectado em nenhum canal de voz.",
+    "notSameVoiceChannel": "%s **%s**, você precisa estar conectado ao meu canal de voz para usar esse comando.",
+    "waitingForPreviousChoice": "%s **%s**, você ainda não selecionou uma faixa no comando anterior!",
+    "userNotVoiceConnected": "%s **%s**, você precisa estar conectado em um canal de voz para usar esse comando.",
+    "fullVoiceChannel": "%s **%s**, seu canal de voz está lotado!",
+    "fullQueue": "%s **%s**, a fila de reprodução desse servidor está lotada! Remova alguma faixa ou tente novamente mais tarde.",
+    "notEnoughPermissionsToJoin": "%s **%s**, eu preciso das permissões **`CONECTAR`** e **`FALAR`** no seu canal de voz."
+}

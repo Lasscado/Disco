@@ -1,6 +1,7 @@
 from discord.ext import commands
 from humanize import naturalsize
 from utils import get_length
+from utils import l
 
 import discord
 
@@ -10,34 +11,37 @@ class Info(commands.Cog, name='Informações'):
     def __init__(self, lite):
         self.lite = lite
 
-    @commands.command(name='help', aliases=['ajuda', 'commands', 'cmds'], usage='[Comando]',
-        description='Lista detalhadamente todos os comandos do Bot.')
+    @commands.command(name='help', aliases=['ajuda', 'commands', 'cmds'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def _help(self, ctx, command=None):
         if command:
             cmd = self.lite.get_command(command)
-            if not cmd:
-                return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não'
-                    ' encontrei nenhum comando com o nome fornecido.')
+            if not cmd or cmd.hidden:
+                return await ctx.send(l(ctx, 'commands.help.notFound') % (
+                    self.lite.emoji["false"], ctx.author.name))
+
+            usage = l(ctx, f'commands.{cmd.name}.cmdUsage')
 
             em = discord.Embed(
                 colour=self.lite.color[0],
-                title=f'Comando {cmd.name.title()}'
+                title=l(ctx, 'commands.help.commandName') % cmd.name.title()
             ).set_author(
                 name=ctx.me.name,
                 icon_url=ctx.me.avatar_url
             ).set_thumbnail(
                 url=TRANSPARENT
             ).add_field(
-                name='Descrição',
-                value=cmd.description or 'Não fornecida.'
+                name=l(ctx, 'commands.help.description'),
+                value=l(ctx, f'commands.{cmd.name}.cmdDescription') \
+                    or l(ctx, 'commands.help.notSupplied')
             ).add_field(
-                name='Uso',
-                value=f'{ctx.prefix}{cmd.name} {cmd.usage}' if cmd.usage else 'Não especificado.'
+                name=l(ctx, 'commands.help.usage'),
+                value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
             ).add_field(
-                name='Outros Nomes',
-                value=', '.join([f'`{a}`' for a in cmd.aliases]) or 'Não definidos.'
+                name=l(ctx, 'commands.help.aliases'),
+                value=', '.join([f'`{a}`' for a in cmd.aliases]) \
+                    or l(ctx, 'commands.help.notDefined')
             )
 
             return await ctx.send(content=ctx.author.mention, embed=em)
@@ -45,18 +49,17 @@ class Info(commands.Cog, name='Informações'):
         em = discord.Embed(
             timestap=ctx.message.created_at,
             colour=self.lite.color[0],
-            description='[**Servidor de Suporte**](https://discord.gg/qN5886E) | ' \
-                '[**Adicionar**](https://lite.discobot.site) | ' \
-                '[**Votar**](https://botsparadiscord.xyz/bots/discolite) | ' \
-                '[**GitHub**](https://github.com/Naegin/DiscoLite)\n\n'
-                '**[Prefixos]:** `d!comando`, `li comando`\n\u200b'
+            description=l(ctx, 'commands.help.links') % ('https://discord.gg/qN5886E',
+                                                        'https://lite.discobot.site',
+                                                        'https://botsparadiscord.xyz/bots/discolite',
+                                                        'https://github.com/Naegin/DiscoLite')
         ).set_author(
             name=ctx.me.name,
             icon_url=ctx.me.avatar_url
         ).set_thumbnail(
             url=ctx.me.avatar_url
         ).set_footer(
-            text='Criado por Naegin#0049',
+            text=l(ctx, 'commons.createdBy') % 'Naegin#0049',
             icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
         )
 
@@ -65,18 +68,17 @@ class Info(commands.Cog, name='Informações'):
             value = ', '.join([f'`{c}`' for c in cmds])
 
             if value:
-                em.add_field(name=f'**Comandos de {name}**: ({len(cmds)})', value=value)
+                em.add_field(name=l(ctx, 'commands.help.categoryCommands') % (name, len(cmds)),
+                    value=value)
 
         em.add_field(
             name='\u200b',
-            value=f'Digite **{ctx.prefix}{ctx.invoked_with} <Comando>** para ver mais ' \
-                'informações sobre um comando.'
+            value=l(ctx, 'commands.help.tip') % f'{ctx.prefix}{ctx.invoked_with}'
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='botinfo', aliases=['nodes', 'bi', 'statistics'],
-        description='Mostra informações sobre o Bot.')
+    @commands.command(name='botinfo', aliases=['nodes', 'bi', 'statistics'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bot_info(self, ctx):
@@ -84,27 +86,29 @@ class Info(commands.Cog, name='Informações'):
 
         em = discord.Embed(
             colour=self.lite.color[0],
-            title='Estatísticas',
-            description='[**Servidor de Suporte**](https://discord.gg/qN5886E) | ' \
-                '[**Adicionar**](https://lite.discobot.site) | ' \
-                '[**Votar**](https://botsparadiscord.xyz/bots/discolite) | ' \
-                '[**GitHub**](https://github.com/Naegin/DiscoLite)\n\u200b'
+            title=l(ctx, 'commands.botinfo.statistics'),
+            description=l(ctx, 'commands.botinfo.links') % ('https://discord.gg/qN5886E',
+                                                            'https://lite.discobot.site',
+                                                            'https://botsparadiscord.xyz/bots/discolite',
+                                                            'https://github.com/Naegin/DiscoLite')
         ).set_author(
             name=ctx.me.name,
             icon_url=ctx.me.avatar_url
         ).set_footer(
-            text='Criado por Naegin#0049',
+            text=l(ctx, 'commons.createdBy') % 'Naegin#0049',
             icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
         ).set_thumbnail(
             url=ctx.me.avatar_url
         ).add_field(
-            name='**INFORMAÇÕES BÁSICAS**',
-            value=f'**Ping** `[Shard {ctx.guild.shard_id+1}/{len(self.lite.shards)}]`: {shard_ping}ms\n' \
-                f'**Servidores**: {len(self.lite.guilds)}\n' \
-                f'**Membros**: {len(set(self.lite.get_all_members()))}\n' \
-                f'**Players**: {len(self.lite.wavelink.players)}\n' \
-                f'**Lavalink Nodes**: {len(self.lite.wavelink.nodes)}\n' \
-                f'**Comandos Executados**: {self.lite.invoked_commands}\n\u200b',
+            name=l(ctx, 'commands.botinfo.generalInfoTitle'),
+            value=l(ctx, 'commands.botinfo.generalInfoDesc') % (ctx.guild.shard_id+1,
+                                                                len(self.lite.shards),
+                                                                shard_ping,
+                                                                len(self.lite.guilds),
+                                                                len(set(self.lite.get_all_members())),
+                                                                len(self.lite.wavelink.players),
+                                                                len(self.lite.wavelink.nodes),
+                                                                self.lite.invoked_commands),
             inline=False
         )
 
@@ -113,23 +117,22 @@ class Info(commands.Cog, name='Informações'):
 
             em.add_field(
                 name=f'**LAVALINK NODE {identifier}**',
-                value=f'**Região**: {node.region.title().replace("_", " ")}\n' \
-                    f'**Uptime**: {get_length(stats.uptime, True)}\n' \
-                    f'**Players Ativos**: {stats.playing_players}/{stats.players}\n' \
-                    f'**Memória Usada**: {naturalsize(stats.memory_used)}'
+                value=l(ctx, 'commands.botinfo.nodeInfo') % (node.region.title().replace("_", " "),
+                                                            get_length(stats.uptime, True),
+                                                            stats.playing_players,
+                                                            stats.players,
+                                                            naturalsize(stats.memory_used))
             )
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='invite', aliases=['add', 'adicionar', 'convite', 'convidar'],
-        description='Envia o link de convite para adicionar o Bot.')
+    @commands.command(name='invite', aliases=['add', 'adicionar', 'convite', 'convidar'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _invite(self, ctx):
         em = discord.Embed(
             colour=self.lite.color[1],
-            description=f'[Clique aqui para adicionar o **Disco Lite** em seu servidor]' \
-                '(https://lite.discobot.site)'
+            description=l(ctx, 'commands.invite.text') % 'https://lite.discobot.site'
         ).set_author(
             name=ctx.me.name,
             icon_url=ctx.me.avatar_url
@@ -137,8 +140,7 @@ class Info(commands.Cog, name='Informações'):
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='ping', aliases=['latency'], description='Mostra a latência entre a '
-        'conexão do Bot com o Discord.')
+    @commands.command(name='ping', aliases=['latency'])
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _ping(self, ctx):
         ping = int(self.lite.shards[ctx.guild.shard_id].ws.latency * 1000)

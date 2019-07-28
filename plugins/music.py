@@ -1,5 +1,5 @@
 from discord.ext import commands
-from utils import MusicError, web_url, get_length, checks
+from utils import MusicError, web_url, get_length, checks, l
 from models import DiscoPlayer, DiscoTrack
 from os import environ
 from random import shuffle
@@ -34,16 +34,15 @@ class Music(commands.Cog, name='Música'):
             track = player.queue.pop(0)
         else:
             player.current = None
-            return await player.send(f'{self.lite.emoji["alert"]} A fila de reprodução acabou.')
+            return await player.send(l(player, 'events.queueEnd') % self.lite.emoji["alert"])
 
         await player.play(track)
 
         if not player.repeat:
-            await player.send(f'{self.lite.emoji["download"]} Tocando agora: **`{track}`** '
-                f'`({get_length(track.length)})`. Requisitado por **{track.requester.name}**.')
+            await player.send(l(player, 'events.trackStart') % (self.lite.emoji["download"],
+                track, get_length(track.length), track.requester.name))
 
-    @commands.command(name='play', aliases=['p', 'tocar'], usage='<Nome|URL>',
-        description='Busca e adiciona a música especificada na fila de reprodução.')
+    @commands.command(name='play', aliases=['p', 'tocar'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
@@ -52,8 +51,8 @@ class Music(commands.Cog, name='Música'):
 
         results = await self.lite.wavelink.get_tracks(query)
         if not results:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, não '
-                'consegui obter nenhum resultado para sua busca.')
+            return await ctx.send(l(ctx, 'commands.play.noResults') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         player = ctx.player
 
@@ -65,16 +64,16 @@ class Music(commands.Cog, name='Música'):
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
             name = results.data['playlistInfo']['name']
-            await player.send(f'{self.lite.emoji["plus"]} Adicionei **{len(tracks)}** '
-                f'faixas `({get_length(total_length)})` da playlist **`{name}`** na fila.')
+            await player.send(l(ctx, 'commands.play.playlistAdded') % (self.lite.emoji["plus"],
+                len(tracks), get_length(total_length), name))
         else:
             if len(results) == 1:
                 track = results[0]
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
-                await player.send(f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
-                    f'`({get_length(track.length)})` na fila.')
+                await player.send(l(ctx, 'commands.play.trackAdded') % (self.lite.emoji["plus"],
+                    track, get_length(track.length)))
             else:
                 self.waiting.add(ctx.author.id)
 
@@ -85,28 +84,29 @@ class Music(commands.Cog, name='Música'):
 
                 em = discord.Embed(
                     colour=self.lite.color[0],
-                    title='Digite o número correspondente a faixa que você deseja ouvir',
+                    title=l(ctx, 'commands.play.chooseOne'),
                     description=options
                 ).set_author(
-                    name='Resultados da Busca',
+                    name=l(ctx, 'commands.play.searchResults'),
                     icon_url=ctx.guild.icon_url
                 ).set_thumbnail(
                     url=ctx.me.avatar_url
                 ).set_footer(
-                    text='Digite "sair" para cancelar.'
+                    text=l(ctx, 'commands.play.typeToCancel')
                 )
 
                 q = await player.send(content=ctx.author.mention, embed=em)
+                cancel = l(ctx, 'commons.exit').lower()
 
                 try:
                     a = await self.lite.wait_for('message', timeout=120,
                         check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
                             and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
-                            or c.content.lower() == 'sair'))
+                            or c.content.lower() == cancel))
                 except Timeout:
                     a = None
 
-                if not a or a.content.lower() == 'sair':
+                if not a or a.content.lower() == cancel:
                     self.waiting.remove(ctx.author.id)
                     return await q.delete()
 
@@ -114,46 +114,42 @@ class Music(commands.Cog, name='Música'):
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
                 self.waiting.remove(ctx.author.id)
-                await q.edit(content=f'{self.lite.emoji["plus"]} Adicionei **`{track}`** '
-                    f'`({get_length(track.length)})` na fila.', embed=None)
+                await q.edit(content=l(ctx, 'commands.play.trackAdded') % (self.lite.emoji["plus"],
+                    track, get_length(track.length)), embed=None)
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
-            await player.send(f'{self.lite.emoji["download"]} Tocando agora: '
-                f'**`{player.current}`** `({get_length(player.current.length)})`. Requisitado por '
-                f'**{ctx.author.name}**.', embed=None)
+            await player.send(l(ctx, 'events.trackStart') % (self.lite.emoji["download"],
+                player.current, get_length(player.current.length), ctx.author.name))
 
-    @commands.command(name='shuffle', aliases=['misturar'],
-        description='Mistura as faixas da fila de reprodução.')
+    @commands.command(name='shuffle', aliases=['misturar'])
     @checks.staffer_or_dj_role()
     @commands.cooldown(1, 8, commands.BucketType.user)
     @checks.is_voice_connected()
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
-        await ctx.player.send(f'{self.lite.emoji["shuffle"]} **{ctx.author.name}**, você misturou '
-            'a fila de reprodução.')
+        await ctx.player.send(l(ctx, 'commands.shuffle.shuffled') % (
+            self.lite.emoji["shuffle"], ctx.author.name))
 
-    @commands.command(name='repeat', aliases=['loop', 'repetir'],
-        description='Coloca em loop, a música que estiver tocando.')
+    @commands.command(name='repeat', aliases=['loop', 'repetir'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _repeat(self, ctx):
         if not ctx.player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou'
-                ' tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         if ctx.player.repeat:
             ctx.player.repeat = None
-            await ctx.player.send(f'{self.lite.emoji["repeatOne"]} **{ctx.author.name}**, você desativou o modo'
-                f' repetição para a faixa **`{ctx.player.current}`**.')
+            await ctx.player.send(l(ctx, 'commands.repeat.disable') % (self.lite.emoji["repeatOne"],
+                ctx.author.name, ctx.player.current))
         else:
             ctx.player.repeat = ctx.player.current
-            await ctx.player.send(f'{self.lite.emoji["repeatOne"]} **{ctx.author.name}**, você ativou o '
-                f'modo repetição para a faixa **`{ctx.player.current}`**.')
+            await ctx.player.send(l(ctx, 'commands.repeat.enable') % (self.lite.emoji["repeatOne"],
+                ctx.author.name, ctx.player.current))
 
-    @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'],
-        description='Limpa a fila de reprodução e desconecta o bot do canal de voz.')
+    @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
@@ -161,188 +157,180 @@ class Music(commands.Cog, name='Música'):
         vc = ctx.me.voice.channel
         await ctx.player.disconnect()
         await ctx.player.destroy()
-        await ctx.player.send(f'{self.lite.emoji["true"]} Limpei a fila & desconectei do canal '
-            f'**`{vc}`** a pedido de **{ctx.author.name}**.')
+        await ctx.player.send(l(ctx, 'commands.stop.stopped') % (
+            self.lite.emoji["true"], vc, ctx.author.name))
 
-    @commands.command(name='volume', aliases=['vol', 'v'], usage='<1-150>',
-        description='Aumenta ou diminui o volume do player.')
+    @commands.command(name='volume', aliases=['vol', 'v'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _volume(self, ctx, vol: int):
         if not 0 < vol < 151:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você deve '
-                'fornecer um valor entre **`1`** e **`150`**.')
+            return await ctx.send(l(ctx, 'commands.volume.invalidValue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         await ctx.player.set_volume(vol)
-        await ctx.player.send(f'{self.lite.emoji["volume"]} **{ctx.author.name}** alterou o volume do '
-            f'player para **`{vol}%`**.')
+        await ctx.player.send(l(ctx, 'commands.volume.changed') % (
+            self.lite.emoji["volume"], ctx.author.name, vol))
 
-    @commands.command(name='clear', aliases=['reset', 'limpar'],
-        description='Limpa a fila de reprodução.')
+    @commands.command(name='clear', aliases=['reset', 'limpar'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _clear(self, ctx):
         if not ctx.player.queue:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
-                'reprodução já está vazia.')
+            return await ctx.send(l(ctx, 'commands.clear.alreadyEmpty') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         ctx.player.queue.clear()
-        await ctx.player.send(f'{self.lite.emoji["alert"]} A fila de reprodução foi limpa por '
-            f'**{ctx.author.name}**.')
+        await ctx.player.send(l(ctx, 'commands.clear.cleaned') % (
+            self.lite.emoji["alert"], ctx.author.name))
 
-    @commands.command(name='pause', aliases=['pausar'],
-        description='Pausa e despausa a música que estiver tocando no momento.')
+    @commands.command(name='pause', aliases=['pausar'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _pause(self, ctx):
         if not ctx.player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não '
-                'estou tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
+
+        if ctx.player.paused:
+            await ctx.player.send(l(ctx, 'commands.pause.unpause') % (
+                self.lite.emoji["alert"], ctx.author.name))
+        else:
+            await ctx.player.send(l(ctx, 'commands.pause.pause') % (
+                self.lite.emoji["alert"], ctx.author.name))
 
         await ctx.player.set_pause(not ctx.player.paused)
 
-        if ctx.player.paused:
-            await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** pausou o player.')
-        else:
-            await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** despausou o player.')
-
-    @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'], usage='<Posição>',
-        description='Remove uma faixa especifica da fila de reprodução.')
+    @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _remove(self, ctx, index: int):
         if not ctx.player.queue:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
-                'reprodução está vazia.')
+            return await ctx.send(l(ctx, 'errors.emptyQueue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         try:
             track = ctx.player.queue.pop(index - 1)
         except IndexError:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você '
-                'forneceu um valor inválido.')
+            return await ctx.send(l(ctx, 'errors.invalidValue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
-        await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você removeu a faixa '
-            f'**`{track}`** da fila de reprodução.')
+        await ctx.send(l(ctx, 'commands.remove.removed') % (
+                self.lite.emoji["true"], ctx.author.name, track))
 
-    @commands.command(name='playat', aliases=['pa', 'pularpara', 'skt', 'skipto'], usage='<Posição>',
-        description='Pula para uma faixa especifica.')
+    @commands.command(name='playat', aliases=['pa', 'pularpara', 'skt', 'skipto'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play_at(self, ctx, index: int):
         player = ctx.player
         if not player.queue:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
-                'reprodução está vazia.')
+            return await ctx.send(l(ctx, 'errors.emptyQueue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         try:
             player.queue = player.queue[index - 1:]
             track = player.queue.pop(0)
         except IndexError:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você '
-                'forneceu um valor inválido.')
+            return await ctx.send(l(ctx, 'errors.invalidValue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         player.queue.insert(0, track)
         await player.stop()
 
-    @commands.command(name='nowplaying', aliases=['np', 'tocandoagora', 'tocando', 'now'],
-        description='Mostra detalhes sobre a música que estiver tocando.')
+    @commands.command(name='nowplaying', aliases=['np', 'tocandoagora', 'tocando', 'now'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _now_playing(self, ctx):
         player = self.get_player(ctx.guild.id)
         if not player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não '
-                'estou tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         track = player.current
         em = discord.Embed(
             colour=self.lite.color[0],
-            description=f'Tocando Agora: **[{track}]({track.uri})** '
-                f'`({get_length(track.length)})` - {track.requester.mention}'
+            description=l(ctx, 'commands.nowplaying.text') % (track, track.uri,
+                get_length(track.length), track.requester.mention)
         )
 
         await ctx.send(embed=em, delete_after=15)
 
-    @commands.command(name='skip', aliases=['s', 'sk', 'skp'],
-        description='Vota para pular a música que estiver tocando.')
+    @commands.command(name='skip', aliases=['s', 'sk', 'skp'])
     @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _skip(self, ctx):
         if not ctx.player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou'
-                ' tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         track = ctx.player.current
         if track.requester.id == ctx.author.id:
-            await ctx.player.send(f'{self.lite.emoji["alert"]} A faixa **`{track}`** foi pulada por '
-                f'quem a adicionou. (**{ctx.author.name}**)')
+            await ctx.player.send(l(ctx, 'commands.skip.skippedByRequester') % (
+                self.lite.emoji["alert"], track, ctx.author.name))
 
             return await ctx.player.stop()
 
         elif ctx.author.id in track.skip_votes:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você já '
-                'votou para pular essa faixa.')
+            return await ctx.send(l(ctx, 'commands.skip.alreadyVotted') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         track.skip_votes.add(ctx.author.id)
-        await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** votou para pular '
-            f'a música atual. **`({len(track.skip_votes)}/3)`**')
+        await ctx.player.send(l(ctx, 'commands.skip.voteAdded') % (self.lite.emoji["alert"],
+            ctx.author.name, len(track.skip_votes)))
 
         if len(track.skip_votes) == 3:
-            await ctx.player.send(f'{self.lite.emoji["alert"]} A faixa **`{track}`** foi pulada pois '
-                'atingiu a quantia de votos necessários.')
+            await ctx.player.send(l(ctx, 'commands.skip.skipped') % (
+                self.lite.emoji["alert"], track))
 
             await ctx.player.stop()
 
-    @commands.command(name='forceskip', aliases=['fskip', 'pularagora'],
-        description='Força pular a música que estiver tocando.')
+    @commands.command(name='forceskip', aliases=['fskip', 'pularagora'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _force_skip(self, ctx):
         if not ctx.player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou'
-                ' tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
 
-        await ctx.player.send(f'{self.lite.emoji["alert"]} **{ctx.author.name}** pulou a faixa '
-            f'**`{ctx.player.current}`** a força.')
+        await ctx.player.send(l(ctx, 'commands.forceskip.skipped') % (
+            self.lite.emoji["alert"], ctx.author.name, ctx.player.current))
 
         await ctx.player.stop()
 
-    @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'],
-        description='Ativa e desativa o Modo Bass Boost (mais graves).')
+    @commands.command(name='bassboost', aliases=['bass', 'boost', 'bb'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bass_boost(self, ctx):
         if not ctx.player.current:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu não estou'
-                ' tocando nada no momento.')
+            return await ctx.send(l(ctx, 'errors.notPlaying') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         if ctx.player.bass_boost:
             await ctx.player.set_preq('flat')
-            await ctx.player.send(f'{self.lite.emoji["volume"]} **{ctx.author.name}** desativou o '
-                'modo **`BASS BOOST`**.')
+            await ctx.player.send(l(ctx, 'commands.bassboost.disabled') % (
+                self.lite.emoji["volume"], ctx.author.name))
         else:
             await ctx.player.set_preq('boost')
-            await ctx.player.send(f'{self.lite.emoji["volume"]} **{ctx.author.name}** ativou o '
-                'modo **`BASS BOOST`**. Sente o grave!')
+            await ctx.player.send(l(ctx, 'commands.bassboost.enabled') % (
+                self.lite.emoji["volume"], ctx.author.name))
 
         ctx.player.bass_boost = not ctx.player.bass_boost
 
-    @commands.command(name='queue', aliases=['q', 'fila', 'lista'], usage='[Página]',
-        description='Lista todas as faixas da fila de reprodução.')
+    @commands.command(name='queue', aliases=['q', 'fila', 'lista'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _queue(self, ctx, page: int = 1):
         player = self.get_player(ctx.guild.id)
         if not player.queue:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
-                'reprodução está vazia.')
+            return await ctx.send(l(ctx, 'errors.emptyQueue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         length = get_length(sum(track.length for track in player.queue), True)
 
@@ -354,13 +342,16 @@ class Music(commands.Cog, name='Música'):
         current = player.current
         tracks = player.queue[skip:skip+12]
 
-        txt = f'Tocando Agora: [**{current}**]({current.uri}) `[{get_length(current.length)}]` - {current.requester.mention}\n\n'
+        txt = l(ctx, 'commands.queue.currentTrack') % (current, current.uri,
+            get_length(current.length), current.requester.mention)
+
         for i, track in enumerate(tracks, skip+1):
-            txt += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]` - {track.requester.mention}\n'
+            txt += l(ctx, 'commands.queue.track') % (i, track, track.uri,
+                get_length(track.length), track.requester.mention)
 
         em = discord.Embed(
             colour=self.lite.color[1],
-            title='Fila de Reprodução',
+            title=l(ctx, 'commands.queue.name'),
             description=txt
         ).set_author(
             name=ctx.guild.name,
@@ -368,24 +359,23 @@ class Music(commands.Cog, name='Música'):
         ).set_thumbnail(
             url=ctx.me.avatar_url
         ).set_footer(
-            text=f'Duração: {length} | Página {page}/{pages}'
+            text=l(ctx, 'commands.queue.details') % (length, page, pages)
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='reverse', aliases=['rev', 'inverter'],
-        description='Inverte as faixas da fila de reprodução.')
+    @commands.command(name='reverse', aliases=['rev', 'inverter'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _reverse(self, ctx):
         if not ctx.player.queue:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, a fila de '
-                'reprodução está vazia.')
+            return await ctx.send(l(ctx, 'errors.emptyQueue') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         ctx.player.queue.reverse()
-        await ctx.player.send(f'{self.lite.emoji["shuffle"]} **{ctx.author.name}**, você inverteu'
-            ' a fila de reprodução.')
+        await ctx.player.send(l(ctx, 'commands.reverse.success') % (
+                self.lite.emoji["shuffle"], ctx.author.name))
 
 def setup(lite):
     lite.add_cog(Music(lite))

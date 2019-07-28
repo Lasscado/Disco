@@ -92,6 +92,8 @@ class DiscoLite(AutoShardedBot):
             and not ctx.author.guild_permissions.manage_guild):
             return
 
+        ctx.locale = options['locale']
+
         try:
             await self.invoke(ctx)
         except Exception as e:

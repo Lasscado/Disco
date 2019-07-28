@@ -1,13 +1,17 @@
 from discord.ext import commands
+from os import listdir
+from utils import l
 
 import discord
+import re
+
+LOCALE = re.compile('[a-z]{2}-[A-Z]{2}$')
 
 class Admin(commands.Cog):
     def __init__(self, lite):
         self.lite = lite
 
-    @commands.command(name='djrole', aliases=['djr'], usage='<@Menção|Nome|ID>',
-        description='Define o cargo DJ no servidor.')
+    @commands.command(name='djrole', aliases=['djr'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _dj_role(self, ctx, *, role: discord.Role = None):
@@ -16,15 +20,14 @@ class Admin(commands.Cog):
                 raise commands.UserInputError()
 
             ctx._guild.update({"options.djRole": None})
-            return await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você resetou'
-                ' o **`Cargo DJ`** desse servidor.')
+            return await ctx.send(l(ctx, 'commands.djrole.reset') % (
+                self.lite.emoji["true"], ctx.author.name))
 
         ctx._guild.update({"options.djRole": role.id})
-        await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você definiu o cargo **'
-            f'`{role}`** como `Cargo DJ`.')
+        await ctx.send(l(ctx, 'commands.djrole.update') % (
+                self.lite.emoji["true"], ctx.author.name, role))
 
-    @commands.command(name='disablechannel', aliases=['dchannel'], usage='<#Menção|Nome|ID>',
-        description='Desativa ou ativa um canal em que o Bot possa ser usado.')
+    @commands.command(name='disablechannel', aliases=['dchannel'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _disable_channel(self, ctx, *, channel: discord.TextChannel = None):
@@ -33,52 +36,48 @@ class Admin(commands.Cog):
 
         if channel.id in ctx._guild.data['options']['disabledChannels']:
             ctx._guild.remove({"options.disabledChannels": channel.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me permitiu ser '
-                f'usado no canal {channel.mention}.')
+            await ctx.send(l(ctx, 'commands.disablechannel.allow') % (
+                self.lite.emoji["true"], ctx.author.name, channel.mention))
         else:
             ctx._guild.insert({"options.disabledChannels": channel.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me proibiu de '
-                f'ser usado no canal {channel.mention}.')
+            await ctx.send(l(ctx, 'commands.disablechannel.disallow') % (
+                self.lite.emoji["true"], ctx.author.name, channel.mention))
 
-    @commands.command(name='disablerole', aliases=['drole'], usage='<@Menção|Nome|ID>',
-        description='Permite ou proíbe membros com um cargo específico de usarem o Bot.')
+    @commands.command(name='disablerole', aliases=['drole'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _disable_role(self, ctx, *, role: discord.Role):
         if role >= ctx.author.top_role:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você não '
-                'pode desativar um cargo que seja igual ou maior que o seu cargo mais alto.')
+            return await ctx.send(l(ctx, 'commands.disablerole.higherRole') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         if role.id in ctx._guild.data['options']['disabledRoles']:
             ctx._guild.remove({"options.disabledRoles": role.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me permitiu ser '
-                f'usado por membros com o cargo **`{role}`**.')
+            await ctx.send(l(ctx, 'commands.disablerole.enabled') % (
+                self.lite.emoji["true"], ctx.author.name, role))
         else:
             ctx._guild.insert({"options.disabledRoles": role.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me proibiu de '
-                f'ser usado por membros com o cargo **`{role}`**.')
+            await ctx.send(l(ctx, 'commands.disablerole.disabled') % (
+                self.lite.emoji["true"], ctx.author.name, role))
 
-    @commands.command(name='localban', aliases=['lban'], usage='<@Menção|Nome|ID>',
-        description='Permite ou proíbe um membro de usar o Bot nesse servidor.')
+    @commands.command(name='localban', aliases=['lban'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True, ban_members=True)
     async def _local_ban(self, ctx, *, member: discord.Member):
         if member.top_role >= ctx.author.top_role:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você não '
-                'pode fazer um banimento local em um membro que possua direitos equivalentes ou '
-                'maiores que o seu.')
+            return await ctx.send(l(ctx, 'commands.localban.higherMember') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         if member.id in ctx._guild.data['options']['bannedMembers']:
             ctx._guild.remove({"options.bannedMembers": member.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me permitiu ser '
-                f'usado pelo membro **`{member}`** nesse servidor.')
+            await ctx.send(l(ctx, 'commands.localban.unban') % (
+                self.lite.emoji["true"], ctx.author.name, member))
         else:
             ctx._guild.insert({"options.bannedMembers": member.id})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me proibiu de '
-                f'ser usado pelo membro **`{member}`** nesse servidor.')
+            await ctx.send(l(ctx, 'commands.localban.ban') % (
+                self.lite.emoji["true"], ctx.author.name, member))
 
-    @commands.command(name='disablecommand', aliases=['dcmd'], usage='<Nome>',
-        description='Permite ou proíbe que um comando específico seja usado nesse servidor.')
+    @commands.command(name='disablecommand', aliases=['dcmd'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True, ban_members=True)
     async def _disable_command(self, ctx, command):
@@ -87,20 +86,19 @@ class Admin(commands.Cog):
             raise commands.UserInputError()
 
         if command.cog_name in ['Admin', 'Owner']:
-            return await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você não '
-                'pode desativar esse comando.')
+            return await ctx.send(l(ctx, 'commands.disablecommand.cantDisable') % (
+                self.lite.emoji["false"], ctx.author.name))
 
         if command.name in ctx._guild.data['options']['disabledCommands']:
             ctx._guild.remove({"options.disabledCommands": command.name})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você permitiu o uso '
-                f'do comando **`{command}`** nesse servidor.')
+            await ctx.send(l(ctx, 'commands.disablecommand.enabled') % (
+                self.lite.emoji["true"], ctx.author.name, command))
         else:
             ctx._guild.insert({"options.disabledCommands": command.name})
-            await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você proibiu o uso '
-                f'do comando **`{command}`** nesse servidor.')
+            await ctx.send(l(ctx, 'commands.disablecommand.disabled') % (
+                self.lite.emoji["true"], ctx.author.name, command))
 
-    @commands.command(name='botchannel', aliases=['bch', 'botch'], usage='<#Menção|Nome|ID>',
-        description='Restringe o uso do Bot a apenas um canal específico.')
+    @commands.command(name='botchannel', aliases=['bch', 'botch'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _bot_channel(self, ctx, *, channel: discord.TextChannel = None):
@@ -109,12 +107,28 @@ class Admin(commands.Cog):
                 raise commands.UserInputError()
 
             ctx._guild.update({"options.botChannel": None})
-            return await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você resetou'
-                ' o **`Canal do Bot`** nesse servidor.')
+            return await ctx.send(l(ctx, 'commands.botchannel.reset') % (
+                self.lite.emoji["true"], ctx.author.name))
 
         ctx._guild.update({"options.botChannel": channel.id})
-        await ctx.send(f'{self.lite.emoji["true"]} **{ctx.author.name}**, você me restringiu para '
-            f'ser usado apenas no canal {channel.mention}.')
+        await ctx.send(l(ctx, 'commands.botchannel.set') % (
+            self.lite.emoji["true"], ctx.author.name, channel.mention))
+
+    @commands.command(name='language', aliases=['locale', 'lang', 'idioma', 'linguagem'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _language(self, ctx, locale = None):
+        locales = [l for l in listdir('./locales') if LOCALE.match(l)]
+
+        if not locale or locale not in locales:
+            available = ', '.join([f"**`{l}`**" for l in listdir('./locales')])
+
+            return await ctx.send(l(ctx, 'commands.language.invalid') % (self.lite.emoji["false"],
+                ctx.author.name, available))
+
+        ctx._guild.update({"options.locale": locale})
+        await ctx.send(l(locale, 'commands.language.success') % (self.lite.emoji["true"],
+            ctx.author.name, locale))
 
 def setup(lite):
     lite.add_cog(Admin(lite))

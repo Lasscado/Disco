@@ -1,7 +1,7 @@
 from discord.ext import commands
 from discord.ext.commands.errors import *
 from datetime import datetime
-from utils import MusicError
+from utils import MusicError, l
 from os import environ
 
 import discord
@@ -95,30 +95,30 @@ class Events(commands.Cog):
 
         elif isinstance(e, CommandOnCooldown):
             _, s = divmod(e.retry_after, 60)
-            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, aguarde **`{int(s)}`**'
-                ' segundo(s) para poder usar esse comando novamente.', delete_after=s+6)
+            await ctx.send(l(ctx, 'errors.onCooldown') % (self.lite.emoji["false"],
+                ctx.author.name, int(s)), delete_after=s+6)
 
         elif isinstance(e, MissingRole):
-            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa do '
-                f'cargo **`{e.missing_role[0] or "DJ"}`** para poder usar esse comando.')
+            await ctx.send(l(ctx, 'errors.missingRole') % (self.lite.emoji["false"],
+                ctx.author.name, e.missing_role[0] or "DJ"))
 
         elif isinstance(e, (ConversionError, UserInputError)):
             if ctx.prefix == f'<@{ctx.me.id}> ':
                 ctx.prefix = f'@{ctx.me.name} '
 
-            await ctx.send(f'{self.lite.emoji["false"]} Parece que você usou o comando de forma '
-                f'errada, **{ctx.author.name}**.\n**Uso correto: '
-                f'`{ctx.prefix}{ctx.invoked_with} {ctx.command.usage}`**')
+            usage = l(ctx, f'commands.{ctx.command.name}.cmdUsage')
+            await ctx.send(l(ctx, 'errors.inputError') % (self.lite.emoji["false"],
+                ctx.author.name, f'{ctx.prefix}{ctx.invoked_with} {usage if usage else ""}'))
 
         elif isinstance(e, MissingPermissions):
-            perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{p.upper().replace("_", " ")}`**' for p in e.missing_perms])
-            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, você precisa das seguintes'
-                f' permissões para poder usar esse comando:\n\n{perms}')
+            perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
+            await ctx.send(l(ctx, 'errors.missingPermissions') % (self.lite.emoji["false"],
+                ctx.author.name, perms))
 
         elif isinstance(e, BotMissingPermissions):
-            perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{p.upper().replace("_", " ")}`**' for p in e.missing_perms])
-            await ctx.send(f'{self.lite.emoji["false"]} **{ctx.author.name}**, eu preciso das seguintes'
-                f' permissões para poder rodar esse comando:\n\n{perms}')
+            perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
+            await ctx.send(l(ctx, 'errors.botMissingPermissions') % (self.lite.emoji["false"],
+                ctx.author.name, perms))
 
         else:
             em = discord.Embed(

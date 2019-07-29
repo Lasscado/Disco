@@ -8,7 +8,7 @@ from asyncio import TimeoutError as Timeout
 
 import discord
 
-class Music(commands.Cog, name='Música'):
+class Music(commands.Cog):
     def __init__(self, lite):
         self.lite = lite
         self.waiting = set()

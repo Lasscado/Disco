@@ -7,7 +7,7 @@ import discord
 
 TRANSPARENT = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
 
-class Info(commands.Cog, name='Informações'):
+class Information(commands.Cog):
     def __init__(self, lite):
         self.lite = lite
 
@@ -69,7 +69,8 @@ class Info(commands.Cog, name='Informações'):
             value = ', '.join([f'`{c}`' for c in cmds])
 
             if value:
-                em.add_field(name=l(ctx, 'commands.help.categoryCommands') % (name, len(cmds)),
+                em.add_field(name=l(ctx, 'commands.help.categoryCommands') % (
+                    l(ctx, f'categories.{name.lower()}'), len(cmds)),
                     value=value)
 
         em.add_field(
@@ -148,4 +149,4 @@ class Info(commands.Cog, name='Informações'):
         await ctx.send(f'{self.lite.emoji["wireless"]} **Ping**: **`{ping}ms`**')
 
 def setup(lite):
-    lite.add_cog(Info(lite))
+    lite.add_cog(Information(lite))

@@ -55,8 +55,6 @@ class DiscoLite(AutoShardedBot):
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
 
-            self.get_command('play')._before_invoke = checks.before_play
-
             log.info('Fim de carregamento dos plugins.')
 
             for ban in self._bans.find(ignore=False):

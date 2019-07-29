@@ -29,7 +29,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='disablechannel', aliases=['dchannel'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_guild=True, manage_channels=True)
     async def _disable_channel(self, ctx, *, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
@@ -45,7 +45,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='disablerole', aliases=['drole'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_guild=True, manage_roles=True)
     async def _disable_role(self, ctx, *, role: discord.Role):
         if role >= ctx.author.top_role:
             return await ctx.send(l(ctx, 'commands.disablerole.higherRole') % (
@@ -79,7 +79,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='disablecommand', aliases=['dcmd'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
-    @commands.has_permissions(manage_guild=True, ban_members=True)
+    @commands.has_permissions(manage_guild=True)
     async def _disable_command(self, ctx, command):
         command = self.lite.get_command(command)
         if not command:
@@ -100,7 +100,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='botchannel', aliases=['bch', 'botch'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_guild=True, manage_channels=True)
     async def _bot_channel(self, ctx, *, channel: discord.TextChannel = None):
         if not channel:
             if not ctx._guild.data['options']['botChannel']:

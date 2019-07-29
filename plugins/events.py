@@ -18,7 +18,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        self.lite._guilds.get(guild.id)
+        g = self.lite._guilds.get(guild.id)
+        if not guild.region.name == 'brazil':
+            g.update({"options.locale": "en-US"})
 
         humans = 0;bots = 0
         for member in guild.members:
@@ -54,7 +56,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        self.lite._guilds.get(guild.id)
+        self.lite._guilds.get(guild.id).delete()
 
         humans = 0;bots = 0
         for member in guild.members:

@@ -41,7 +41,8 @@ class Info(commands.Cog, name='Informações'):
             ).add_field(
                 name=l(ctx, 'commands.help.aliases'),
                 value=', '.join([f'`{a}`' for a in cmd.aliases]) \
-                    or l(ctx, 'commands.help.notDefined')
+                    or l(ctx, 'commands.help.notDefined'),
+                inline=False
             )
 
             return await ctx.send(content=ctx.author.mention, embed=em)

@@ -1,5 +1,5 @@
 from discord.ext import commands
-from utils import MusicError, web_url, get_length, checks, l
+from utils import web_url, get_length, checks, l
 from models import DiscoPlayer, DiscoTrack
 from os import environ
 from random import shuffle
@@ -43,6 +43,7 @@ class Music(commands.Cog, name='Música'):
                 track, get_length(track.length), track.requester.name))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
+    @checks.ensure_voice_connection()
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
@@ -124,8 +125,8 @@ class Music(commands.Cog, name='Música'):
 
     @commands.command(name='shuffle', aliases=['misturar'])
     @checks.staffer_or_dj_role()
-    @commands.cooldown(1, 8, commands.BucketType.user)
     @checks.is_voice_connected()
+    @commands.cooldown(1, 8, commands.BucketType.user)
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
         await ctx.player.send(l(ctx, 'commands.shuffle.shuffled') % (

@@ -97,30 +97,31 @@ class Events(commands.Cog):
 
         elif isinstance(e, CommandOnCooldown):
             _, s = divmod(e.retry_after, 60)
-            await ctx.send(l(ctx, 'errors.onCooldown') % (self.lite.emoji["false"],
-                ctx.author.name, int(s)), delete_after=s+6)
+            await ctx.send(l(ctx, 'errors.onCooldown', {"emoji": self.lite.emoji["false"],
+                "author": ctx.author.name, "cooldown": int(s)}), delete_after=s+6)
 
         elif isinstance(e, MissingRole):
-            await ctx.send(l(ctx, 'errors.missingRole') % (self.lite.emoji["false"],
-                ctx.author.name, e.missing_role[0] or "DJ"))
+            await ctx.send(l(ctx, 'errors.missingRole', {"emoji": self.lite.emoji["false"],
+                "role": e.missing_role[0] or "DJ", "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
             if ctx.prefix == f'<@{ctx.me.id}> ':
                 ctx.prefix = f'@{ctx.me.name} '
 
             usage = l(ctx, f'commands.{ctx.command.name}.cmdUsage')
-            await ctx.send(l(ctx, 'errors.inputError') % (self.lite.emoji["false"],
-                ctx.author.name, f'{ctx.prefix}{ctx.invoked_with} {usage if usage else ""}'))
+            await ctx.send(l(ctx, 'errors.inputError', {"emoji": self.lite.emoji["false"],
+                "usage": f'{ctx.prefix}{ctx.invoked_with} {usage if usage else ""}',
+                "author": ctx.author.name}))
 
         elif isinstance(e, MissingPermissions):
             perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
-            await ctx.send(l(ctx, 'errors.missingPermissions') % (self.lite.emoji["false"],
-                ctx.author.name, perms))
+            await ctx.send(l(ctx, 'errors.missingPermissions', {"emoji": self.lite.emoji["false"],
+                "permissions": perms, "author": ctx.author.name}))
 
         elif isinstance(e, BotMissingPermissions):
             perms = '\n'.join([f'{self.lite.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
-            await ctx.send(l(ctx, 'errors.botMissingPermissions') % (self.lite.emoji["false"],
-                ctx.author.name, perms))
+            await ctx.send(l(ctx, 'errors.botMissingPermissions', {"emoji": self.lite.emoji["false"],
+                "permissions": perms, "author": ctx.author.name}))
 
         else:
             em = discord.Embed(

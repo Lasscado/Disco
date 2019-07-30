@@ -45,8 +45,8 @@ class Tasks(commands.Cog):
         except KeyError:
             pass
 
-        await player.send(l(self.lite._guilds.get(guild.id).data['options']['language'],
-            'events.disconnectPlayer') % self.lite.emoji["alert"])
+        await player.send(l(player.locale, 'events.disconnectPlayer', {
+            "emoji": self.lite.emoji["alert"]}))
 
     @staticmethod
     def has_listeners(guild):

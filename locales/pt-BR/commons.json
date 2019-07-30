@@ -1,4 +1,4 @@
 {
-    "createdBy": "Criado por %s",
+    "createdBy": "Criado por {creator}",
     "exit": "sair"
 }

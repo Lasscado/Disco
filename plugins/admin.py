@@ -20,12 +20,12 @@ class Admin(commands.Cog):
                 raise commands.UserInputError()
 
             ctx._guild.update({"options.djRole": None})
-            return await ctx.send(l(ctx, 'commands.djrole.reset') % (
-                self.lite.emoji["true"], ctx.author.name))
+            return await ctx.send(l(ctx, 'commands.djrole.reset', {"author": ctx.author.name,
+                "emoji": self.lite.emoji["true"]}))
 
         ctx._guild.update({"options.djRole": role.id})
-        await ctx.send(l(ctx, 'commands.djrole.update') % (
-                self.lite.emoji["true"], ctx.author.name, role))
+        await ctx.send(l(ctx, 'commands.djrole.update', {"author": ctx.author.name,
+                "emoji": self.lite.emoji["true"], "role": role}))
 
     @commands.command(name='disablechannel', aliases=['dchannel'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
@@ -36,46 +36,46 @@ class Admin(commands.Cog):
 
         if channel.id in ctx._guild.data['options']['disabledChannels']:
             ctx._guild.remove({"options.disabledChannels": channel.id})
-            await ctx.send(l(ctx, 'commands.disablechannel.allow') % (
-                self.lite.emoji["true"], ctx.author.name, channel.mention))
+            await ctx.send(l(ctx, 'commands.disablechannel.allow', {"author": ctx.author.name,
+                "emoji": self.lite.emoji["true"], "channel": channel.mention}))
         else:
             ctx._guild.insert({"options.disabledChannels": channel.id})
-            await ctx.send(l(ctx, 'commands.disablechannel.disallow') % (
-                self.lite.emoji["true"], ctx.author.name, channel.mention))
+            await ctx.send(l(ctx, 'commands.disablechannel.disallow', {"author": ctx.author.name,
+                "emoji": self.lite.emoji["true"], "channel": channel.mention}))
 
     @commands.command(name='disablerole', aliases=['drole'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True, manage_roles=True)
     async def _disable_role(self, ctx, *, role: discord.Role):
         if role >= ctx.author.top_role:
-            return await ctx.send(l(ctx, 'commands.disablerole.higherRole') % (
-                self.lite.emoji["false"], ctx.author.name))
+            return await ctx.send(l(ctx, 'commands.disablerole.higherRole', {
+                "author": ctx.author.name, "emoji": self.lite.emoji["false"]}))
 
         if role.id in ctx._guild.data['options']['disabledRoles']:
             ctx._guild.remove({"options.disabledRoles": role.id})
-            await ctx.send(l(ctx, 'commands.disablerole.enabled') % (
-                self.lite.emoji["true"], ctx.author.name, role))
+            await ctx.send(l(ctx, 'commands.disablerole.enabled', {"role": role,
+                "emoji": self.lite.emoji["true"], "author": ctx.author.name}))
         else:
             ctx._guild.insert({"options.disabledRoles": role.id})
-            await ctx.send(l(ctx, 'commands.disablerole.disabled') % (
-                self.lite.emoji["true"], ctx.author.name, role))
+            await ctx.send(l(ctx, 'commands.disablerole.disabled', {"role": role,
+                "emoji": self.lite.emoji["true"], "author": ctx.author.name}))
 
     @commands.command(name='localban', aliases=['lban'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True, ban_members=True)
     async def _local_ban(self, ctx, *, member: discord.Member):
         if member.top_role >= ctx.author.top_role:
-            return await ctx.send(l(ctx, 'commands.localban.higherMember') % (
-                self.lite.emoji["false"], ctx.author.name))
+            return await ctx.send(l(ctx, 'commands.localban.higherMember', {
+                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
 
         if member.id in ctx._guild.data['options']['bannedMembers']:
             ctx._guild.remove({"options.bannedMembers": member.id})
-            await ctx.send(l(ctx, 'commands.localban.unban') % (
-                self.lite.emoji["true"], ctx.author.name, member))
+            await ctx.send(l(ctx, 'commands.localban.unban', {"emoji": self.lite.emoji["true"],
+                "author": ctx.author.name, "member": member}))
         else:
             ctx._guild.insert({"options.bannedMembers": member.id})
-            await ctx.send(l(ctx, 'commands.localban.ban') % (
-                self.lite.emoji["true"], ctx.author.name, member))
+            await ctx.send(l(ctx, 'commands.localban.ban', {"emoji": self.lite.emoji["true"],
+                "author": ctx.author.name, "member": member}))
 
     @commands.command(name='disablecommand', aliases=['dcmd'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
@@ -86,17 +86,17 @@ class Admin(commands.Cog):
             raise commands.UserInputError()
 
         if command.cog_name in ['Admin', 'Owner']:
-            return await ctx.send(l(ctx, 'commands.disablecommand.cantDisable') % (
-                self.lite.emoji["false"], ctx.author.name))
+            return await ctx.send(l(ctx, 'commands.disablecommand.cantDisable', {
+                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
 
         if command.name in ctx._guild.data['options']['disabledCommands']:
             ctx._guild.remove({"options.disabledCommands": command.name})
-            await ctx.send(l(ctx, 'commands.disablecommand.enabled') % (
-                self.lite.emoji["true"], ctx.author.name, command))
+            await ctx.send(l(ctx, 'commands.disablecommand.enabled', {"command": command.name, 
+                "emoji": self.lite.emoji["true"], "author": ctx.author.name}))
         else:
             ctx._guild.insert({"options.disabledCommands": command.name})
-            await ctx.send(l(ctx, 'commands.disablecommand.disabled') % (
-                self.lite.emoji["true"], ctx.author.name, command))
+            await ctx.send(l(ctx, 'commands.disablecommand.disabled', {"command": command.name, 
+                "emoji": self.lite.emoji["true"], "author": ctx.author.name}))
 
     @commands.command(name='botchannel', aliases=['bch', 'botch'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
@@ -107,12 +107,12 @@ class Admin(commands.Cog):
                 raise commands.UserInputError()
 
             ctx._guild.update({"options.botChannel": None})
-            return await ctx.send(l(ctx, 'commands.botchannel.reset') % (
-                self.lite.emoji["true"], ctx.author.name))
+            return await ctx.send(l(ctx, 'commands.botchannel.reset', {"author": ctx.author.name, 
+                "emoji": self.lite.emoji["true"]}))
 
         ctx._guild.update({"options.botChannel": channel.id})
-        await ctx.send(l(ctx, 'commands.botchannel.set') % (
-            self.lite.emoji["true"], ctx.author.name, channel.mention))
+        await ctx.send(l(ctx, 'commands.botchannel.set', {"author": ctx.author.name, 
+                "emoji": self.lite.emoji["true"], "channel": channel.mention}))
 
     @commands.command(name='language', aliases=['locale', 'lang', 'idioma', 'linguagem'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
@@ -123,12 +123,12 @@ class Admin(commands.Cog):
         if not locale or locale not in locales:
             available = ', '.join([f"**`{l}`**" for l in listdir('./locales')])
 
-            return await ctx.send(l(ctx, 'commands.language.invalid') % (self.lite.emoji["false"],
-                ctx.author.name, available))
+            return await ctx.send(l(ctx, 'commands.language.invalid', {"available": available,
+                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
 
         ctx._guild.update({"options.locale": locale})
-        await ctx.send(l(locale, 'commands.language.success') % (self.lite.emoji["true"],
-            ctx.author.name, locale))
+        await ctx.send(l(ctx, 'commands.language.success', {"locale": locale,
+                "emoji": self.lite.emoji["true"], "author": ctx.author.name}))
 
 def setup(lite):
     lite.add_cog(Admin(lite))

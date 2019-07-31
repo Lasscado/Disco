@@ -1,7 +1,7 @@
 {
     "invite": {
         "cmdDescription": "Envia o link de convite para adicionar o Bot.",
-        "text": "[Clique aqui para adicionar o **Disco Lite** em seu servidor]({link})"
+        "text": "[Clique aqui para adicionar o **Disco** em seu servidor]({link})"
     },
     "botinfo": {
         "cmdDescription": "Mostra informações sobre o Bot.",

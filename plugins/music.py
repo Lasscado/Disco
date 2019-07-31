@@ -9,22 +9,22 @@ from asyncio import TimeoutError as Timeout
 import discord
 
 class Music(commands.Cog):
-    def __init__(self, lite):
-        self.lite = lite
+    def __init__(self, disco):
+        self.disco = disco
         self.waiting = set()
 
-        lite.loop.create_task(self.initiate_nodes())
+        disco.loop.create_task(self.initiate_nodes())
 
     def cog_unload(self):
-        for node in self.lite.wavelink.nodes.values():
-            self.lite.loop.create_task(node.destroy())
+        for node in self.disco.wavelink.nodes.values():
+            self.disco.loop.create_task(node.destroy())
 
     def get_player(self, guild_id: int):
-        return self.lite.wavelink.get_player(guild_id, cls=DiscoPlayer)
+        return self.disco.wavelink.get_player(guild_id, cls=DiscoPlayer)
 
     async def initiate_nodes(self):
         for node in eval(environ['LAVALINK_NODES']):
-            (await self.lite.wavelink.initiate_node(**node)).set_hook(self.on_track_event)
+            (await self.disco.wavelink.initiate_node(**node)).set_hook(self.on_track_event)
 
     async def on_track_event(self, event):
         player = event.player
@@ -35,13 +35,13 @@ class Music(commands.Cog):
         else:
             player.current = None
             return await player.send(l(player, 'events.queueEnd', {
-                "emoji": self.lite.emoji["alert"]}))
+                "emoji": self.disco.emoji["alert"]}))
 
         await player.play(track)
 
         if not player.repeat:
             await player.send(l(player, 'events.trackStart', {"track": track,
-                "emoji": self.lite.emoji["download"], "length": get_length(track.length)}))
+                "emoji": self.disco.emoji["download"], "length": get_length(track.length)}))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
     @checks.ensure_voice_connection()
@@ -51,10 +51,10 @@ class Music(commands.Cog):
         if not web_url(query):
             query = f'ytsearch:{query}'
 
-        results = await self.lite.wavelink.get_tracks(query)
+        results = await self.disco.wavelink.get_tracks(query)
         if not results:
             return await ctx.send(l(ctx, 'commands.play.noResults', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         player = ctx.player
 
@@ -67,7 +67,7 @@ class Music(commands.Cog):
 
             name = results.data['playlistInfo']['name']
             await player.send(l(ctx, 'commands.play.playlistAdded', {"playlist": name,
-                "emoji": self.lite.emoji["plus"], "length": get_length(total_length),
+                "emoji": self.disco.emoji["plus"], "length": get_length(total_length),
                 "added": len(tracks)}))
         else:
             if len(results) == 1:
@@ -76,7 +76,7 @@ class Music(commands.Cog):
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
                 await player.send(l(ctx, 'commands.play.trackAdded', {"track": track,
-                    "emoji": self.lite.emoji["plus"], "length": get_length(track.length)}))
+                    "emoji": self.disco.emoji["plus"], "length": get_length(track.length)}))
             else:
                 self.waiting.add(ctx.author.id)
 
@@ -86,7 +86,7 @@ class Music(commands.Cog):
                     options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
 
                 em = discord.Embed(
-                    colour=self.lite.color[0],
+                    colour=self.disco.color[0],
                     title=l(ctx, 'commands.play.chooseOne'),
                     description=options
                 ).set_author(
@@ -102,7 +102,7 @@ class Music(commands.Cog):
                 cancel = l(ctx, 'commons.exit').lower()
 
                 try:
-                    a = await self.lite.wait_for('message', timeout=120,
+                    a = await self.disco.wait_for('message', timeout=120,
                         check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
                             and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
                             or c.content.lower() == cancel))
@@ -118,13 +118,13 @@ class Music(commands.Cog):
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
                 self.waiting.remove(ctx.author.id)
                 await q.edit(content=l(ctx, 'commands.play.trackAdded', {"track": track,
-                    "emoji": self.lite.emoji["plus"], "length": get_length(track.length)}),
+                    "emoji": self.disco.emoji["plus"], "length": get_length(track.length)}),
                     embed=None)
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
             await player.send(l(ctx, 'events.trackStart', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["download"], "track": player.current,
+                "emoji": self.disco.emoji["download"], "track": player.current,
                 "length": get_length(player.current.length)}))
 
     @commands.command(name='shuffle', aliases=['misturar'])
@@ -134,7 +134,7 @@ class Music(commands.Cog):
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
         await ctx.player.send(l(ctx, 'commands.shuffle.shuffled', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["shuffle"]}))
+            "emoji": self.disco.emoji["shuffle"]}))
 
     @commands.command(name='repeat', aliases=['loop', 'repetir'])
     @checks.staffer_or_dj_role()
@@ -143,16 +143,16 @@ class Music(commands.Cog):
     async def _repeat(self, ctx):
         if not ctx.player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.repeat:
             ctx.player.repeat = None
             await ctx.player.send(l(ctx, 'commands.repeat.disable', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["repeatOne"], "track": ctx.player.current}))
+                "emoji": self.disco.emoji["repeatOne"], "track": ctx.player.current}))
         else:
             ctx.player.repeat = ctx.player.current
             await ctx.player.send(l(ctx, 'commands.repeat.enable', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["repeatOne"], "track": ctx.player.current}))
+                "emoji": self.disco.emoji["repeatOne"], "track": ctx.player.current}))
 
     @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'])
     @checks.staffer_or_dj_role()
@@ -161,7 +161,7 @@ class Music(commands.Cog):
     async def _stop(self, ctx):
         await ctx.player.destroy()
         await ctx.player.send(l(ctx, 'commands.stop.stopped', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["true"], "channel": ctx.me.voice.channel}))
+            "emoji": self.disco.emoji["true"], "channel": ctx.me.voice.channel}))
 
     @commands.command(name='volume', aliases=['vol', 'v'])
     @checks.staffer_or_dj_role()
@@ -170,11 +170,11 @@ class Music(commands.Cog):
     async def _volume(self, ctx, vol: int):
         if not 0 < vol < 151:
             return await ctx.send(l(ctx, 'commands.volume.invalidValue', {
-                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         await ctx.player.set_volume(vol)
         await ctx.player.send(l(ctx, 'commands.volume.changed', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["volume"], "value": vol}))
+            "emoji": self.disco.emoji["volume"], "value": vol}))
 
     @commands.command(name='clear', aliases=['reset', 'limpar'])
     @checks.staffer_or_dj_role()
@@ -183,11 +183,11 @@ class Music(commands.Cog):
     async def _clear(self, ctx):
         if not ctx.player.queue:
             return await ctx.send(l(ctx, 'commands.clear.alreadyEmpty', {
-                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         ctx.player.queue.clear()
         await ctx.player.send(l(ctx, 'commands.clear.cleaned', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["alert"]}))
+            "emoji": self.disco.emoji["alert"]}))
 
     @commands.command(name='pause', aliases=['pausar'])
     @checks.staffer_or_dj_role()
@@ -196,14 +196,14 @@ class Music(commands.Cog):
     async def _pause(self, ctx):
         if not ctx.player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.paused:
             await ctx.player.send(l(ctx, 'commands.pause.unpause', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["pause"]}))
+                "emoji": self.disco.emoji["pause"]}))
         else:
             await ctx.player.send(l(ctx, 'commands.pause.pause', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["pause"]}))
+                "emoji": self.disco.emoji["pause"]}))
 
         await ctx.player.set_pause(not ctx.player.paused)
 
@@ -214,16 +214,16 @@ class Music(commands.Cog):
     async def _remove(self, ctx, index: int):
         if not ctx.player.queue:
             return await ctx.send(l(ctx, 'errors.emptyQueue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         try:
             track = ctx.player.queue.pop(index - 1)
         except IndexError:
             return await ctx.send(l(ctx, 'errors.invalidValue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         await ctx.send(l(ctx, 'commands.remove.removed', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["true"], "track": track}))
+                "emoji": self.disco.emoji["true"], "track": track}))
 
     @commands.command(name='playat', aliases=['pa', 'pularpara', 'skt', 'skipto'])
     @checks.staffer_or_dj_role()
@@ -233,14 +233,14 @@ class Music(commands.Cog):
         player = ctx.player
         if not player.queue:
             return await ctx.send(l(ctx, 'errors.emptyQueue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         try:
             player.queue = player.queue[index - 1:]
             track = player.queue.pop(0)
         except IndexError:
             return await ctx.send(l(ctx, 'errors.invalidValue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         player.queue.insert(0, track)
         await player.stop()
@@ -252,11 +252,11 @@ class Music(commands.Cog):
         player = self.get_player(ctx.guild.id)
         if not player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         track = player.current
         em = discord.Embed(
-            colour=self.lite.color[0],
+            colour=self.disco.color[0],
             description=l(ctx, 'commands.nowplaying.text', {"track": track,
                 "length": get_length(track.length)})
         )
@@ -269,26 +269,26 @@ class Music(commands.Cog):
     async def _skip(self, ctx):
         if not ctx.player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         track = ctx.player.current
         if track.requester.id == ctx.author.id:
             await ctx.player.send(l(ctx, 'commands.skip.skippedByRequester', {"track": track,
-                "emoji": self.lite.emoji["alert"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["alert"], "author": ctx.author.name}))
 
             return await ctx.player.stop()
 
         elif ctx.author.id in track.skip_votes:
             return await ctx.send(l(ctx, 'commands.skip.alreadyVotted', {
-                "emoji": self.lite.emoji["false"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         track.skip_votes.add(ctx.author.id)
         await ctx.player.send(l(ctx, 'commands.skip.voteAdded', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["alert"], "votes": len(track.skip_votes)}))
+            "emoji": self.disco.emoji["alert"], "votes": len(track.skip_votes)}))
 
         if len(track.skip_votes) == 3:
             await ctx.player.send(l(ctx, 'commands.skip.skipped', {"track": track,
-                "emoji": self.lite.emoji["alert"]}))
+                "emoji": self.disco.emoji["alert"]}))
 
             await ctx.player.stop()
 
@@ -299,10 +299,10 @@ class Music(commands.Cog):
     async def _force_skip(self, ctx):
         if not ctx.player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         await ctx.player.send(l(ctx, 'commands.forceskip.skipped', {"track": ctx.player.current,
-            "emoji": self.lite.emoji["alert"], "author": ctx.author.name}))
+            "emoji": self.disco.emoji["alert"], "author": ctx.author.name}))
 
         await ctx.player.stop()
 
@@ -313,16 +313,16 @@ class Music(commands.Cog):
     async def _bass_boost(self, ctx):
         if not ctx.player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.bass_boost:
             await ctx.player.set_preq('flat')
             await ctx.player.send(l(ctx, 'commands.bassboost.disabled', {
-                "emoji": self.lite.emoji["volume"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
         else:
             await ctx.player.set_preq('boost')
             await ctx.player.send(l(ctx, 'commands.bassboost.enabled', {
-                "emoji": self.lite.emoji["volume"], "author": ctx.author.name}))
+                "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
 
         ctx.player.bass_boost = not ctx.player.bass_boost
 
@@ -333,7 +333,7 @@ class Music(commands.Cog):
         player = self.get_player(ctx.guild.id)
         if not player.queue:
             return await ctx.send(l(ctx, 'errors.emptyQueue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         length = get_length(sum(track.length for track in player.queue), True)
 
@@ -352,7 +352,7 @@ class Music(commands.Cog):
             txt += f'**`»`** `{i}` [**{t}**]({t.uri}) `[{get_length(t.length)}]` - {t.requester.mention}\n'
 
         em = discord.Embed(
-            colour=self.lite.color[1],
+            colour=self.disco.color[1],
             title=l(ctx, 'commands.queue.name'),
             description=txt
         ).set_author(
@@ -374,11 +374,11 @@ class Music(commands.Cog):
     async def _reverse(self, ctx):
         if not ctx.player.queue:
             return await ctx.send(l(ctx, 'errors.emptyQueue', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["false"]}))
+                "emoji": self.disco.emoji["false"]}))
 
         ctx.player.queue.reverse()
         await ctx.player.send(l(ctx, 'commands.reverse.success', {"author": ctx.author.name,
-                "emoji": self.lite.emoji["shuffle"]}))
+                "emoji": self.disco.emoji["shuffle"]}))
 
-def setup(lite):
-    lite.add_cog(Music(lite))
+def setup(disco):
+    disco.add_cog(Music(disco))

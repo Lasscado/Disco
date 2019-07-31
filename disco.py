@@ -8,9 +8,9 @@ from database import BanManager, GuildManager, db
 import logging
 import wavelink
 
-log = logging.getLogger('lite')
+log = logging.getLogger('disco')
 
-class DiscoLite(AutoShardedBot):
+class Disco(AutoShardedBot):
     def __init__(self):
         prefixes = environ['PREFIXES'].split(', ')
         super().__init__(

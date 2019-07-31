@@ -159,11 +159,9 @@ class Music(commands.Cog):
     @checks.is_voice_connected()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _stop(self, ctx):
-        vc = ctx.me.voice.channel
-        await ctx.player.disconnect()
         await ctx.player.destroy()
         await ctx.player.send(l(ctx, 'commands.stop.stopped', {"author": ctx.author.name,
-            "emoji": self.lite.emoji["true"], "channel": vc}))
+            "emoji": self.lite.emoji["true"], "channel": ctx.me.voice.channel}))
 
     @commands.command(name='volume', aliases=['vol', 'v'])
     @checks.staffer_or_dj_role()

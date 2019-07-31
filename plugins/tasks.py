@@ -31,20 +31,22 @@ class Tasks(commands.Cog):
     async def _disconnect_player(self, player):
         await sleep(60)
 
+        try:
+            player = self.lite.wavelink.players[player.guild_id]
+        except KeyError:
+            return
+
         guild = self.lite.get_guild(player.guild_id)
         if not guild or not guild.me.voice:
-            return await player.destroy()
+            await player.node._send(op='destroy', guildId=str(player.guild_id))
+            del player.node.players[player.guild_id]
+            return
         elif ((player.current or player.queue) and self.has_listeners(guild)):
             return
 
         self.lite.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
 
-        try:
-            await player.disconnect()
-            await player.destroy()
-        except KeyError:
-            pass
-
+        await player.destroy()
         await player.send(l(player.locale, 'events.disconnectPlayer', {
             "emoji": self.lite.emoji["alert"]}))
 

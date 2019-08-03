@@ -91,11 +91,11 @@ class Admin(commands.Cog):
 
         if command.name in ctx._guild.data['options']['disabledCommands']:
             ctx._guild.remove({"options.disabledCommands": command.name})
-            await ctx.send(l(ctx, 'commands.disablecommand.enabled', {"command": command.name, 
+            await ctx.send(l(ctx, 'commands.disablecommand.enabled', {"command": command.name,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
         else:
             ctx._guild.insert({"options.disabledCommands": command.name})
-            await ctx.send(l(ctx, 'commands.disablecommand.disabled', {"command": command.name, 
+            await ctx.send(l(ctx, 'commands.disablecommand.disabled', {"command": command.name,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
 
     @commands.command(name='botchannel', aliases=['bch', 'botch'])
@@ -107,27 +107,27 @@ class Admin(commands.Cog):
                 raise commands.UserInputError()
 
             ctx._guild.update({"options.botChannel": None})
-            return await ctx.send(l(ctx, 'commands.botchannel.reset', {"author": ctx.author.name, 
+            return await ctx.send(l(ctx, 'commands.botchannel.reset', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["true"]}))
 
         ctx._guild.update({"options.botChannel": channel.id})
-        await ctx.send(l(ctx, 'commands.botchannel.set', {"author": ctx.author.name, 
+        await ctx.send(l(ctx, 'commands.botchannel.set', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["true"], "channel": channel.mention}))
 
-    @commands.command(name='language', aliases=['locale', 'lang', 'idioma', 'linguagem'])
+    @commands.command(name='locale', aliases=['language', 'lang', 'idioma', 'linguagem'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
-    async def _language(self, ctx, locale = None):
+    async def _locale(self, ctx, locale = None):
         locales = [l for l in listdir('./locales') if LOCALE.match(l)]
 
         if not locale or locale not in locales:
             available = ', '.join([f"**`{l}`**" for l in listdir('./locales')])
 
-            return await ctx.send(l(ctx, 'commands.language.invalid', {"available": available,
+            return await ctx.send(l(ctx, 'commands.locale.invalid', {"available": available,
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         ctx._guild.update({"options.locale": locale})
-        await ctx.send(l(ctx, 'commands.language.success', {"locale": locale,
+        await ctx.send(l(ctx, 'commands.locale.success', {"locale": locale,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
 
 def setup(disco):

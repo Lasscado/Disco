@@ -279,7 +279,7 @@ class Music(commands.Cog):
             return await ctx.player.stop()
 
         elif ctx.author.id in track.skip_votes:
-            return await ctx.send(l(ctx, 'commands.skip.alreadyVotted', {
+            return await ctx.send(l(ctx, 'commands.skip.alreadyVoted', {
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         track.skip_votes.add(ctx.author.id)

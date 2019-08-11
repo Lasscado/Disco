@@ -19,8 +19,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         g = self.disco._guilds.get(guild.id)
-        if not guild.region.name == 'brazil':
-            g.update({"options.locale": "en-US"})
+        #if guild.region.name != 'brazil':
+        #    g.update({"options.locale": "en-US"})
 
         humans = 0;bots = 0
         for member in guild.members:
@@ -122,6 +122,9 @@ class Events(commands.Cog):
             perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
             await ctx.send(l(ctx, 'errors.botMissingPermissions', {"emoji": self.disco.emoji["false"],
                 "permissions": perms, "author": ctx.author.name}))
+
+        elif ctx.command.name == 'play' and ctx.author.id in ctx.cog.waiting:
+            ctx.cog.waiting.remove(ctx.author.id)
 
         else:
             em = discord.Embed(

@@ -110,13 +110,15 @@ class Music(commands.Cog):
                     a = None
 
                 if not a or a.content.lower() == cancel:
-                    self.waiting.remove(ctx.author.id)
+                    if ctx.author.id in self.waiting:
+                        self.waiting.remove(ctx.author.id)
+
                     return await q.delete()
 
                 track = tracks[int(a.content) - 1]
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
-                self.waiting.remove(ctx.author.id)
+                if ctx.author.id in self.waiting: self.waiting.remove(ctx.author.id)
                 await q.edit(content=l(ctx, 'commands.play.trackAdded', {"track": track,
                     "emoji": self.disco.emoji["plus"], "length": get_length(track.length)}),
                     embed=None)

@@ -1,7 +1,6 @@
 from discord.ext import commands
 from humanize import naturalsize
-from utils import get_length
-from utils import l
+from utils import get_length, l
 
 import discord
 

@@ -3,11 +3,15 @@ from discord import Colour
 from utils import avatars, l
 from random import choice
 from asyncio import sleep
+from os import environ
 
 class Tasks(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
-        self._change_avatar.start()
+
+        if disco.user.id == environ['BOT_ID']:
+            self._change_avatar.start()
+
         self._disconnect_inactive_players.start()
 
     @tasks.loop(minutes=30)

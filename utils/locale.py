@@ -1,5 +1,4 @@
 from .data import locales
-from functools import reduce
 from os import environ
 
 fallback = environ['FALLBACK_LOCALE']

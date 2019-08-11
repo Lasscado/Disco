@@ -1,5 +1,5 @@
 from discord.ext.commands import AutoShardedBot, when_mentioned_or
-from utils import emojis, checks
+from utils import emojis
 from os import environ, listdir
 from datetime import datetime
 from discord import Game

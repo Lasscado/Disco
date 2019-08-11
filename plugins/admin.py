@@ -1,11 +1,8 @@
 from discord.ext import commands
 from os import listdir
-from utils import l
+from utils import LOCALE, l
 
 import discord
-import re
-
-LOCALE = re.compile('[a-z]{2}-[A-Z]{2}$')
 
 class Admin(commands.Cog):
     def __init__(self, disco):
@@ -114,7 +111,7 @@ class Admin(commands.Cog):
         await ctx.send(l(ctx, 'commands.botchannel.set', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["true"], "channel": channel.mention}))
 
-    @commands.command(name='locale', aliases=['language', 'lang', 'idioma', 'linguagem'])
+    @commands.command(name='locale', aliases=['locales', 'language', 'lang', 'idioma', 'linguagem'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
     async def _locale(self, ctx, locale = None):

@@ -127,7 +127,7 @@ class Events(commands.Cog):
         elif ctx.command.name == 'play' and ctx.author.id in ctx.cog.waiting:
             ctx.cog.waiting.remove(ctx.author.id)
 
-        else:
+        elif not isinstance(e, (discord.NotFound, discord.Forbidden)):
             em = discord.Embed(
                 colour=0xFF0000,
                 timestamp=ctx.message.created_at,

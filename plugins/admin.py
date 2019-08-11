@@ -118,13 +118,13 @@ class Admin(commands.Cog):
         locales = [l for l in listdir('./locales') if LOCALE.match(l)]
 
         if not locale or locale not in locales:
-            available = ', '.join([f"**`{l}`**" for l in listdir('./locales')])
+            available = ', '.join([f"**`{l}`**" for l in locales])
 
             return await ctx.send(l(ctx, 'commands.locale.invalid', {"available": available,
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         ctx._guild.update({"options.locale": locale})
-        await ctx.send(l(ctx, 'commands.locale.success', {"locale": locale,
+        await ctx.send(l(locale, 'commands.locale.success', {"locale": locale,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
 
 def setup(disco):

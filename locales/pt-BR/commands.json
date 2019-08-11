@@ -6,7 +6,7 @@
     "botinfo": {
         "cmdDescription": "Mostra informações sobre o Bot.",
         "statistics": "Estatísticas",
-        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**](https://patreon.com/discobot) | [**Votar**]({vote}) | [**GitHub**]({github})\n\u200b",
+        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\u200b",
         "generalInfoTitle": "**INFORMAÇÕES GERAIS**",
         "generalInfoDesc": "**Ping** `[Shard {shard}/{shards}]`: {ping}ms\n**Servidores**: {servers}\n**Membros**: {members}\n**Players**: {players}\n**Lavalink Nodes**: {nodes}\n**Comandos Executados**: {commands}\n\u200b",
         "nodeInfo": "**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {stats.playing_players}/{stats.players}\n**Memória Usada**: {memory}"
@@ -21,7 +21,7 @@
         "aliases": "Outros Nomes",
         "notSupplied": "Não fornecida.",
         "notDefined": "Não definidos.",
-        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**](https://patreon.com/discobot) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** `d!<comando>` | `li <comando>`\n\u200b",
+        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** `d!<comando>` | `li <comando>`\n\u200b",
         "categoryCommands": "**Comandos de {category}**: ({total})",
         "tip": "Digite **{command} <Comando>** para ver mais informações sobre um comando."
     },

@@ -52,8 +52,9 @@ class Information(commands.Cog):
             description=l(ctx, 'commands.help.links', {
                 "support": "https://discord.gg/qN5886E",
                 "invite": "https://discobot.site",
-                "vote": "https://botsparadiscord.xyz/bots/discodisco",
-                "github": "https://github.com/Naegin/DiscoLite"
+                "donate": "https://patreon.com/discobot",
+                "vote": "https://botsparadiscord.xyz/bots/discolite",
+                "github": "https://github.com/Naegin/Disco"
             })
         ).set_author(
             name=ctx.me.name,
@@ -93,8 +94,9 @@ class Information(commands.Cog):
             description=l(ctx, 'commands.botinfo.links', {
                 "support": "https://discord.gg/qN5886E",
                 "invite": "https://discobot.site",
-                "vote": "https://botsparadiscord.xyz/bots/discodisco",
-                "github": "https://github.com/Naegin/DiscoLite"
+                "donate": "https://patreon.com/discobot",
+                "vote": "https://botsparadiscord.xyz/bots/discolite",
+                "github": "https://github.com/Naegin/Disco"
             })
         ).set_author(
             name=ctx.me.name,

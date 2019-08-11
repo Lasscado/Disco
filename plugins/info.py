@@ -153,5 +153,11 @@ class Information(commands.Cog):
         ping = int(self.disco.shards[ctx.guild.shard_id].ws.latency * 1000)
         await ctx.send(f'{self.disco.emoji["wireless"]} **Ping**: **`{ping}ms`**')
 
+    @commands.command(name='donate', aliases=['donation', 'doar'])
+    @commands.cooldown(1, 6, commands.BucketType.user)
+    async def _donate(self, ctx):
+        await ctx.send(l(ctx, 'commands.donate.text', {"emoji": self.disco.emoji["featured"],
+            "link": "https://patreon.com/discobot"}))
+
 def setup(disco):
     disco.add_cog(Information(disco))

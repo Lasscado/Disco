@@ -19,8 +19,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         g = self.disco._guilds.get(guild.id)
-        #if guild.region.name != 'brazil':
-        #    g.update({"options.locale": "en-US"})
+        if guild.region.name != 'brazil':
+            g.update({"options.locale": "en-US"})
 
         humans = 0;bots = 0
         for member in guild.members:

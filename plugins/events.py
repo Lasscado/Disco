@@ -151,7 +151,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        if ctx.command.name != 'donate' and randint(1, 3) == 1:
+        if ctx.command.name != 'donate' and randint(1, 4) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {
                 "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
 

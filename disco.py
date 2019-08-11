@@ -3,7 +3,6 @@ from utils import emojis, l
 from os import environ, listdir
 from datetime import datetime
 from discord import Game
-from random import randint
 from database import BanManager, GuildManager, db
 
 import logging
@@ -92,10 +91,6 @@ class Disco(AutoShardedBot):
             return
 
         ctx.locale = options['locale']
-
-        if ctx.command.name != 'donate' and randint(1, 3) == 1:
-            await ctx.send(l(ctx.locale, 'commands.donate.text', {"emoji": self.emoji["featured"],
-                "link": "https://patreon.com/discobot"}))
 
         try:
             await self.invoke(ctx)

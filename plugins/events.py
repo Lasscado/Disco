@@ -1,6 +1,7 @@
 from discord.ext import commands
 from discord.ext.commands.errors import *
 from datetime import datetime
+from random import randint
 from utils import MusicError, l
 from os import environ
 
@@ -147,6 +148,12 @@ class Events(commands.Cog):
 
         self.disco.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
             f'em {ctx.guild} {ctx.guild.id}')
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        if ctx.command.name != 'donate' and randint(1, 3) == 1:
+            await ctx.send(l(ctx.locale, 'commands.donate.text', {
+                "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
 
 def setup(disco):
     disco.add_cog(Events(disco))

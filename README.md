@@ -12,7 +12,7 @@ Deseja que apenas certas pessoas possam usar os comandos mais "importantes" (che
 
 Por que você ainda está lendo essa mensagem chata? [**Adicione**](https://lite.discobot.site) o **Disco Lite** agora mesmo!
 
-[**SERVIDOR DE SUPORTE**](https://discord.gg/qN5886E) | [**VOTAR**](https://botsparadiscord.xyz/bots/discolite/votar)
+[**SERVIDOR DE SUPORTE**](https://discord.gg/qN5886E) | [**DOAR**](https://patreon.com/discobot) | [**VOTAR**](https://botsparadiscord.xyz/bots/discolite/votar)
 
 ## Disco Lite: Lista de Comandos
 

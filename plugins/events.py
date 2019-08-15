@@ -2,20 +2,54 @@ from discord.ext import commands
 from discord.ext.commands.errors import *
 from datetime import datetime
 from random import randint
-from utils import MusicError, l
+from utils import MusicError, PremiumFeature, PremiumLowLevel, l
 from os import environ
 
 import discord
+import re
+
+PREMIUM_LVL_ROLE = re.compile('^Level [1-9]{1,2}$')
 
 class Events(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self.support_guild = environ['SUPPORT_GUILD_ID']
 
         self.disco.loop.create_task(self._fetch_logs_channels())
 
     async def _fetch_logs_channels(self):
         self.guild_logs = await self.disco.fetch_channel(int(environ['GUILDS_CHANNEL_ID']))
         self.error_logs = await self.disco.fetch_channel(int(environ['ERRORS_CHANNEL_ID']))
+
+    @commands.Cog.listener()
+    async def on_member_leave(self, member):
+        if member.bot or member.guild.id != self.support_guild:
+            return
+
+        premium = member.guild.get_role(int(environ['PREMIUM_ROLE_ID']))
+        if premium in member.roles:
+            self.disco._users.get(member.id).update({
+                "premium.level": 0,
+                "premium.enabledAt": None,
+                "premium.expiresAt": None
+            })
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if after.bot or after.guild.id != self.support_guild:
+            return
+
+        premium = after.guild.get_role(int(environ['PREMIUM_ROLE_ID']))
+        if premium not in after.roles and premium in before.roles:
+            self.disco._users.get(after.id).update({
+                "premium.level": 0,
+                "premium.enabledAt": None,
+                "premium.expiresAt": None
+            })
+
+            level = discord.utils.find(lambda r: PREMIUM_LVL_ROLE.match(r.name), after.roles)
+            if level:
+                await after.remove_roles(level)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -96,6 +130,15 @@ class Events(commands.Cog):
         if isinstance(e, MusicError):
             await ctx.send(e)
 
+        elif isinstance(e, PremiumFeature):
+            await ctx.send(l(ctx, 'errors.premiumFeature', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
+
+        elif isinstance(e, PremiumLowLevel):
+            await ctx.send(l(ctx, 'errors.premiumLowLevel', {"author": ctx.author.name,
+                "level": ctx._author.data['premium']['level'], "required": e.required_level,
+                "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
+
         elif isinstance(e, CommandOnCooldown):
             _, s = divmod(e.retry_after, 60)
             await ctx.send(l(ctx, 'errors.onCooldown', {"emoji": self.disco.emoji["false"],
@@ -151,7 +194,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        if ctx.command.name != 'donate' and randint(1, 5) == 1:
+        if ctx.command.name != 'donate' and not ctx._author.data['premium']['level'] \
+            and randint(1, 5) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {
                 "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
 

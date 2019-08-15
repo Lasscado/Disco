@@ -9,7 +9,7 @@ class Tasks(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
 
-        if disco.user.id == environ['BOT_ID']:
+        if disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.start()
 
         self._disconnect_inactive_players.start()

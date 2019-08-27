@@ -18,7 +18,7 @@ class DiscoPlayer(Player):
     async def send(self, content=None, embed=None):
         try:
             m = await self.text_channel.send(content=content, embed=embed)
-        except Forbidden, NotFound:
+        except (Forbidden, NotFound):
             pass
         else:
             return m

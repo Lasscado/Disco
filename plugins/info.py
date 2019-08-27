@@ -121,7 +121,7 @@ class Information(commands.Cog):
                 "nodes": len(self.disco.wavelink.nodes),
                 "uptime": uptime,
                 "messages": f'{self.disco.read_messages:,}',
-                "commands": self.disco.invoked_commands
+                "commands": f'{self.disco.invoked_commands:,}'
             }),
             inline=False
         )

@@ -123,6 +123,7 @@ class Admin(commands.Cog):
             return await ctx.send(l(ctx, 'commands.locale.invalid', {"available": available,
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
+        ctx.locale = locale
         ctx._guild.update({"options.locale": locale})
         await ctx.send(l(locale, 'commands.locale.success', {"locale": locale,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))

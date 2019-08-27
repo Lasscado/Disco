@@ -111,19 +111,23 @@ class Information(commands.Cog):
             url=ctx.me.avatar_url
         ).add_field(
             name=l(ctx, 'commands.botinfo.generalInfoTitle'),
-            value=l(ctx, 'commands.botinfo.generalInfoDesc', {
+            value=l(ctx, 'commands.botinfo.generalInfoDescLeft', {
                 "shard": ctx.guild.shard_id+1,
                 "shards": len(self.disco.shards),
                 "ping": shard_ping,
                 "servers": len(self.disco.guilds),
                 "members": len(set(self.disco.get_all_members())),
                 "players": len(self.disco.wavelink.players),
-                "nodes": len(self.disco.wavelink.nodes),
+                "nodes": len(self.disco.wavelink.nodes)
+            })
+        ).add_field(
+            name='\u200b',
+            value=l(ctx, 'commands.botinfo.generalInfoDescRight', {
                 "uptime": uptime,
                 "messages": f'{self.disco.read_messages:,}',
-                "commands": f'{self.disco.invoked_commands:,}'
-            }),
-            inline=False
+                "commands": f'{self.disco.invoked_commands:,}',
+                "played": f'{self.disco.played_tracks:,}'
+            })
         )
 
         for identifier, node in self.disco.wavelink.nodes.items():

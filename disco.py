@@ -38,6 +38,7 @@ class Disco(AutoShardedBot):
         self.user_blacklist = set()
         self.invoked_commands = 0
         self.read_messages = 0
+        self.played_tracks = 0
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:

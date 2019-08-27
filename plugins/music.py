@@ -38,6 +38,7 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["alert"]}))
 
         await player.play(track)
+        self.disco.played_tracks += 1
 
         if not player.repeat:
             await player.send(l(player, 'events.trackStart', {"track": track,
@@ -128,6 +129,8 @@ class Music(commands.Cog):
             await player.send(l(ctx, 'events.trackStart', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["download"], "track": player.current,
                 "length": get_length(player.current.length)}))
+            
+            self.disco.played_tracks += 1
 
     @commands.command(name='shuffle', aliases=['misturar'])
     @checks.staffer_or_dj_role()

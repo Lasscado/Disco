@@ -116,6 +116,7 @@ class Information(commands.Cog):
                 "members": len(set(self.disco.get_all_members())),
                 "players": len(self.disco.wavelink.players),
                 "nodes": len(self.disco.wavelink.nodes),
+                "messages": f'{self.disco.read_messages:,}',
                 "commands": self.disco.invoked_commands
             }),
             inline=False

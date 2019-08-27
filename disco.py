@@ -37,6 +37,7 @@ class Disco(AutoShardedBot):
         self.guild_blacklist = set()
         self.user_blacklist = set()
         self.invoked_commands = 0
+        self.read_messages = 0
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:
@@ -70,6 +71,8 @@ class Disco(AutoShardedBot):
         log.info('Sente o GRAVE!')
 
     async def on_message(self, message):
+        self.read_messages += 1
+
         if (not self.loaded or not self.is_ready() or message.author.bot or not message.guild
             or not message.channel.permissions_for(message.guild.me).send_messages):
             return

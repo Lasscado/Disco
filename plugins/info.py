@@ -1,5 +1,6 @@
 from discord.ext import commands
 from humanize import naturalsize
+from datetime import datetime
 from utils import get_length, l
 
 import discord
@@ -87,6 +88,8 @@ class Information(commands.Cog):
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bot_info(self, ctx):
         shard_ping = int(self.disco.shards[ctx.guild.shard_id].ws.latency * 1000)
+        uptime = get_length((datetime.utcnow() - self.disco.started_at).total_seconds() * 1000,
+            True)
 
         em = discord.Embed(
             colour=self.disco.color[0],
@@ -116,6 +119,7 @@ class Information(commands.Cog):
                 "members": len(set(self.disco.get_all_members())),
                 "players": len(self.disco.wavelink.players),
                 "nodes": len(self.disco.wavelink.nodes),
+                "uptime": uptime,
                 "messages": f'{self.disco.read_messages:,}',
                 "commands": self.disco.invoked_commands
             }),

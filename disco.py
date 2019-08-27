@@ -32,7 +32,7 @@ class Disco(AutoShardedBot):
         self.color = [0xffff00, 0x03001b]
         self.loaded = False
         self.launched_shards = []
-        self.started = datetime.utcnow()
+        self.started_at = datetime.utcnow()
         self.wavelink = wavelink.Client(self)
         self.guild_blacklist = set()
         self.user_blacklist = set()

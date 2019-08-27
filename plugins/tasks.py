@@ -9,7 +9,7 @@ class Tasks(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
 
-        if disco.user.id == environ['BOT_ID']:
+        if disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.start()
 
         self._disconnect_inactive_players.start()
@@ -56,7 +56,7 @@ class Tasks(commands.Cog):
 
     @staticmethod
     def has_listeners(guild):
-        return any([m for m in guild.me.voice.channel.members if not m.bot and not m.voice.deaf and not m.voice.self_deaf])
+        return any(m for m in guild.me.voice.channel.members if not m.bot and not m.voice.deaf and not m.voice.self_deaf)
 
 def setup(disco):
     disco.add_cog(Tasks(disco))

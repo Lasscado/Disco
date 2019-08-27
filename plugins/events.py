@@ -127,7 +127,7 @@ class Events(commands.Cog):
         elif ctx.command.name == 'play' and ctx.author.id in ctx.cog.waiting:
             ctx.cog.waiting.remove(ctx.author.id)
 
-        elif not isinstance(e, (discord.NotFound, discord.Forbidden)):
+        else:
             em = discord.Embed(
                 colour=0xFF0000,
                 timestamp=ctx.message.created_at,
@@ -151,7 +151,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        if ctx.command.name != 'donate' and randint(1, 5) == 1:
+        if ctx.command.name != 'donate' and randint(1, 7) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {
                 "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
 

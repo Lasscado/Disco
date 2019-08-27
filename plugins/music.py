@@ -339,13 +339,14 @@ class Music(commands.Cog):
 
         length = get_length(sum(track.length for track in player.queue), True)
 
-        pages = ceil(player.size / 12)
+        per_page = 10
+        pages = ceil(player.size / per_page)
         if not 0 < page <= pages:
             page = 1
 
-        skip = (page - 1) * 12
+        skip = (page - 1) * per_page
         current = player.current
-        tracks = player.queue[skip:skip+12]
+        tracks = player.queue[skip:skip+per_page]
 
         txt = l(ctx, 'commands.queue.currentTrack', {"track": current,
             "length": get_length(current.length)})

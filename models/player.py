@@ -1,5 +1,5 @@
 from wavelink.player import Player
-from discord import Forbidden
+from discord import Forbidden, NotFound
 
 class DiscoPlayer(Player):
     def __init__(self, bot, guild_id, node):
@@ -18,7 +18,7 @@ class DiscoPlayer(Player):
     async def send(self, content=None, embed=None):
         try:
             m = await self.text_channel.send(content=content, embed=embed)
-        except Forbidden:
+        except Forbidden, NotFound:
             pass
         else:
             return m

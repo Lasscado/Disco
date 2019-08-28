@@ -1,3 +1,4 @@
+from prettytable import PrettyTable
 from discord.ext import commands
 from humanize import naturalsize
 from datetime import datetime
@@ -169,6 +170,26 @@ class Information(commands.Cog):
     async def _donate(self, ctx):
         await ctx.send(l(ctx, 'commands.donate.text', {"emoji": self.disco.emoji["featured"],
             "link": "https://patreon.com/discobot"}))
+
+    @commands.command(name='shards', aliases=['latencies'])
+    @commands.cooldown(1, 8, commands.BucketType.user)
+    async def _shards(self, ctx):
+        table = PrettyTable(['Instance', 'ID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Last Update'])
+
+        for shard in self.disco._shards.all():
+            now = datetime.utcnow()
+            latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
+            guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'
+            members = f'{shard.members:,}' if shard.members else 'Unknown'
+            uptime = get_length((now - shard.launched_at).total_seconds() * 1000, True) \
+                if shard.launched_at else 'Unknown'
+            last_update = get_length((now - shard.last_update).total_seconds() * 1000, True) \
+                if shard.last_update else 'Unknown'
+
+            table.add_row([shard.instance_id, shard.id, latency, uptime, guilds,
+                members, last_update])
+
+        await ctx.send(f'```{table.get_string()}```')
 
 def setup(disco):
     disco.add_cog(Information(disco))

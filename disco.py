@@ -3,7 +3,7 @@ from utils import emojis
 from os import environ, listdir
 from datetime import datetime
 from discord import Game
-from database import BanManager, GuildManager, db
+from database import BanManager, GuildManager, ShardManager, db
 
 import logging
 import wavelink
@@ -11,14 +11,14 @@ import wavelink
 log = logging.getLogger('disco')
 
 class Disco(AutoShardedBot):
-    def __init__(self):
+    def __init__(self, instance_id):
         prefixes = environ['PREFIXES'].split(', ')
         super().__init__(
             command_prefix=when_mentioned_or(*prefixes),
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
-            shard_count=1, shard_ids=[0],
+            shard_count=2, shard_ids=[0,1],
             guild_subscriptions=False,
             max_messages=101,
             activity=Game(f'Prefixo: {prefixes[0]}')
@@ -27,8 +27,10 @@ class Disco(AutoShardedBot):
         self.db = db
         self._bans = BanManager(db.bans)
         self._guilds = GuildManager(db.guilds)
+        self._shards = ShardManager(db.shards)
         self.log = log
         self.emoji = emojis
+        self.instance_id = instance_id
         self.color = [0xffff00, 0x03001b]
         self.loaded = False
         self.launched_shards = []
@@ -46,6 +48,15 @@ class Disco(AutoShardedBot):
 
         self.launched_shards.append(shard_id)
         log.info(f'Shard {shard_id} conectada.')
+
+        guilds = [g for g in self.guilds if g.shard_id == shard_id]
+        self._shards.get(shard_id).update({
+            "launchedAt": datetime.utcnow().timestamp(),
+            "instanceId": self.instance_id,
+            "latency": self.shards[shard_id].ws.latency,
+            "guilds": len(guilds),
+            "members": sum(g.member_count for g in guilds)
+        })
 
     async def on_ready(self):
         if not self.loaded:

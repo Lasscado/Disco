@@ -1,5 +1,6 @@
 from discord.ext import commands, tasks
 from discord import Colour
+from datetime import datetime
 from utils import avatars, l
 from random import choice
 from asyncio import sleep
@@ -13,6 +14,7 @@ class Tasks(commands.Cog):
             self._change_avatar.start()
 
         self._disconnect_inactive_players.start()
+        self._update_shard_stats.start()
 
     @tasks.loop(minutes=30)
     async def _change_avatar(self):
@@ -22,6 +24,19 @@ class Tasks(commands.Cog):
         self.disco.color = [Colour.from_rgb(*rgb[0]), Colour.from_rgb(*rgb[1])]
         await self.disco.user.edit(avatar=avatar)
         self.disco.log.info('Avatar alterado')
+
+    @tasks.loop(minutes=1)
+    async def _update_shard_stats(self):
+        for shard_id in self.disco.launched_shards:
+            guilds = [g for g in self.disco.guilds if g.shard_id == shard_id]
+            self.disco._shards.get(shard_id).update({
+                "instanceId": self.disco.instance_id,
+                "latency": self.disco.shards[shard_id].ws.latency,
+                "guilds": len(guilds),
+                "members": sum(g.member_count for g in guilds)
+            })
+
+        self.disco.log.info('As estatísticas das Shards foram atualizadas.')
 
     @tasks.loop(minutes=4)
     async def _disconnect_inactive_players(self):

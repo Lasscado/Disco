@@ -18,10 +18,10 @@ class Disco(AutoShardedBot):
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
-            shard_count=2, shard_ids=[0,1],
+            shard_count=1, shard_ids=[0],
             guild_subscriptions=False,
             max_messages=101,
-            activity=Game(f'Prefixo: {prefixes[0]}')
+            activity=Game(f'Prefix: {prefixes[0]}')
         )
 
         self.db = db

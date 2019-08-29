@@ -12,8 +12,8 @@ def get_length(milliseconds, letter: bool = False):
     d, h = divmod(h, 24)
     output = '%1ds' % s
 
-    if m > 1: output = '%1dm ' % m + output
-    if h > 1: output = '%1dh ' % h + output
-    if d > 1: output = '%1dd ' % d + output
+    if m >= 1: output = '%1dm ' % m + output
+    if h >= 1: output = '%1dh ' % h + output
+    if d >= 1: output = '%1dd ' % d + output
 
     return output

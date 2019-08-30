@@ -174,7 +174,7 @@ class Information(commands.Cog):
     @commands.command(name='shards', aliases=['latencies'])
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _shards(self, ctx):
-        table = PrettyTable(['Instance', 'ID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Last Update'])
+        table = PrettyTable(['Shard ID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Last Update'])
 
         for shard in self.disco._shards.all():
             now = datetime.utcnow()
@@ -186,8 +186,7 @@ class Information(commands.Cog):
             last_update = get_length((now - shard.last_update).total_seconds() * 1000, True) \
                 if shard.last_update else 'Unknown'
 
-            table.add_row([shard.instance_id, shard.id, latency, uptime, guilds,
-                members, last_update])
+            table.add_row([shard.id, latency, uptime, guilds, members, last_update])
 
         await ctx.send(f'```{table.get_string()}```')
 

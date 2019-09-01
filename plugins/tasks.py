@@ -16,6 +16,13 @@ class Tasks(commands.Cog):
         self._disconnect_inactive_players.start()
         self._update_shard_stats.start()
 
+    def cog_unload(self):
+        if disco.user.id == int(environ['BOT_ID']):
+            self._change_avatar.cancel()
+
+        self._disconnect_inactive_players.cancel()
+        self._update_shard_stats.cancel()
+
     @tasks.loop(minutes=30)
     async def _change_avatar(self):
         info = choice(avatars)

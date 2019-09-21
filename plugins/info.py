@@ -38,7 +38,8 @@ class Information(commands.Cog):
                     or l(ctx, 'commands.help.notSupplied')
             ).add_field(
                 name=l(ctx, 'commands.help.usage'),
-                value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
+                value=f'{ctx.prefix}{cmd.name} {usage}' if usage \
+                    else l(ctx, 'commands.help.notSpecified')
             ).add_field(
                 name=l(ctx, 'commands.help.aliases'),
                 value=' | '.join([f'`{a}`' for a in cmd.aliases]) \

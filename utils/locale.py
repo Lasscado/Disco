@@ -18,6 +18,6 @@ def l(locale, path, values = {}):
             for k in keys:
                 string = string[k]
         except KeyError:
-            return path
+            return
 
     return string.format(**values)

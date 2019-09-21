@@ -1,4 +1,5 @@
 {
     "createdBy": "Criado por {creator}",
-    "exit": "sair"
+    "exit": "sair",
+    "command": "comando"
 }

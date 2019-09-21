@@ -38,8 +38,7 @@ class Information(commands.Cog):
                     or l(ctx, 'commands.help.notSupplied')
             ).add_field(
                 name=l(ctx, 'commands.help.usage'),
-                value=f'{ctx.prefix}{cmd.name} {usage}' if usage \
-                    else l(ctx, 'commands.help.notSpecified')
+                value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
             ).add_field(
                 name=l(ctx, 'commands.help.aliases'),
                 value=' | '.join([f'`{a}`' for a in cmd.aliases]) \
@@ -49,6 +48,12 @@ class Information(commands.Cog):
 
             return await ctx.send(content=ctx.author.mention, embed=em)
 
+        prefixes = [ctx.prefix] if ctx._guild.data['options']['prefix'] \
+            else self.disco.prefixes
+
+        command = l(ctx, 'commons.command')
+        prefixes = ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes)
+
         em = discord.Embed(
             timestap=ctx.message.created_at,
             colour=self.disco.color[0],
@@ -57,7 +62,8 @@ class Information(commands.Cog):
                 "invite": "https://discobot.site",
                 "donate": "https://patreon.com/discobot",
                 "vote": "https://botsparadiscord.xyz/bots/discolite",
-                "github": "https://github.com/Naegin/Disco"
+                "github": "https://github.com/Naegin/Disco",
+                "prefixes": prefixes
             })
         ).set_author(
             name=ctx.me.name,

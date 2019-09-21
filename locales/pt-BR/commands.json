@@ -22,8 +22,7 @@
         "aliases": "Outros Nomes",
         "notSupplied": "Não fornecida.",
         "notDefined": "Não definidos.",
-        "notSpecified": "Não especificado.",
-        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** `d!<comando>` | `li <comando>`\n\u200b",
+        "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** {prefixes}\n\u200b",
         "categoryCommands": "**Comandos de {category}**: ({total})",
         "tip": "Digite **{command} <Comando>** para ver mais informações sobre um comando."
     },

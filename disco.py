@@ -90,6 +90,9 @@ class Disco(AutoShardedBot):
             or not message.channel.permissions_for(message.guild.me).send_messages):
             return
 
+        if message.content == message.guild.me.mention:
+            message.content += ' whatsmyprefix'
+
         ctx = await self.get_context(message)
         if (not ctx.valid or ctx.command.hidden and ctx.author.id != self.owner_id
             or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):

@@ -33,6 +33,10 @@
         "cmdDescription": "Envia o link da página de doações para o Disco.",
         "text": "{emoji} Me ajude a ficar Online: <{link}>"
     },
+    "whatsmyprefix": {
+        "cmdDescription": "Mostra o prefixo do Disco no servidor.",
+        "message": "{emoji} Olá, **{author}**! Para me usar, basta utilizar um dos seguintes prefixos:\n{prefixes}"
+    },
     "djrole": {
         "cmdUsage": "<@Menção|Nome|ID>",
         "cmdDescription": "Define o cargo DJ no servidor.",

@@ -197,5 +197,17 @@ class Information(commands.Cog):
 
         await ctx.send(f'```{table.get_string()}```')
 
+    @commands.command(name='whatsmyprefix')
+    @commands.cooldown(1, 10, commands.BucketType.channel)
+    async def _whats_my_prefix(self, ctx):
+        command = l(ctx, 'commons.command')
+        prefixes = [ctx.prefix] if ctx._guild.data['options']['prefix'] \
+            else self.disco.prefixes
+
+        await ctx.send(l(ctx, 'commands.whatsmyprefix.message', {"author": ctx.author.name,
+            "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes),
+            "emoji": self.disco.emoji["alert"]
+        }))
+
 def setup(disco):
     disco.add_cog(Information(disco))

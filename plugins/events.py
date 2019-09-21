@@ -97,6 +97,9 @@ class Events(commands.Cog):
             await ctx.send(e)
 
         elif isinstance(e, CommandOnCooldown):
+            if ctx.command.name == 'whatsmyprefix' and ctx.prefix == ctx.me.mention + ' ':
+                return
+
             _, s = divmod(e.retry_after, 60)
             await ctx.send(l(ctx, 'errors.onCooldown', {"emoji": self.disco.emoji["false"],
                 "author": ctx.author.name, "cooldown": int(s)}), delete_after=s+6)

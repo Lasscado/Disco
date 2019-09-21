@@ -128,5 +128,27 @@ class Admin(commands.Cog):
         await ctx.send(l(locale, 'commands.locale.success', {"locale": locale,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
 
+    @commands.command(name='prefix', aliases=['setprefix'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _set_prefix(self, ctx, prefix = None):
+        if not prefix:
+            if not ctx._guild.data['options']['prefix']:
+                raise commands.UserInputError
+
+            ctx._guild.update({"options.prefix": None})
+            self.disco._prefixes[ctx.guild.id] = None
+            return await ctx.send(l(ctx, 'commands.prefix.reset', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["true"]}))
+
+        if len(prefix) > 7:
+            return await ctx.send(l(ctx, 'commands.prefix.invalid', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["false"]}))
+
+        ctx._guild.update({"options.prefix": prefix})
+        self.disco._prefixes[ctx.guild.id] = prefix
+        await ctx.send(l(ctx, 'commands.prefix.success', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["true"], "prefix": prefix}))
+
 def setup(disco):
     disco.add_cog(Admin(disco))

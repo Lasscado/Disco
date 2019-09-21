@@ -1,5 +1,5 @@
 from discord.ext.commands import AutoShardedBot, when_mentioned_or
-from utils import emojis
+from utils import emojis, custom_prefix
 from os import environ, listdir
 from datetime import datetime
 from discord import Game
@@ -12,16 +12,16 @@ log = logging.getLogger('disco')
 
 class Disco(AutoShardedBot):
     def __init__(self, instance_id):
-        prefixes = environ['PREFIXES'].split(', ')
+        self.prefixes = environ['PREFIXES'].split(', ')
         super().__init__(
-            command_prefix=when_mentioned_or(*prefixes),
+            command_prefix=custom_prefix,
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
             shard_count=1, shard_ids=[0],
             guild_subscriptions=False,
             max_messages=101,
-            activity=Game(f'Prefix: {prefixes[0]}')
+            activity=Game(f'Prefix: {self.prefixes[0]}')
         )
 
         self.db = db
@@ -41,6 +41,7 @@ class Disco(AutoShardedBot):
         self.invoked_commands = 0
         self.read_messages = 0
         self.played_tracks = 0
+        self._prefixes = {}
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:

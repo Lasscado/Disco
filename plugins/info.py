@@ -48,10 +48,10 @@ class Information(commands.Cog):
 
             return await ctx.send(content=ctx.author.mention, embed=em)
 
-        prefixes = [ctx._guild.data['options']['prefix'] or p for p in self.disco.prefixes]
+        custom_prefix = ctx._guild.data['options']['prefix']
+        prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
         command = l(ctx, 'commons.command')
-        prefixes = ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes)
 
         em = discord.Embed(
             timestap=ctx.message.created_at,
@@ -62,7 +62,7 @@ class Information(commands.Cog):
                 "donate": "https://patreon.com/discobot",
                 "vote": "https://botsparadiscord.xyz/bots/discolite",
                 "github": "https://github.com/Naegin/Disco",
-                "prefixes": prefixes
+                "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes)
             })
         ).set_author(
             name=ctx.me.name,
@@ -200,7 +200,8 @@ class Information(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def _whats_my_prefix(self, ctx):
         command = l(ctx, 'commons.command')
-        prefixes = [ctx._guild.data['options']['prefix'] or p for p in self.disco.prefixes]
+        custom_prefix = ctx._guild.data['options']['prefix']
+        prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
         await ctx.send(l(ctx, 'commands.whatsmyprefix.message', {"author": ctx.author.name,
             "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes),

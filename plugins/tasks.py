@@ -14,12 +14,12 @@ class Tasks(commands.Cog):
         if disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.start()
 
-        self._activities = {
-            'listening': ActivityType.listening,
-            'watching': ActivityType.watching,
-            'streaming': ActivityType.streaming,
-            'playing': ActivityType.playing
-        }
+        self._activities = [
+            ActivityType.listening,
+            ActivityType.watching,
+            ActivityType.streaming,
+            ActivityType.playing
+        ]
 
         self._change_presence.start()
         self._disconnect_inactive_players.start()
@@ -48,8 +48,8 @@ class Tasks(commands.Cog):
 
         self.disco.log.info('Alterando Presences em todas as Shards...')
         for shard in self.disco.shards:
-            name, activity = choice(list(self._activities.items()))
-            message = choice(messages[name]).format(
+            activity = choice(self._activities)
+            message = choice(messages[activity.name]).format(
                 website="discobot.site",
                 prefix=self.disco.prefixes[0],
                 guilds=len(self.disco.guilds),

@@ -1,0 +1,45 @@
+{
+    "listening": [
+        "Alan Walker",
+        "Nightcore",
+        "J-POP!",
+        "K-POP!",
+        "Prefix: {prefix}",
+        "{website}",
+        "Add me {website}",
+        "Donate {donate}"
+    ],
+    "watching": [
+        "Rock in Rio",
+        "Tomorrowland",
+        "Lollapalooza",
+        "Ultra Music Festival",
+        "SoTrackBoa",
+        "Love Live! School Idol Project",
+        "Danganronpa: The Animation",
+        "Prefix: {prefix}",
+        "{website}",
+        "Add me {website}",
+        "Donate {donate}"
+    ],
+    "streaming": [
+        "Music!",
+        "High Quality Music!",
+        "OSU!",
+        "to {guilds} servers!",
+        "Prefix: {prefix}",
+        "{website}",
+        "Add me {website}",
+        "Donate {donate}"
+    ],
+    "playing": [
+        "OSU!",
+        "Beat Saber",
+        "Guitar Hero",
+        "Danganronpa",
+        "Prefix: {prefix}",
+        "{website}",
+        "Add me {website}",
+        "Donate {donate}"
+    ]
+}

@@ -1,10 +1,11 @@
 from discord.ext import commands, tasks
-from discord import Colour
+from discord import Colour, Activity, ActivityType
 from datetime import datetime
 from utils import avatars, l
 from random import choice
 from asyncio import sleep
 from os import environ
+from json import loads
 
 class Tasks(commands.Cog):
     def __init__(self, disco):
@@ -13,6 +14,14 @@ class Tasks(commands.Cog):
         if disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.start()
 
+        self._activities = {
+            'listening': ActivityType.listening,
+            'watching': ActivityType.watching,
+            'streaming': ActivityType.streaming,
+            'playing': ActivityType.playing
+        }
+
+        self._change_presence.start()
         self._disconnect_inactive_players.start()
         self._update_shard_stats.start()
 
@@ -20,6 +29,7 @@ class Tasks(commands.Cog):
         if disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.cancel()
 
+        self._change_presence.cancel()
         self._disconnect_inactive_players.cancel()
         self._update_shard_stats.cancel()
 
@@ -31,6 +41,25 @@ class Tasks(commands.Cog):
         self.disco.color = [Colour.from_rgb(*rgb[0]), Colour.from_rgb(*rgb[1])]
         await self.disco.user.edit(avatar=avatar)
         self.disco.log.info('Avatar alterado')
+
+    @tasks.loop(minutes=1)
+    async def _change_presence(self):
+        messages = loads(open('./data/activities.json', encoding='utf-8').read())
+
+        self.disco.log.info('Alterando Presences em todas as Shards...')
+        for shard in self.disco.shards:
+            name, activity = choice(list(self._activities.items()))
+            message = choice(messages[name]).format(
+                website="discobot.site",
+                prefix=self.disco.prefixes[0],
+                guilds=len(self.disco.guilds),
+                donate="patreon.com/discobot"
+            )
+
+            await self.disco.change_presence(activity=Activity(type=activity,
+                name=message + f' [{shard}]', url='https://twitch.tv/naeg1n', shard=shard))
+
+        self.disco.log.info('Presences alteradas.')
 
     @tasks.loop(minutes=1)
     async def _update_shard_stats(self):

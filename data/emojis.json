@@ -12,5 +12,8 @@
     "alert": "<:discoAlert:512915236836081668>",
     "poweroff": "<:discoPowerOFF:515321070010761225>",
     "idle": "<:discoIdle:599659742993973249>",
-    "featured": "<:discoFeatured:610165675851513876>"
+    "featured": "<:discoFeatured:610165675851513876>",
+    "categoryMusic": "<:discoHeadphone:626147668007321649>",
+    "categoryAdmin": "<:discoTools:626174258657361930>",
+    "categoryInformation": "<:discoInfo:626174470847070208>"
 }

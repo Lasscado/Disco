@@ -80,7 +80,8 @@ class Information(commands.Cog):
 
             if value:
                 em.add_field(name=l(ctx, 'commands.help.categoryCommands', {"total": len(cmds),
-                    "category": l(ctx, f'categories.{name.lower()}')}),
+                    "category": l(ctx, f'categories.{name.lower()}'),
+                    "emoji": self.disco.emoji["category" + name]}),
                     value=value)
 
         em.add_field(

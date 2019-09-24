@@ -31,7 +31,7 @@ class Disco(AutoShardedBot):
         self.log = log
         self.emoji = emojis
         self.instance_id = instance_id
-        self.color = [0xffff00, 0x03001b]
+        self.color = [0xd74d1e, 0xb13105]
         self.loaded = False
         self.launched_shards = []
         self.started_at = datetime.utcnow()

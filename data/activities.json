@@ -1,10 +1,17 @@
 {
     "listening": [
         "Alan Walker",
+        "Alok",
+        "Liu",
+        "1788-L",
+        "The Chainsmokers",
+        "ILLENIUM",
+        "Martin Garrix",
         "Nightcore",
         "J-POP!",
         "K-POP!",
         "Prefix: {prefix}",
+        "{prefix}help | {guilds} servers",
         "{website}",
         "Add me {website}",
         "Donate {donate}"
@@ -20,17 +27,18 @@
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
-        "Donate {donate}"
+        "{donate}"
     ],
     "streaming": [
         "Music!",
         "High Quality Music!",
         "OSU!",
         "to {guilds} servers!",
+        "music to {guilds} servers!",
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
-        "Donate {donate}"
+        "{donate}"
     ],
     "playing": [
         "OSU!",
@@ -40,6 +48,6 @@
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
-        "Donate {donate}"
+        "{donate}"
     ]
 }

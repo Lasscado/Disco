@@ -45,6 +45,7 @@ class Tasks(commands.Cog):
     @tasks.loop(minutes=1)
     async def _change_presence(self):
         messages = loads(open('./data/activities.json', encoding='utf-8').read())
+        guilds = sum(shard.guilds for shard in self.disco._shards.all())
 
         self.disco.log.info('Alterando Presences em todas as Shards...')
         for shard in self.disco.shards:
@@ -52,7 +53,7 @@ class Tasks(commands.Cog):
             message = choice(messages[activity.name]).format(
                 website="discobot.site",
                 prefix=self.disco.prefixes[0],
-                guilds=len(self.disco.guilds),
+                guilds=guilds,
                 donate="patreon.com/discobot"
             )
 

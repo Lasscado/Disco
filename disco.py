@@ -117,4 +117,4 @@ class Disco(AutoShardedBot):
             self.dispatch('command_error', ctx, e)
 
     def run(self):
-        super().run(environ['BOT_TOKEN'], reconnect=True, bot=True)
+        super().run(environ['BOT_TOKEN'])

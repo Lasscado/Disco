@@ -60,7 +60,7 @@ class Information(commands.Cog):
                 "support": "https://discord.gg/qN5886E",
                 "invite": "https://discobot.site",
                 "donate": "https://patreon.com/discobot",
-                "vote": "https://botsparadiscord.xyz/bots/discolite",
+                "vote": "https://botsparadiscord.xyz/bots/disco",
                 "github": "https://github.com/Naegin/Disco",
                 "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes)
             })
@@ -105,7 +105,7 @@ class Information(commands.Cog):
                 "support": "https://discord.gg/qN5886E",
                 "invite": "https://discobot.site",
                 "donate": "https://patreon.com/discobot",
-                "vote": "https://botsparadiscord.xyz/bots/discolite",
+                "vote": "https://botsparadiscord.xyz/bots/disco",
                 "github": "https://github.com/Naegin/Disco"
             })
         ).set_author(

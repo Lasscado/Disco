@@ -128,6 +128,11 @@ class Admin(commands.Cog):
         await ctx.send(l(locale, 'commands.locale.success', {"locale": locale,
                 "emoji": self.disco.emoji["true"], "author": ctx.author.name}))
 
+        try:
+            self.disco.wavelink.players[ctx.guild.id].locale = locale
+        except KeyError:
+            pass
+
     @commands.command(name='prefix', aliases=['setprefix'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)

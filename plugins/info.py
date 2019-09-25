@@ -31,7 +31,7 @@ class Information(commands.Cog):
                 title=l(ctx, 'commands.help.commandName', {"command": cmd.name.title()})
             ).set_author(
                 name=ctx.me.name,
-                icon_url=ctx.me.avatar_url
+                icon_url=self.disco.user.avatar_url
             ).set_thumbnail(
                 url=TRANSPARENT
             ).add_field(
@@ -68,9 +68,9 @@ class Information(commands.Cog):
             })
         ).set_author(
             name=ctx.me.name,
-            icon_url=ctx.me.avatar_url
+            icon_url=self.disco.user.avatar_url
         ).set_thumbnail(
-            url=ctx.me.avatar_url
+            url=self.disco.user.avatar_url
         ).set_footer(
             text=l(ctx, 'commons.createdBy', {"creator": 'Naegin#0049'}),
             icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
@@ -113,12 +113,12 @@ class Information(commands.Cog):
             })
         ).set_author(
             name=ctx.me.name,
-            icon_url=ctx.me.avatar_url
+            icon_url=self.disco.user.avatar_url
         ).set_footer(
             text=l(ctx, 'commons.createdBy', {"creator": "Naegin#0049"}),
             icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
         ).set_thumbnail(
-            url=ctx.me.avatar_url
+            url=self.disco.user.avatar_url
         ).add_field(
             name=l(ctx, 'commands.botinfo.generalInfoTitle'),
             value=l(ctx, 'commands.botinfo.generalInfoDescLeft', {
@@ -163,7 +163,7 @@ class Information(commands.Cog):
             description=l(ctx, 'commands.invite.text', {"link": "https://discobot.site"})
         ).set_author(
             name=ctx.me.name,
-            icon_url=ctx.me.avatar_url
+            icon_url=self.disco.user.avatar_url
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)

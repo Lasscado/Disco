@@ -7,12 +7,14 @@ import discord
 from discord.ext import commands
 
 from utils import web_url, get_length, checks, l
+from utils.wrappers import genius
 from models import DiscoPlayer, DiscoTrack
 
 
 class Music(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self.genius = genius.Client(environ['GENIUS_API_TOKEN'])
         self.waiting = set()
 
         disco.loop.create_task(self.initiate_nodes())
@@ -96,7 +98,7 @@ class Music(commands.Cog):
                     name=l(ctx, 'commands.play.searchResults'),
                     icon_url=ctx.guild.icon_url
                 ).set_thumbnail(
-                    url=ctx.me.avatar_url
+                    url=self.disco.user.avatar_url
                 ).set_footer(
                     text=l(ctx, 'commands.play.typeToCancel')
                 )
@@ -367,7 +369,7 @@ class Music(commands.Cog):
             name=ctx.guild.name,
             icon_url=ctx.guild.icon_url
         ).set_thumbnail(
-            url=ctx.me.avatar_url
+            url=self.disco.user.avatar_url
         ).set_footer(
             text=l(ctx, 'commands.queue.details', {"length": length,
                 "page": page, "pages": pages})

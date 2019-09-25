@@ -37,6 +37,20 @@
         "cmdDescription": "Mostra o prefixo do Disco no servidor.",
         "message": "{emoji} Olá, **{author}**! Para me usar, basta utilizar um dos seguintes prefixos:\n{prefixes}"
     },
+    "serversettings": {
+        "cmdDescription": "Mostra as configurações do Disco no servidor.",
+        "title": "Opções do Servidor",
+        "customPrefix": "Prefixo Customizado",
+        "djRole": "Cargo DJ",
+        "botChannel": "Canal do Bot",
+        "locale": "Localidade",
+        "defaultVolume": "Volume Padrão",
+        "disabledRoles": "Cargos Desativados",
+        "disabledChannels": "Canais Desativados",
+        "disabledCommands": "Comandos Desativados",
+        "localBans": "Banimentos Locais",
+        "notDefined": "Não definido."
+    },
     "djrole": {
         "cmdUsage": "<@Menção|Nome|ID>",
         "cmdDescription": "Define o cargo DJ no servidor.",

@@ -209,5 +209,50 @@ class Information(commands.Cog):
             "emoji": self.disco.emoji["alert"]
         }))
 
+    @commands.command(name='serversettings', aliases=['settings', 'configs'])
+    @commands.cooldown(1, 8, commands.BucketType.channel)
+    @commands.has_permissions(manage_guild=True)
+    @commands.bot_has_permissions(embed_links=True)
+    async def _settings(self, ctx):
+        not_defined = l(ctx, 'commands.serversettings.notDefined')
+        options = ctx._guild.data['options']
+
+        em = discord.Embed(
+            colour=self.disco.color[0],
+            title=l(ctx, 'commands.serversettings.title')
+        ).set_author(
+            name=ctx.guild.name,
+            icon_url=ctx.guild.icon_url
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.customPrefix'),
+            value=f'`{options["prefix"] or not_defined}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.djRole'),
+            value=f'`{ctx.guild.get_role(options["djRole"]) or not_defined}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.botChannel'),
+            value=f'`{ctx.guild.get_channel(options["botChannel"]) or not_defined}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.defaultVolume'),
+            value=f'`{options["defaultVolume"]}%`' if options['defaultVolume'] else f'`{not_defined}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.locale'),
+            value=f'`{options["locale"]}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.localBans'),
+            value=f'`{len(options["bannedMembers"])}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.disabledRoles'),
+            value=f'`{len(options["disabledRoles"])}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.disabledChannels'),
+            value=f'`{len(options["disabledChannels"])}`'
+        ).add_field(
+            name=l(ctx, 'commands.serversettings.disabledCommands'),
+            value=f'`{len(options["disabledCommands"])}`'
+        )
+
+        await ctx.send(embed=em)
+
 def setup(disco):
     disco.add_cog(Information(disco))

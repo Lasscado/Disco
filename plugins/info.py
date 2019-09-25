@@ -197,7 +197,7 @@ class Information(commands.Cog):
 
         await ctx.send(f'```{table.get_string()}```')
 
-    @commands.command(name='whatsmyprefix')
+    @commands.command(name='whatsmyprefix', hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def _whats_my_prefix(self, ctx):
         command = l(ctx, 'commons.command')

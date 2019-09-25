@@ -1,8 +1,9 @@
-from discord.ext import commands
-
 import os
 import sys
 import discord
+
+from discord.ext import commands
+
 
 class Owner(commands.Cog):
     def __init__(self, disco):
@@ -122,6 +123,7 @@ class Owner(commands.Cog):
         )
 
         await self.ban_logs.send(embed=em)
+
 
 def setup(disco):
     disco.add_cog(Owner(disco))

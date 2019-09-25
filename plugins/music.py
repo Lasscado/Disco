@@ -1,12 +1,14 @@
-from discord.ext import commands
-from utils import web_url, get_length, checks, l
-from models import DiscoPlayer, DiscoTrack
+from asyncio import TimeoutError as Timeout
 from os import environ
 from random import shuffle
 from math import ceil
-from asyncio import TimeoutError as Timeout
 
 import discord
+from discord.ext import commands
+
+from utils import web_url, get_length, checks, l
+from models import DiscoPlayer, DiscoTrack
+
 
 class Music(commands.Cog):
     def __init__(self, disco):
@@ -385,6 +387,7 @@ class Music(commands.Cog):
         ctx.player.queue.reverse()
         await ctx.player.send(l(ctx, 'commands.reverse.success', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["shuffle"]}))
+
 
 def setup(disco):
     disco.add_cog(Music(disco))

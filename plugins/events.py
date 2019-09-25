@@ -1,11 +1,13 @@
-from discord.ext import commands
-from discord.ext.commands.errors import *
 from datetime import datetime
-from random import randint
-from utils import MusicError, l
 from os import environ
+from random import randint
 
 import discord
+from discord.ext import commands
+from discord.ext.commands.errors import *
+
+from utils import MusicError, l
+
 
 class Events(commands.Cog):
     def __init__(self, disco):
@@ -157,6 +159,7 @@ class Events(commands.Cog):
         if ctx.command.name != 'donate' and randint(1, 7) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {
                 "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
+
 
 def setup(disco):
     disco.add_cog(Events(disco))

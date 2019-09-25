@@ -1,12 +1,14 @@
-from prettytable import PrettyTable
-from discord.ext import commands
-from humanize import naturalsize
 from datetime import datetime
-from utils import get_length, l
 
 import discord
+from discord.ext import commands
+from humanize import naturalsize
+from prettytable import PrettyTable
+
+from utils import get_length, l
 
 TRANSPARENT = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
+
 
 class Information(commands.Cog):
     def __init__(self, disco):
@@ -253,6 +255,7 @@ class Information(commands.Cog):
         )
 
         await ctx.send(embed=em)
+
 
 def setup(disco):
     disco.add_cog(Information(disco))

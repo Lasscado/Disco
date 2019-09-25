@@ -1,8 +1,10 @@
-from discord.ext import commands
 from os import listdir
-from utils import LOCALE, l
 
 import discord
+from discord.ext import commands
+
+from utils import LOCALE, l
+
 
 class Admin(commands.Cog):
     def __init__(self, disco):
@@ -174,6 +176,7 @@ class Admin(commands.Cog):
         ctx._guild.update({"options.defaultVolume": vol})
         await ctx.send(l(ctx, 'commands.defaultvolume.success', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["true"], "volume": vol}))
+
 
 def setup(disco):
     disco.add_cog(Admin(disco))

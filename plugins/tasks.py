@@ -1,11 +1,14 @@
-from discord.ext import commands, tasks
-from discord import Colour, Activity, ActivityType
-from datetime import datetime
-from utils import avatars, l
-from random import choice
 from asyncio import sleep
-from os import environ
+from datetime import datetime
+from random import choice
 from json import loads
+from os import environ
+
+from discord import Colour, Activity, ActivityType
+from discord.ext import commands, tasks
+
+from utils import avatars, l
+
 
 class Tasks(commands.Cog):
     def __init__(self, disco):
@@ -109,6 +112,7 @@ class Tasks(commands.Cog):
     @staticmethod
     def has_listeners(guild):
         return any(m for m in guild.me.voice.channel.members if not m.bot and not m.voice.deaf and not m.voice.self_deaf)
+
 
 def setup(disco):
     disco.add_cog(Tasks(disco))

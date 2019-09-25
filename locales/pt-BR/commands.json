@@ -89,6 +89,13 @@
         "reset": "{emoji} **{author}**, você resetou meu prefixo customizado nesse servidor!",
         "success": "{emoji} **{author}**, agora eu apenas responderei a comandos invocados com o prefixo **`{prefix}`**."
     },
+    "defaultvolume": {
+        "cmdUsage": "<1-150>",
+        "cmdDescription": "Altera o volume padrão do Disco nesse servidor. Sempre que o Disco for chamado para tocar algo, ele irá alterar o volume do player para o volume padrão.",
+        "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
+        "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
+        "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."
+    },
     "play": {
         "cmdUsage": "<Nome|URL>",
         "cmdDescription": "Busca e adiciona a música especificada na fila de reprodução.",

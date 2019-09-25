@@ -21,6 +21,7 @@ class DiscoGuild:
                 "prefix": None,
                 "djRole": None,
                 "botChannel": None,
+                "defaultVolume": None,
                 "disabledCommands": [],
                 "disabledChannels": [],
                 "disabledRoles": [],

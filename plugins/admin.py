@@ -150,5 +150,25 @@ class Admin(commands.Cog):
         await ctx.send(l(ctx, 'commands.prefix.success', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["true"], "prefix": prefix}))
 
+    @commands.command(name='defaultvolume', aliases=['defaultvol', 'dvol'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _default_volume(self, ctx, vol: int = None):
+        if not vol:
+            if not ctx._guild.data['options']['defaultVolume']:
+                raise commands.UserInputError
+
+            ctx._guild.update({"options.defaultVolume": None})
+            return await ctx.send(l(ctx, 'commands.defaultvolume.reset', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["true"]}))
+
+        if not 0 < vol < 151:
+            return await ctx.send(l(ctx, 'commands.defaultvolume.invalid', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["false"]}))
+
+        ctx._guild.update({"options.defaultVolume": vol})
+        await ctx.send(l(ctx, 'commands.defaultvolume.success', {"author": ctx.author.name,
+                "emoji": self.disco.emoji["true"], "volume": vol}))
+
 def setup(disco):
     disco.add_cog(Admin(disco))

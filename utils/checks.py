@@ -30,6 +30,10 @@ async def before_play(cog, ctx):
         await ctx.send(l(ctx, 'commands.play.connected', {"channel": vc,
             "emoji": ctx.bot.emoji["wireless"]}))
 
+        default_vol = ctx._guild.data['options']['defaultVolume']
+        if default_vol is not None:
+            await player.set_volume(default_vol)
+
     elif not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
         raise MusicError(l(ctx, 'errors.notSameVoiceChannel', {"author": ctx.author.name,
             "emoji": ctx.bot.emoji["false"]}))

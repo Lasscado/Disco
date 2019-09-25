@@ -53,6 +53,9 @@ class Events(commands.Cog):
         ).add_field(
             name=f'Membros ({guild.member_count})',
             value=f'Humanos: {humans}\nBots: {bots}'
+        ).add_field(
+            name='Região',
+            value=f'`{guild.region}`'
         )
 
         await self.guild_logs.send(embed=em)
@@ -89,6 +92,9 @@ class Events(commands.Cog):
         ).add_field(
             name=f'Membros ({guild.member_count})',
             value=f'Humanos: {humans}\nBots: {bots}'
+        ).add_field(
+            name='Região',
+            value=f'`{guild.region}`'
         )
 
         await self.guild_logs.send(embed=em)

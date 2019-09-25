@@ -94,7 +94,7 @@ class Disco(AutoShardedBot):
             message.content += ' whatsmyprefix'
 
         ctx = await self.get_context(message)
-        if (not ctx.valid or ctx.command.hidden and ctx.author.id != self.owner_id
+        if (not ctx.valid or ctx.command.cog_name == 'Owner' and ctx.author.id != self.owner_id
             or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):
             return
 

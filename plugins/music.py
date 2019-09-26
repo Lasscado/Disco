@@ -90,6 +90,8 @@ class Music(commands.Cog):
                 for i, track in enumerate(tracks, 1):
                     options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
 
+                cancel = l(ctx, 'commons.exit').lower()
+
                 em = discord.Embed(
                     colour=self.disco.color[0],
                     title=l(ctx, 'commands.play.chooseOne'),
@@ -100,11 +102,12 @@ class Music(commands.Cog):
                 ).set_thumbnail(
                     url=self.disco.user.avatar_url
                 ).set_footer(
-                    text=l(ctx, 'commands.play.typeToCancel')
+                    text=l(ctx, 'commands.play.typeToCancel', {
+                        "value": cancel
+                    })
                 )
 
                 q = await player.send(content=ctx.author.mention, embed=em)
-                cancel = l(ctx, 'commons.exit').lower()
 
                 try:
                     a = await self.disco.wait_for('message', timeout=120,

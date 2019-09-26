@@ -112,13 +112,13 @@
     },
     "play": {
         "cmdUsage": "<Nome|URL>",
-        "cmdDescription": "Busca e adiciona a música especificada na fila de reprodução.",
+        "cmdDescription": "Busca e adiciona à música especificada na fila de reprodução.",
         "noResults": "{emoji} **{author}**, não consegui obter nenhum resultado para sua busca.",
         "playlistAdded": "{emoji} Adicionei **{added}** faixas `({length})` da playlist **`{playlist}`** na fila.",
         "trackAdded": "{emoji} Adicionei **`{track}`** `({length})` na fila.",
-        "chooseOne": "Digite o número correspondente a faixa que você deseja ouvir",
+        "chooseOne": "Digite o número correspondente à faixa que você deseja ouvir",
         "searchResults": "Resultados da Busca",
-        "typeToCancel": "Digite \"sair\" para cancelar.",
+        "typeToCancel": "Digite \"{value}\" para cancelar.",
         "connected": "{emoji} Me conectei ao canal de voz **`{channel}`**."
     },
     "shuffle": {

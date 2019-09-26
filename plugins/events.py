@@ -135,7 +135,7 @@ class Events(commands.Cog):
             await ctx.send(l(ctx, 'errors.botMissingPermissions', {"emoji": self.disco.emoji["false"],
                 "permissions": perms, "author": ctx.author.name}))
 
-        elif ctx.command.name == 'play' and ctx.author.id in ctx.cog.waiting:
+        elif ctx.command.name in ['play', 'lyrics'] and ctx.author.id in ctx.cog.waiting:
             ctx.cog.waiting.remove(ctx.author.id)
 
         else:

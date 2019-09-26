@@ -193,7 +193,7 @@
     "lyrics": {
         "cmdUsage": "[Nome da Música]",
         "cmdDescription": "Mostra a letra da música que estiver tocando ou pesquisa pela letra de outras, caso um nome for fornecido.",
-        "notPlaying": "{emoji} **{author}**, eu não estou tocando nada no momento! Tente novamente fornecendo o nome de uma música para ser pesquisada ou após por algo para tocar.",
+        "notPlaying": "{emoji} **{author}**, eu não estou tocando nada no momento! Tente novamente fornecendo o nome de uma música para ser pesquisada, ou após por algo para tocar.",
         "currentNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao que estou tocando agora.",
         "notFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao nome fornecido.",
         "lyricsNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhuma letra referente ao que você selecionou.",

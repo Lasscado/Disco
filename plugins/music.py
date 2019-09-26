@@ -394,6 +394,7 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["shuffle"]}))
 
     @commands.command(name='lyrics', aliases=['ly'])
+    @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _lyrics(self, ctx, *, query = None):
         if ctx.author.id in self.waiting:

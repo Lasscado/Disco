@@ -4,10 +4,10 @@ from random import shuffle
 from math import ceil
 
 import discord
+import genius
 from discord.ext import commands
 
 from utils import web_url, get_length, checks, l, MusicError
-from utils.wrappers import genius
 from models import DiscoPlayer, DiscoTrack
 
 

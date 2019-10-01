@@ -203,5 +203,11 @@
         "typeToCancel" :"Digite \"{value}\" para cancelar.",
         "songLyrics": "Letras da Música",
         "viewMore": "... [Ver letra completa]({url})"
+    },
+    "avatar": {
+        "cmdUsage": "[@Menção|Nome|ID]",
+        "cmdDescription": "Mostra o avatar de um membro.",
+        "memberAvatar": "Avatar de {member}",
+        "clickToDownload": "Clique aqui para baixar a imagem."
     }
 }

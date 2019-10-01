@@ -30,15 +30,15 @@
         "cmdDescription": "Mostra a latência entre a conexão do Bot com o Discord."
     },
     "donate": {
-        "cmdDescription": "Envia o link da página de doações para o Disco.",
+        "cmdDescription": "Envia o link da página de doações para a Disco.",
         "text": "{emoji} Me ajude a ficar Online: <{link}>"
     },
     "whatsmyprefix": {
-        "cmdDescription": "Mostra o prefixo do Disco no servidor.",
+        "cmdDescription": "Mostra o prefixo da Disco no servidor.",
         "message": "{emoji} Olá, **{author}**! Para me usar, basta utilizar um dos seguintes prefixos:\n{prefixes}"
     },
     "serversettings": {
-        "cmdDescription": "Mostra as configurações do Disco no servidor.",
+        "cmdDescription": "Mostra as configurações da Disco no servidor.",
         "title": "Opções do Servidor",
         "customPrefix": "Prefixo Customizado",
         "djRole": "Cargo DJ",
@@ -92,20 +92,20 @@
     },
     "locale": {
         "cmdUsage": "<Localidade>",
-        "cmdDescription": "Altera a localidade/idioma das mensagens do Disco no servidor.",
+        "cmdDescription": "Altera a localidade/idioma das mensagens da Disco no servidor.",
         "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Linguagens Disponíveis**:\n> {available}",
         "success": "{emoji} **{author}**, você alterou minha localidade nesse servidor para **`{locale}`**."
     },
     "prefix": {
         "cmdUsage": "<Prefixo>",
-        "cmdDescription": "Altera o prefixo do Disco no servidor.",
+        "cmdDescription": "Altera o prefixo da Disco no servidor.",
         "invalid": "{emoji} **{author}**, você precisa fornecer um prefixo com até 6 caracteres!",
         "reset": "{emoji} **{author}**, você resetou meu prefixo customizado nesse servidor!",
         "success": "{emoji} **{author}**, agora eu apenas responderei a comandos invocados com o prefixo **`{prefix}`**."
     },
     "defaultvolume": {
         "cmdUsage": "<1-150>",
-        "cmdDescription": "Altera o volume padrão do Disco nesse servidor. Sempre que o Disco for chamado para tocar algo, ele irá alterar o volume do player para o volume padrão.",
+        "cmdDescription": "Altera o volume padrão da Disco nesse servidor. Sempre que a Disco for chamada para tocar algo, ele irá alterar o volume do player para o volume padrão.",
         "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
         "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
         "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."

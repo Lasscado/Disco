@@ -10,6 +10,7 @@ class Utils(commands.Cog):
 
     @commands.command(name='avatar', aliases=['av', 'pfp', 'picture'])
     @commands.cooldown(1, 6, commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
     async def _avatar(self, ctx, *, member: discord.Member = None):
         if not member:
             member = ctx.author

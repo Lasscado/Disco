@@ -1,3 +1,5 @@
+activate.bat
+.idea/
 .vscode/
 test.py
 

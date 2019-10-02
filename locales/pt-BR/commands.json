@@ -208,6 +208,6 @@
         "cmdUsage": "[@Menção|Nome|ID]",
         "cmdDescription": "Mostra o avatar de um membro.",
         "memberAvatar": "Avatar de {member}",
-        "clickToDownload": "Clique aqui para baixar a imagem."
+        "clickToDownload": "[Clique aqui para baixar a imagem.]({url})"
     }
 }

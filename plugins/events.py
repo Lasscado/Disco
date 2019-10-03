@@ -102,7 +102,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, e):
         if not isinstance(e, WaitingForPreviousChoice) and hasattr(ctx, '_remove_from_waiting'):
-            self.disco._waiting_for_choice.remove(ctx.author.id)
+            if ctx.author.id in self.disco._waiting_for_choice:
+                self.disco._waiting_for_choice.remove(ctx.author.id)
 
         if isinstance(e, (MusicError, WaitingForPreviousChoice)):
             await ctx.send(e)
@@ -163,7 +164,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
         if hasattr(ctx, '_remove_from_waiting'):
-            self.disco._waiting_for_choice.remove(ctx.author.id)
+            if ctx.author.id in self.disco._waiting_for_choice:
+                self.disco._waiting_for_choice.remove(ctx.author.id)
 
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 7) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {

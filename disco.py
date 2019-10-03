@@ -42,6 +42,7 @@ class Disco(AutoShardedBot):
         self.read_messages = 0
         self.played_tracks = 0
         self._prefixes = {}
+        self._waiting_for_choice = set()
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:

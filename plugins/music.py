@@ -15,7 +15,6 @@ class Music(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
         self.genius = genius.Client(environ['GENIUS_API_TOKEN'])
-        self.waiting = set()
 
         disco.loop.create_task(self.initiate_nodes())
 
@@ -49,6 +48,7 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["download"], "length": get_length(track.length)}))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
+    @checks.requires_user_choices()
     @checks.ensure_voice_connection()
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 4, commands.BucketType.user)
@@ -83,7 +83,7 @@ class Music(commands.Cog):
                 await player.send(l(ctx, 'commands.play.trackAdded', {"track": track,
                     "emoji": self.disco.emoji["plus"], "length": get_length(track.length)}))
             else:
-                self.waiting.add(ctx.author.id)
+                self.disco._waiting_for_choice.add(ctx.author.id)
 
                 tracks = results[:10]
                 options = ''
@@ -118,15 +118,12 @@ class Music(commands.Cog):
                     a = None
 
                 if not a or a.content.lower() == cancel:
-                    if ctx.author.id in self.waiting:
-                        self.waiting.remove(ctx.author.id)
-
                     return await q.delete()
 
                 track = tracks[int(a.content) - 1]
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
-                if ctx.author.id in self.waiting: self.waiting.remove(ctx.author.id)
+
                 await q.edit(content=l(ctx, 'commands.play.trackAdded', {"track": track,
                     "emoji": self.disco.emoji["plus"], "length": get_length(track.length)}),
                     embed=None)
@@ -395,12 +392,9 @@ class Music(commands.Cog):
 
     @commands.command(name='lyrics', aliases=['ly'])
     @commands.bot_has_permissions(embed_links=True)
+    @checks.requires_user_choices()
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _lyrics(self, ctx, *, query = None):
-        if ctx.author.id in self.waiting:
-            raise MusicError(l(ctx, 'errors.waitingForPreviousChoice', {
-                "author": ctx.author.name, "emoji": self.disco.emoji["false"]}))
-
         if not query:
             if not (ctx.author.voice and ctx.me.voice) \
                     or ctx.author.voice.channel != ctx.me.voice.channel:
@@ -424,7 +418,7 @@ class Music(commands.Cog):
                         "emoji": self.disco.emoji['false'], "author": ctx.author.name
                     }))
 
-        self.waiting.add(ctx.author.id)
+        self.disco._waiting_for_choice.add(ctx.author.id)
 
         options = ''
         for i, song in enumerate(songs, 1):
@@ -459,12 +453,7 @@ class Music(commands.Cog):
             a = None
 
         if not a or a.content.lower() == cancel:
-            if ctx.author.id in self.waiting:
-                self.waiting.remove(ctx.author.id)
-
             return await q.delete()
-
-        self.waiting.remove(ctx.author.id)
 
         song = songs[int(a.content) - 1]
 
@@ -496,6 +485,7 @@ class Music(commands.Cog):
             await q.edit(content=None, embed=em)
         except discord.NotFound:
             pass
+
 
 def setup(disco):
     disco.add_cog(Music(disco))

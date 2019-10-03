@@ -1,12 +1,9 @@
 from discord.ext import commands
-from .errors import MusicError
+from .errors import *
 from .locale import l
 
-async def before_play(cog, ctx):
-    if ctx.author.id in cog.waiting:
-        raise MusicError(l(ctx, 'errors.waitingForPreviousChoice', {"author": ctx.author.name,
-            "emoji": ctx.bot.emoji["false"]}))
 
+async def before_play(cog, ctx):
     ctx.player = player = cog.get_player(ctx.guild.id)
     if not ctx.me.voice:
         if not ctx.author.voice:
@@ -44,6 +41,7 @@ async def before_play(cog, ctx):
 
     return True
 
+
 class Checks:
     @staticmethod
     def staffer_or_dj_role():
@@ -78,6 +76,19 @@ class Checks:
         async def predicate(ctx):
             if not ctx.command._before_invoke:
                 ctx.command._before_invoke = before_play
+
+            return True
+
+        return commands.check(predicate)
+
+    @staticmethod
+    def requires_user_choices():
+        async def predicate(ctx):
+            if ctx.author.id in ctx.bot._waiting_for_choice:
+                raise WaitingForPreviousChoice((l(ctx, 'errors.waitingForPreviousChoice', {
+                    "author": ctx.author.name, "emoji": ctx.bot.emoji["false"]})))
+
+            ctx._remove_from_waiting = True
 
             return True
 

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class DiscoGuild:
     def __init__(self, collection, guild_id, register):
         self.db = collection

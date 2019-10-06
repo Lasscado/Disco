@@ -1,6 +1,7 @@
 def web_url(url):
     return url.startswith('https://') or url.startswith('http://')
 
+
 def get_length(milliseconds, letter: bool = False):
     if not milliseconds:
         return 'LIVESTREAM'

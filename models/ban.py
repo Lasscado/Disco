@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class DiscoBan:
     def __init__(self, data):
         self.target_id = data['targetID']

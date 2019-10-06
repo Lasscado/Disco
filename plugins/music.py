@@ -6,8 +6,8 @@ from math import ceil
 import discord
 from discord.ext import commands
 
-from utils import web_url, get_length, checks, l, MusicError
-from models import DiscoPlayer, DiscoTrack
+from utils import web_url, get_length, checks, l
+from models import DiscoTrack
 
 
 class Music(commands.Cog):
@@ -81,9 +81,8 @@ class Music(commands.Cog):
                 self.disco._waiting_for_choice.add(ctx.author.id)
 
                 tracks = results[:10]
-                options = ''
-                for i, track in enumerate(tracks, 1):
-                    options += f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`\n'
+                options = '\n'.join(f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`'
+                                    for i, track in enumerate(tracks, 1))
 
                 cancel = l(ctx, 'commons.exit').lower()
 
@@ -104,11 +103,12 @@ class Music(commands.Cog):
 
                 q = await player.send(content=ctx.author.mention, embed=em)
 
+                def check(m):
+                    return m.channel.id == q.channel.id and m.author.id == ctx.author.id and m.content \
+                        and (m.content.isdigit() and 0 < int(m.content) <= len(tracks) or m.content.lower() == cancel)
+
                 try:
-                    a = await self.disco.wait_for('message', timeout=120,
-                        check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
-                            and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(tracks)
-                            or c.content.lower() == cancel))
+                    a = await self.disco.wait_for('message', timeout=120, check=check)
                 except Timeout:
                     a = None
 
@@ -350,11 +350,9 @@ class Music(commands.Cog):
         current = player.current
         tracks = player.queue[skip:skip+per_page]
 
-        txt = l(ctx, 'commands.queue.currentTrack', {"track": current,
-            "length": get_length(current.length)})
-
-        for i, t in enumerate(tracks, skip+1):
-            txt += f'**`»`** `{i}` [**{t}**]({t.uri}) `[{get_length(t.length)}]` - {t.requester.mention}\n'
+        txt = l(ctx, 'commands.queue.currentTrack', {"track": current, "length": get_length(current.length)}) \
+            + '\n'.join(f'**`»`** `{i}` [**{t}**]({t.uri}) `[{get_length(t.length)}]` - {t.requester.mention}'
+                        for i, t in enumerate(tracks, skip+1))
 
         em = discord.Embed(
             colour=self.disco.color[1],
@@ -366,8 +364,7 @@ class Music(commands.Cog):
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).set_footer(
-            text=l(ctx, 'commands.queue.details', {"length": length,
-                "page": page, "pages": pages})
+            text=l(ctx, 'commands.queue.details', {"length": length, "page": page, "pages": pages})
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)

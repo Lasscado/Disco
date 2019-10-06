@@ -1,5 +1,6 @@
 from discord.ext.commands import when_mentioned_or
 
+
 def custom_prefix(disco, message):
     guild_id = message.guild.id
 

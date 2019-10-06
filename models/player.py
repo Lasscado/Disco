@@ -1,6 +1,7 @@
 from wavelink.player import Player
 from discord import Forbidden, NotFound
 
+
 class DiscoPlayer(Player):
     def __init__(self, bot, guild_id, node):
         super().__init__(bot, guild_id, node)

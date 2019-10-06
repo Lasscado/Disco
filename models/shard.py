@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class DiscoShard:
     def __init__(self, collection, data):
         self.db = collection
@@ -10,7 +11,6 @@ class DiscoShard:
             data['launchedAt'] else None
         self.last_update = datetime.fromtimestamp(data['lastUpdate']) if \
             data['lastUpdate'] else None
-        self.instance_id = data['instanceId']
         self.latency = data['latency']
         self.guilds = data['guilds']
         self.members = data['members']

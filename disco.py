@@ -1,25 +1,26 @@
-from discord.ext.commands import AutoShardedBot, when_mentioned_or
-from utils import emojis, custom_prefix
-from os import environ, listdir
-from datetime import datetime
-from discord import Game
-from database import BanManager, GuildManager, ShardManager, db
-from models import DiscoPlayer
-
 import logging
+from datetime import datetime
+from os import environ, listdir
+
 import wavelink
+from discord import Game
+from discord.ext.commands import AutoShardedBot
+
+from database import BanManager, GuildManager, ShardManager, db
+from utils import emojis, custom_prefix
+from models import DiscoPlayer
 
 log = logging.getLogger('disco')
 
+
 class Disco(AutoShardedBot):
-    def __init__(self, instance_id):
+    def __init__(self):
         self.prefixes = environ['PREFIXES'].split(', ')
         super().__init__(
             command_prefix=custom_prefix,
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
-            shard_count=1, shard_ids=[0],
             guild_subscriptions=False,
             max_messages=101,
             activity=Game(f'Prefix: {self.prefixes[0]}')
@@ -31,7 +32,6 @@ class Disco(AutoShardedBot):
         self._shards = ShardManager(db.shards)
         self.log = log
         self.emoji = emojis
-        self.instance_id = instance_id
         self.color = [0xB70DB3, 0xFF3DD3]
         self.loaded = False
         self.launched_shards = []
@@ -55,10 +55,9 @@ class Disco(AutoShardedBot):
         guilds = [g for g in self.guilds if g.shard_id == shard_id]
         self._shards.get(shard_id).update({
             "launchedAt": datetime.utcnow().timestamp(),
-            "instanceId": self.instance_id,
             "latency": self.shards[shard_id].ws.latency,
             "guilds": len(guilds),
-            "members": sum(g.member_count for g in guilds)
+            "members": sum(g.member_count for g in guilds if hasattr(g, 'member_count'))
         })
 
     async def on_ready(self):
@@ -89,7 +88,7 @@ class Disco(AutoShardedBot):
         self.read_messages += 1
 
         if (not self.loaded or not self.is_ready() or message.author.bot or not message.guild
-            or not message.channel.permissions_for(message.guild.me).send_messages):
+                or not message.channel.permissions_for(message.guild.me).send_messages):
             return
 
         if message.content == message.guild.me.mention:
@@ -97,18 +96,18 @@ class Disco(AutoShardedBot):
 
         ctx = await self.get_context(message)
         if (not ctx.valid or ctx.command.cog_name == 'Owner' and ctx.author.id != self.owner_id
-            or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):
+                or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):
             return
 
         ctx._guild = self._guilds.get(ctx.guild.id)
         options = ctx._guild.data['options']
         bot_channel = options['botChannel']
         if ((ctx.channel.id in options['disabledChannels']
-            or ctx.command.name in options['disabledCommands']
-            or ctx.author.id in options['bannedMembers']
-            or bot_channel and bot_channel != ctx.channel.id
-            or any(r for r in ctx.author.roles if r.id in options['disabledRoles']))
-            and not ctx.author.guild_permissions.manage_guild):
+             or ctx.command.name in options['disabledCommands']
+             or ctx.author.id in options['bannedMembers']
+             or bot_channel and bot_channel != ctx.channel.id
+             or any(r for r in ctx.author.roles if r.id in options['disabledRoles']))
+                and not ctx.author.guild_permissions.manage_guild):
             return
 
         ctx.locale = options['locale']

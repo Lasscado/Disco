@@ -1,5 +1,4 @@
 from asyncio import sleep
-from datetime import datetime
 from random import choice
 from json import loads
 from os import environ
@@ -29,7 +28,7 @@ class Tasks(commands.Cog):
         self._update_shard_stats.start()
 
     def cog_unload(self):
-        if disco.user.id == int(environ['BOT_ID']):
+        if self.disco.user.id == int(environ['BOT_ID']):
             self._change_avatar.cancel()
 
         self._change_presence.cancel()
@@ -61,7 +60,8 @@ class Tasks(commands.Cog):
             )
 
             await self.disco.change_presence(activity=Activity(type=activity,
-                name=message + f' [{shard}]', url='https://twitch.tv/naeg1n'), shard_id=shard)
+                                                               name=message + f' [{shard}]',
+                                                               url='https://twitch.tv/naeg1n'), shard_id=shard)
 
         self.disco.log.info('Presences alteradas.')
 
@@ -73,18 +73,18 @@ class Tasks(commands.Cog):
                 "instanceId": self.disco.instance_id,
                 "latency": self.disco.shards[shard_id].ws.latency,
                 "guilds": len(guilds),
-                "members": sum(g.member_count for g in guilds)
+                "members": sum(g.member_count for g in guilds if hasattr(g, 'member_count'))
             })
 
         self.disco.log.info('As estatísticas das Shards foram atualizadas.')
 
-    @tasks.loop(minutes=4)
+    @tasks.loop(minutes=2)
     async def _disconnect_inactive_players(self):
         self.disco.log.info('Procurando por players inativos')
         for player in self.disco.wavelink.players.values():
             guild = self.disco.get_guild(player.guild_id)
-            if not guild or not guild.me.voice or not player.current and not player.queue or \
-                not self.has_listeners(guild):
+            if guild is None or guild.me.voice is None or player.current is None and not player.queue or \
+                    not self.has_listeners(guild):
                 self.disco.loop.create_task(self._disconnect_player(player))
 
     async def _disconnect_player(self, player):
@@ -96,11 +96,11 @@ class Tasks(commands.Cog):
             return
 
         guild = self.disco.get_guild(player.guild_id)
-        if not guild or not guild.me.voice:
+        if guild is None or guild.me.voice is None:
             await player.node._send(op='destroy', guildId=str(player.guild_id))
             del player.node.players[player.guild_id]
             return
-        elif ((player.current or player.queue) and self.has_listeners(guild)):
+        elif (player.current or player.queue) and self.has_listeners(guild):
             return
 
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
@@ -111,7 +111,8 @@ class Tasks(commands.Cog):
 
     @staticmethod
     def has_listeners(guild):
-        return any(m for m in guild.me.voice.channel.members if not m.bot and not m.voice.deaf and not m.voice.self_deaf)
+        return any(m for m in guild.me.voice.channel.members
+                   if not m.bot and not m.voice.deaf and not m.voice.self_deaf)
 
 
 def setup(disco):

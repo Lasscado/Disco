@@ -1,7 +1,9 @@
-from .data import locales
 from os import environ
 
+from .data import locales
+
 fallback = environ['FALLBACK_LOCALE']
+
 
 def l(locale, path, values = {}):
     if hasattr(locale, 'locale'):

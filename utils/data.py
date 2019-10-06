@@ -1,8 +1,8 @@
-from dotenv import load_dotenv
+import re
 from os import listdir
 from json import load
 
-import re
+from dotenv import load_dotenv
 
 LOCALE = re.compile('^[a-z]{2}-[A-Z]{2}$')
 

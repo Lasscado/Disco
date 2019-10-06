@@ -4,7 +4,6 @@ from random import shuffle
 from math import ceil
 
 import discord
-import genius
 from discord.ext import commands
 
 from utils import web_url, get_length, checks, l, MusicError
@@ -14,7 +13,6 @@ from models import DiscoPlayer, DiscoTrack
 class Music(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
-        self.genius = genius.Client(environ['GENIUS_API_TOKEN'])
 
         disco.loop.create_task(self.initiate_nodes())
 
@@ -386,102 +384,6 @@ class Music(commands.Cog):
         ctx.player.queue.reverse()
         await ctx.player.send(l(ctx, 'commands.reverse.success', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["shuffle"]}))
-
-    @commands.command(name='lyrics', aliases=['ly'])
-    @commands.bot_has_permissions(embed_links=True)
-    @checks.requires_user_choices()
-    @commands.cooldown(1, 8, commands.BucketType.user)
-    async def _lyrics(self, ctx, *, query = None):
-        if not query:
-            if not (ctx.author.voice and ctx.me.voice) \
-                    or ctx.author.voice.channel != ctx.me.voice.channel:
-                raise commands.UserInputError
-                
-            playing = self.disco.get_player(ctx.guild.id).current
-            if not playing:
-                return await ctx.send(l(ctx, 'commands.lyrics.notPlaying', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
-
-            songs = await self.genius.search(playing.title)
-            if not songs:
-                return await ctx.send(l(ctx, 'commands.lyrics.currentNotFound', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
-        else:
-            songs = await self.genius.search(query)
-            if not songs:
-                return await ctx.send(l(ctx, 'commands.lyrics.notFound', {
-                        "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                    }))
-
-        self.disco._waiting_for_choice.add(ctx.author.id)
-
-        options = ''
-        for i, song in enumerate(songs, 1):
-            options += f'**`»`** `{i}` [**{song} - {song.artist}**]({song.url})\n'
-
-        cancel = l(ctx, 'commons.exit').lower()
-
-        em = discord.Embed(
-            colour=self.disco.color[0],
-            title=l(ctx, 'commands.lyrics.chooseOne'),
-            description=options
-        ).set_author(
-            name=l(ctx, 'commands.lyrics.searchResults') + ('' if \
-                query else ' ' + l(ctx, "commands.lyrics.nowPlaying")),
-            icon_url=ctx.guild.icon_url
-        ).set_thumbnail(
-            url=self.disco.user.avatar_url
-        ).set_footer(
-            text=l(ctx, 'commands.lyrics.typeToCancel', {
-                "value": cancel
-            })
-        )
-
-        q = await ctx.send(content=ctx.author.mention, embed=em)
-
-        try:
-            a = await self.disco.wait_for('message', timeout=120,
-                check=lambda c: c.channel.id == q.channel.id and c.author.id == ctx.author.id \
-                    and c.content and (c.content.isdigit() and 0 < int(c.content) <= len(songs)
-                    or c.content.lower() == cancel))
-        except Timeout:
-            a = None
-
-        if not a or a.content.lower() == cancel:
-            return await q.delete()
-
-        song = songs[int(a.content) - 1]
-
-        lyrics = await self.genius.get_lyrics(song)
-        if not lyrics:
-            return await ctx.send(l(ctx, 'commands.lyrics.lyricsNotFound', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
-
-        view_more = l(ctx, "commands.lyrics.viewMore", {"url": song.url})
-        if len(lyrics) > 2048:
-            lyrics = lyrics[:2048 - len(view_more)] + view_more
-
-        em = discord.Embed(
-            colour=self.disco.color[1],
-            title=f'{song} - {song.artist}',
-            description=lyrics,
-            url=song.url
-        ).set_thumbnail(
-            url=song.image_url
-        ).set_author(
-            name=l(ctx, 'commands.lyrics.songLyrics'),
-            icon_url=self.disco.user.avatar_url
-        ).set_footer(
-            text=str(ctx.author)
-        )
-
-        try:
-            await q.edit(content=None, embed=em)
-        except discord.NotFound:
-            pass
 
 
 def setup(disco):

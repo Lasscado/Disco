@@ -9,6 +9,7 @@ from discord.ext.commands.errors import *
 from utils import l
 from utils.errors import *
 
+
 class Events(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
@@ -104,6 +105,10 @@ class Events(commands.Cog):
         if not isinstance(e, WaitingForPreviousChoice) and hasattr(ctx, '_remove_from_waiting'):
             if ctx.author.id in self.disco._waiting_for_choice:
                 self.disco._waiting_for_choice.remove(ctx.author.id)
+
+        original = e.__cause__
+        if isinstance(original, (discord.NotFound, discord.Forbidden)):
+            return
 
         if isinstance(e, (MusicError, WaitingForPreviousChoice)):
             await ctx.send(e)

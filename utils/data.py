@@ -4,7 +4,7 @@ from json import load
 
 from dotenv import load_dotenv
 
-LOCALE = re.compile('^[a-z]{2}-[A-Z]{2}$')
+LOCALE = re.compile('^[a-z]{2}(_[A-Z]{2})?$')
 
 load_dotenv()
 

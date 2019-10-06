@@ -4,7 +4,7 @@ from .locale import l
 
 
 async def before_play(cog, ctx):
-    ctx.player = player = cog.get_player(ctx.guild.id)
+    ctx.player = player = ctx.bot.get_player(ctx.guild.id)
     if not ctx.me.voice:
         if not ctx.author.voice:
             raise MusicError(l(ctx, 'errors.userNotVoiceConnected', {"author": ctx.author.name,
@@ -65,7 +65,7 @@ class Checks:
                 raise MusicError(l(ctx, 'errors.notSameVoiceChannel', {"author": ctx.author.name,
                     "emoji": ctx.bot.emoji["false"]}))
 
-            ctx.player = ctx.cog.get_player(ctx.guild.id)
+            ctx.player = ctx.bot.get_player(ctx.guild.id)
 
             return True
 

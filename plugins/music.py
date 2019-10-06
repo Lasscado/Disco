@@ -22,9 +22,6 @@ class Music(commands.Cog):
         for node in self.disco.wavelink.nodes.values():
             self.disco.loop.create_task(node.destroy())
 
-    def get_player(self, guild_id: int):
-        return self.disco.wavelink.get_player(guild_id, cls=DiscoPlayer)
-
     async def initiate_nodes(self):
         for node in eval(environ['LAVALINK_NODES']):
             (await self.disco.wavelink.initiate_node(**node)).set_hook(self.on_track_event)
@@ -258,7 +255,7 @@ class Music(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _now_playing(self, ctx):
-        player = self.get_player(ctx.guild.id)
+        player = self.disco.get_player(ctx.guild.id)
         if not player.current:
             return await ctx.send(l(ctx, 'errors.notPlaying', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["false"]}))
@@ -339,7 +336,7 @@ class Music(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _queue(self, ctx, page: int = 1):
-        player = self.get_player(ctx.guild.id)
+        player = self.disco.get_player(ctx.guild.id)
         if not player.queue:
             return await ctx.send(l(ctx, 'errors.emptyQueue', {"author": ctx.author.name,
                 "emoji": self.disco.emoji["false"]}))
@@ -400,7 +397,7 @@ class Music(commands.Cog):
                     or ctx.author.voice.channel != ctx.me.voice.channel:
                 raise commands.UserInputError
                 
-            playing = self.get_player(ctx.guild.id).current
+            playing = self.disco.get_player(ctx.guild.id).current
             if not playing:
                 return await ctx.send(l(ctx, 'commands.lyrics.notPlaying', {
                     "emoji": self.disco.emoji['false'], "author": ctx.author.name

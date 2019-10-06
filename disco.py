@@ -4,6 +4,7 @@ from os import environ, listdir
 from datetime import datetime
 from discord import Game
 from database import BanManager, GuildManager, ShardManager, db
+from models import DiscoPlayer
 
 import logging
 import wavelink
@@ -116,6 +117,9 @@ class Disco(AutoShardedBot):
             await self.invoke(ctx)
         except Exception as e:
             self.dispatch('command_error', ctx, e)
+
+    def get_player(self, guild_id):
+        return self.wavelink.get_player(guild_id, cls=DiscoPlayer)
 
     def run(self):
         super().run(environ['BOT_TOKEN'])

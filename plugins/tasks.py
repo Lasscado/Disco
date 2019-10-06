@@ -73,7 +73,7 @@ class Tasks(commands.Cog):
                 "instanceId": self.disco.instance_id,
                 "latency": self.disco.shards[shard_id].ws.latency,
                 "guilds": len(guilds),
-                "members": sum(g.member_count for g in guilds if hasattr(g, 'member_count'))
+                "members": sum(g.member_count for g in guilds if hasattr(g, '_member_count'))
             })
 
         self.disco.log.info('As estatísticas das Shards foram atualizadas.')

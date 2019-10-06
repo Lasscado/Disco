@@ -1,5 +1,18 @@
 {
     "createdBy": "Criado por {creator}",
     "exit": "sair",
-    "command": "comando"
+    "command": "comando",
+    "unknown": "Desconhecido",
+    "start": "Começo",
+    "end": "Término",
+    "type": "Tipo",
+    "aired": "Exibição",
+    "ranking": "Posição",
+    "status": "Status",
+    "length": "Duração",
+    "categories": "Categorias",
+    "movie": "Filme",
+    "music": "Música",
+    "special": "Especial",
+    "averageRating": "Classificação Média"
 }

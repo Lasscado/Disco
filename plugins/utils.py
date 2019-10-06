@@ -1,12 +1,18 @@
+from asyncio import TimeoutError as TimeoutException
+from datetime import timedelta
+
 import discord
+import kitsu
+from babel.dates import format_date, format_timedelta
 from discord.ext import commands
 
-from utils import l
+from utils import l, checks
 
 
 class Utils(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self.kitsu = kitsu.Client()
 
     @commands.command(name='avatar', aliases=['av', 'pfp', 'picture'])
     @commands.cooldown(1, 6, commands.BucketType.user)
@@ -30,6 +36,238 @@ class Utils(commands.Cog):
         )
 
         await ctx.send(embed=em)
+
+    @commands.command(name='anime')
+    @checks.requires_user_choices()
+    @commands.cooldown(1, 8, commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
+    async def _anime(self, ctx, *, query):
+        entries = await self.kitsu.search('anime', query)
+        if not entries:
+            return await ctx.send(l(ctx, 'commands.anime.notFound', {"emoji": self.disco.emoji["false"],
+                                                                     "author": ctx.author.name}))
+
+        self.disco._waiting_for_choice.add(ctx.author.id)
+
+        replace_subtypes = ['movie', 'music', 'special']
+        for anime in entries:
+            if anime.subtype in replace_subtypes:
+                anime.subtype = l(ctx, 'commons.' + anime.subtype)
+
+        options = '\n'.join(f'**`»` `{i}` [{anime}]({anime.url})** ({anime.subtype})'
+                            for i, anime in enumerate(entries, 1))
+        cancel = l(ctx, 'commons.exit').lower()
+
+        em = discord.Embed(
+            color=self.disco.color[0],
+            title=l(ctx, 'commands.anime.chooseOne'),
+            description=options,
+        ).set_author(
+            name=l(ctx, 'commands.anime.searchResults'),
+            icon_url=ctx.author.avatar_url
+        ).set_thumbnail(
+            url=self.disco.user.avatar_url
+        ).set_footer(
+            text=l(ctx, 'commands.anime.typeToCancel', {"value": cancel})
+        )
+
+        q = await ctx.send(content=ctx.author.mention, embed=em)
+
+        def check(m):
+            return m.channel.id == q.channel.id and m.author.id == ctx.author.id \
+                   and (m.content.isdigit() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
+
+        try:
+            a = await self.disco.wait_for('message', timeout=120, check=check)
+        except TimeoutException:
+            a = None
+
+        if a is None or a.content.lower() == cancel:
+            return await q.delete()
+
+        anime = entries[int(a.content) - 1]
+        if anime.nsfw and not ctx.channel.nsfw:
+            return await q.edit(embed=None,
+                                content=l(ctx, 'commands.anime.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
+                                                                               "author": ctx.author.name}))
+
+        categories = await self.kitsu.fetch_media_categories(anime)
+        categories.sort(key=lambda item: item.title)
+        streaming_links = await self.kitsu.fetch_anime_streaming_links(anime)
+        streaming_links.sort(key=lambda item: item.title)
+
+        full_synopsis = l(ctx, 'commands.anime.readFullSynopsis', {"url": anime.url})
+        if len(anime.synopsis) > 2048:
+            anime.synopsis = anime.synopsis[:2048 - len(full_synopsis)] + full_synopsis
+
+        unknown = l(ctx, 'commons.unknown')
+        locale = ctx.locale.replace('-', '_')
+        started_at = format_date(anime.started_at, format='short', locale=locale) if anime.started_at else unknown
+        ended_at = format_date(anime.ended_at, format='short', locale=locale) if anime.ended_at else unknown
+        total_length = l(ctx, 'commands.anime.totalLength', {"length": format_timedelta(
+            timedelta(minutes=anime.episode_count * anime.episode_length), locale=locale)}) \
+            if anime.episode_count and anime.episode_length else ''
+
+        em.title = f'**{anime}**'
+        em.description = anime.synopsis or l(ctx, 'commands.anime.noSynopsis')
+        em.url = anime.url
+        em.set_author(
+            name='Anime',
+            icon_url=self.disco.user.avatar_url
+        ).set_thumbnail(
+            url=anime.poster_image_url
+        ).set_footer(
+            text=str(ctx.author)
+        ).add_field(
+            name=l(ctx, 'commons.status'),
+            value=l(ctx, 'commands.anime.status', {"status": l(ctx, 'commands.anime.' + anime.status),
+                                                   "subtype": anime.subtype}) + (l(ctx, 'commands.anime.episodes',
+                                                                                   {"episodes": anime.episode_count})
+                                                                                 if anime.episode_count else '')
+        ).add_field(
+            name=l(ctx, 'commons.aired'),
+            value=f'**{l(ctx, "commons.start")}**: {started_at}\n**{l(ctx, "commons.end")}**: {ended_at}'
+        ).add_field(
+            name=l(ctx, 'commons.length'),
+            value=total_length + (l(ctx, 'commands.anime.episodesLength', {"length": anime.episode_length})
+                                  if anime.episode_length else unknown)
+        ).add_field(
+            name=l(ctx, 'commons.ranking'),
+            value=l(ctx, 'commands.anime.ranking', {"popularity": anime.popularity_rank or unknown,
+                                                    "rating": anime.rating_rank or unknown})
+        ).add_field(
+            name=l(ctx, 'commands.anime.watchOnline'),
+            value=('\n'.join(f'[{streamer}]({streamer.url})' for streamer in streaming_links)
+                   if streaming_links else l(ctx, 'commands.anime.noLinksFound'))
+        ).add_field(
+            name=l(ctx, 'commons.averageRating'),
+            value=f'{(float(anime.average_rating) / 10):.2f}/10' if anime.average_rating else unknown
+        ).add_field(
+            name=l(ctx, 'commons.categories'),
+            value=', '.join(
+                f'[{l(ctx, "categories.kitsu" + category.title.replace(" ", "")) or category}]({category.url})'
+                for category in categories) if categories else unknown,
+            inline=False
+        ).add_field(
+            name='\u200b',
+            value=f'[**Kitsu**]({anime.url})'
+                  + (f' | [**Trailer**](https://youtube.com/watch?v={anime.youtube_video_id})'
+                     if anime.youtube_video_id else '')
+        )
+
+        await q.edit(content=None, embed=em)
+
+    @commands.command(name='manga')
+    @checks.requires_user_choices()
+    @commands.cooldown(1, 8, commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
+    async def _manga(self, ctx, *, query):
+        entries = await self.kitsu.search('manga', query)
+        if not entries:
+            return await ctx.send(l(ctx, 'commands.manga.notFound', {"emoji": self.disco.emoji["false"],
+                                                                     "author": ctx.author.name}))
+
+        self.disco._waiting_for_choice.add(ctx.author.id)
+
+        replace_subtypes = ['manga', 'oneshot', 'oel']
+        for manga in entries:
+            manga.subtype = l(ctx, 'commands.manga.' + manga.subtype) \
+                if manga.subtype in replace_subtypes else manga.subtype.title()
+
+        options = '\n'.join(f'**`»` `{i}` [{manga}]({manga.url})** ({manga.subtype})'
+                            for i, manga in enumerate(entries, 1))
+        cancel = l(ctx, 'commons.exit').lower()
+
+        em = discord.Embed(
+            color=self.disco.color[0],
+            title=l(ctx, 'commands.manga.chooseOne'),
+            description=options,
+        ).set_author(
+            name=l(ctx, 'commands.manga.searchResults'),
+            icon_url=ctx.author.avatar_url
+        ).set_thumbnail(
+            url=self.disco.user.avatar_url
+        ).set_footer(
+            text=l(ctx, 'commands.manga.typeToCancel', {"value": cancel})
+        )
+
+        q = await ctx.send(content=ctx.author.mention, embed=em)
+
+        def check(m):
+            return m.channel.id == q.channel.id and m.author.id == ctx.author.id \
+                   and (m.content.isdigit() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
+
+        try:
+            a = await self.disco.wait_for('message', timeout=120, check=check)
+        except TimeoutException:
+            a = None
+
+        if a is None or a.content.lower() == cancel:
+            return await q.delete()
+
+        manga = entries[int(a.content) - 1]
+        if manga.subtype == 'Doujin' and not ctx.channel.nsfw:
+            return await q.edit(embed=None,
+                                content=l(ctx, 'commands.manga.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
+                                                                               "author": ctx.author.name}))
+
+        categories = await self.kitsu.fetch_media_categories(manga)
+        categories.sort(key=lambda item: item.title)
+
+        full_synopsis = l(ctx, 'commands.anime.readFullSynopsis', {"url": manga.url})
+        if len(manga.synopsis) > 2048:
+            manga.synopsis = manga.synopsis[:2048 - len(full_synopsis)] + full_synopsis
+
+        unknown = l(ctx, 'commons.unknown')
+        locale = ctx.locale.replace('-', '_')
+        started_at = format_date(manga.started_at, format='short', locale=locale) if manga.started_at else unknown
+        ended_at = format_date(manga.ended_at, format='short', locale=locale) if manga.ended_at else unknown
+        volume_count = l(ctx, 'commands.manga.volumes', {"volumes": manga.volume_count}) if manga.volume_count else ''
+        chapter_count = l(ctx, 'commands.manga.chapters', {"chapters": manga.chapter_count}) \
+            if manga.chapter_count else ''
+
+        em.title = f'**{manga}**'
+        em.description = manga.synopsis or l(ctx, 'commands.anime.noSynopsis')
+        em.url = manga.url
+        em.set_author(
+            name=l(ctx, 'commands.manga.manga'),
+            icon_url=self.disco.user.avatar_url
+        ).set_thumbnail(
+            url=manga.poster_image_url
+        ).set_footer(
+            text=str(ctx.author)
+        ).add_field(
+            name=l(ctx, 'commons.status'),
+            value=l(ctx, 'commands.anime.status', {"status": l(ctx, 'commands.anime.' + manga.status),
+                                                   "subtype": manga.subtype})
+        ).add_field(
+            name=l(ctx, 'commons.aired'),
+            value=f'**{l(ctx, "commons.start")}**: {started_at}\n**{l(ctx, "commons.end")}**: {ended_at}'
+        ).add_field(
+            name=l(ctx, 'commands.manga.material'),
+            value=volume_count + chapter_count or unknown
+        ).add_field(
+            name=l(ctx, 'commons.ranking'),
+            value=l(ctx, 'commands.anime.ranking', {"popularity": manga.popularity_rank or unknown,
+                                                    "rating": manga.rating_rank or unknown})
+        ).add_field(
+            name=l(ctx, 'commands.manga.serialization'),
+            value=manga.serialization or unknown
+        ).add_field(
+            name=l(ctx, 'commons.averageRating'),
+            value=f'{(float(manga.average_rating) / 10):.2f}/10' if manga.average_rating else unknown
+        ).add_field(
+            name=l(ctx, 'commons.categories'),
+            value=', '.join(
+                f'[{l(ctx, "categories.kitsu" + category.title.replace(" ", "")) or category}]({category.url})'
+                for category in categories) if categories else unknown,
+            inline=False
+        ).add_field(
+            name='\u200b',
+            value=f'[**Kitsu**]({manga.url})'
+        )
+
+        await q.edit(content=None, embed=em)
 
 
 def setup(disco):

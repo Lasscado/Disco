@@ -5,16 +5,16 @@ import discord
 from discord.ext import commands
 
 
-class Owner(commands.Cog):
+class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, disco):
         self.disco = disco
 
         self.disco.loop.create_task(self._fetch_logs_channels())
 
     async def _fetch_logs_channels(self):
-       self.ban_logs = await self.disco.fetch_channel(int(os.environ['GLOBAL_BANS_CHANNEL_ID']))
+        self.ban_logs = await self.disco.fetch_channel(int(os.environ['GLOBAL_BANS_CHANNEL_ID']))
 
-    @commands.command(name='eval', hidden=True)
+    @commands.command(name='eval')
     @commands.is_owner()
     async def _eval(self, ctx, *, code):
         try:
@@ -27,7 +27,7 @@ class Owner(commands.Cog):
         except Exception as e:
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
 
-    @commands.command(name='reload', aliases=['rl'], hidden=True)
+    @commands.command(name='reload', aliases=['rl'])
     @commands.is_owner()
     async def _reload(self, ctx, plugin):
         try:
@@ -37,7 +37,7 @@ class Owner(commands.Cog):
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
             await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
 
-    @commands.command(name='load', aliases=['ld'], hidden=True)
+    @commands.command(name='load', aliases=['ld'])
     @commands.is_owner()
     async def _load(self, ctx, plugin):
         try:
@@ -47,7 +47,7 @@ class Owner(commands.Cog):
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
             await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
 
-    @commands.command(name='unload', aliases=['ul'], hidden=True)
+    @commands.command(name='unload', aliases=['ul'])
     @commands.is_owner()
     async def _unload(self, ctx, plugin):
         try:
@@ -57,15 +57,14 @@ class Owner(commands.Cog):
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
             await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
 
-    @commands.command(name='globalban', aliases=['gban'], hidden=True,
-        usage='<Guild/User> <ID> <Motivo>')
+    @commands.command(name='globalban', aliases=['gban'], usage='<Guild/User> <ID> <Motivo>')
     @commands.is_owner()
     async def _global_ban(self, ctx, target_type, target_id: int, *, reason):
         target_type = target_type.lower()
 
         if self.disco._bans.find(targetID=target_id, ignore=False):
             return await ctx.send(f'{self.disco.emoji["false"]} **{ctx.author.name}**, esse alvo '
-                'já está banido do meu sistema.')
+                                  'já está banido do meu sistema.')
 
         if target_type in ['user', 'u']:
             try:

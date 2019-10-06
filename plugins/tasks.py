@@ -70,7 +70,6 @@ class Tasks(commands.Cog):
         for shard_id in self.disco.launched_shards:
             guilds = [g for g in self.disco.guilds if g.shard_id == shard_id]
             self.disco._shards.get(shard_id).update({
-                "instanceId": self.disco.instance_id,
                 "latency": self.disco.shards[shard_id].ws.latency,
                 "guilds": len(guilds),
                 "members": sum(g.member_count for g in guilds if hasattr(g, '_member_count'))

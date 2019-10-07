@@ -93,7 +93,7 @@
     "locale": {
         "cmdUsage": "<Localidade>",
         "cmdDescription": "Altera a localidade/idioma das mensagens da Disco no servidor.",
-        "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Linguagens Disponíveis**:\n> {available}",
+        "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Localidades Disponíveis**:\n> {available}",
         "success": "{emoji} **{author}**, você alterou minha localidade nesse servidor para **`{locale}`**."
     },
     "prefix": {

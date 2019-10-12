@@ -195,7 +195,7 @@ class Utils(commands.Cog):
             anime.synopsis = anime.synopsis[:2048 - len(full_synopsis)] + full_synopsis
 
         unknown = l(ctx, 'commons.unknown')
-        locale = ctx.locale.replace('-', '_')
+        locale = ctx.locale
         started_at = format_date(anime.started_at, format='short', locale=locale) if anime.started_at else unknown
         ended_at = format_date(anime.ended_at, format='short', locale=locale) if anime.ended_at else unknown
         total_length = l(ctx, 'commands.anime.totalLength', {"length": format_timedelta(

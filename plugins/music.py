@@ -48,7 +48,8 @@ class Music(commands.Cog):
         if not player.repeat:
             await player.send(l(player, 'events.trackStart', {"track": track,
                                                               "emoji": self.disco.emoji["download"],
-                                                              "length": get_length(track.length)}))
+                                                              "length": 'LIVESTREAM' if track.is_stream else
+                                                              get_length(track.length)}))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
     @checks.requires_user_choices()
@@ -70,7 +71,7 @@ class Music(commands.Cog):
             total_length = 0
             tracks = results.tracks[:1500 - player.size]
             for track in tracks:
-                total_length += track.length
+                total_length += 0 if track.is_stream else track.length
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
             name = results.data['playlistInfo']['name']
@@ -86,7 +87,8 @@ class Music(commands.Cog):
 
                 await player.send(l(ctx, 'commands.play.trackAdded', {"track": track,
                                                                       "emoji": self.disco.emoji["plus"],
-                                                                      "length": get_length(track.length)}))
+                                                                      "length": 'LIVESTREAM' if track.is_stream else
+                                                                      get_length(track.length)}))
             else:
                 self.disco._waiting_for_choice.add(ctx.author.id)
 
@@ -115,8 +117,7 @@ class Music(commands.Cog):
 
                 def check(m):
                     return m.channel.id == q.channel.id and m.author.id == ctx.author.id and m.content \
-                           and (m.content.isdigit() and 0 < int(m.content) <= len(
-                        tracks) or m.content.lower() == cancel)
+                        and (m.content.isdigit() and 0 < int(m.content) <= len(tracks) or m.content.lower() == cancel)
 
                 try:
                     a = await self.disco.wait_for('message', timeout=120, check=check)
@@ -130,17 +131,18 @@ class Music(commands.Cog):
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
-                await q.edit(embed=None, content=l(ctx, 'commands.play.trackAdded', {"track": track,
-                                                                                     "emoji": self.disco.emoji["plus"],
-                                                                                     "length": get_length(
-                                                                                         track.length)}))
+                await q.edit(content=l(ctx, 'commands.play.trackAdded', {"track": track,
+                                                                         "emoji": self.disco.emoji["plus"],
+                                                                         "length": get_length(track.length)}),
+                             embed=None)
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
             await player.send(l(ctx, 'events.trackStart', {"author": ctx.author.name,
                                                            "emoji": self.disco.emoji["download"],
                                                            "track": player.current,
-                                                           "length": get_length(player.current.length)}))
+                                                           "length": 'LIVESTREAM' if player.current.is_stream else
+                                                           get_length(player.current.length)}))
 
             self.disco.played_tracks += 1
 
@@ -370,9 +372,10 @@ class Music(commands.Cog):
         current = player.current
         tracks = player.queue[skip:skip + per_page]
 
-        txt = l(ctx, 'commands.queue.currentTrack', {"track": current, "length": get_length(current.length)}) \
-              + '\n'.join(f'**`»`** `{i}` [**{t}**]({t.uri}) `[{get_length(t.length)}]` - {t.requester.mention}'
-                          for i, t in enumerate(tracks, skip + 1))
+        txt = (l(ctx, 'commands.queue.currentTrack', {"track": current, "length": get_length(current.length)})
+               if current else '') + '\n'.join(
+            f'**`»`** `{i}` [**{t}**]({t.uri}) `[{get_length(t.length)}]` - {t.requester.mention}'
+            for i, t in enumerate(tracks, skip + 1))
 
         em = discord.Embed(
             colour=self.disco.color[1],

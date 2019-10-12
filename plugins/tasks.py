@@ -105,8 +105,7 @@ class Tasks(commands.Cog):
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
 
         await player.destroy()
-        await player.send(l(player.locale, 'events.disconnectPlayer', {
-            "emoji": self.disco.emoji["alert"]}))
+        await player.send(l(player, 'events.disconnectPlayer', {"emoji": self.disco.emoji["alert"]}))
 
     @staticmethod
     def has_listeners(guild):

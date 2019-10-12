@@ -23,8 +23,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         g = self.disco._guilds.get(guild.id)
-        if guild.region.name == 'brazil':
-            g.update({"options.locale": "pt-BR"})
+        if str(guild.region) == 'brazil':
+            g.update({"options.locale": "pt_BR"})
 
         humans = 0;bots = 0
         for member in guild.members:
@@ -148,7 +148,7 @@ class Events(commands.Cog):
             em = discord.Embed(
                 colour=0xFF0000,
                 timestamp=ctx.message.created_at,
-                description=f'> {ctx.message.content}\n```py\n{e.__class__.__name__}: {e}```'
+                description=f'> {ctx.message.content[:1500]}\n```py\n{e.__class__.__name__}: {e}```'
             ).set_author(
                 name=f'{ctx.author} ({ctx.author.id})',
                 icon_url=ctx.author.avatar_url

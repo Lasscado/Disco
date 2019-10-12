@@ -1,5 +1,5 @@
 {
     "disconnectPlayer": "{emoji} Desconectei do canal de voz porque ninguém estava me usando para ouvir música.",
     "queueEnd": "{emoji} A fila de reprodução acabou.",
-    "trackStart": "{emoji} Tocando agora: **`{track}`** `{length}`. Requisitado por **{track.requester.name}**."
+    "trackStart": "{emoji} Tocando agora: **`{track}`** `({length})`. Requisitado por **{track.requester.name}**."
 }

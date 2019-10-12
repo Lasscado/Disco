@@ -10,7 +10,7 @@ class DiscoPlayer(Player):
         self.repeat = None
         self.bass_boost = False
         self.text_channel = None
-        self.locale = 'pt-BR'
+        self.locale = 'pt_BR'
 
     @property
     def size(self):

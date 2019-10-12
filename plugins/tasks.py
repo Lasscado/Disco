@@ -6,7 +6,7 @@ from os import environ
 from discord import Colour, Activity, ActivityType
 from discord.ext import commands, tasks
 
-from utils import avatars, l
+from utils import avatars, l, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
 
 
 class Tasks(commands.Cog):
@@ -53,15 +53,15 @@ class Tasks(commands.Cog):
         for shard in self.disco.shards:
             activity = choice(self._activities)
             message = choice(messages[activity.name]).format(
-                website="discobot.site",
+                website=WEBSITE_URL,
                 prefix=self.disco.prefixes[0],
                 guilds=guilds,
-                donate="patreon.com/discobot"
+                donate=PATREON_DONATE_URL
             )
 
             await self.disco.change_presence(activity=Activity(type=activity,
                                                                name=message + f' [{shard}]',
-                                                               url='https://twitch.tv/naeg1n'), shard_id=shard)
+                                                               url=STREAMING_ACTIVITY_URL), shard_id=shard)
 
         self.disco.log.info('Presences alteradas.')
 

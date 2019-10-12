@@ -1,0 +1,9 @@
+SUPPORT_GUILD_INVITE_URL = 'https://invite.gg/disco'
+BOT_INVITE_URL = 'https://discobot.site/invite'
+BOT_LIST_VOTE_URL = 'https://botsparadiscord.xyz/bots/disco/votar'
+PATREON_DONATE_URL = 'https://patreon.com/join/discobot'
+GITHUB_REPOSITORY_URL = 'https://github.com/Naegin/Disco'
+WEBSITE_URL = 'https://discobot.site'
+TRANSPARENT_IMAGE_URL = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
+STREAMING_ACTIVITY_URL = 'https://twitch.tv/naeg1n'
+DEFAULT_EMBED_COLORS = [0xB70DB3, 0xFF3DD3]

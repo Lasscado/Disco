@@ -5,9 +5,8 @@ from discord.ext import commands
 from humanize import naturalsize
 from prettytable import PrettyTable
 
-from utils import get_length, l
-
-TRANSPARENT = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
+from utils import get_length, l, TRANSPARENT_IMAGE_URL, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_INVITE_URL, \
+    GITHUB_REPOSITORY_URL, BOT_LIST_VOTE_URL
 
 
 class Information(commands.Cog):
@@ -33,7 +32,7 @@ class Information(commands.Cog):
                 name=ctx.me.name,
                 icon_url=self.disco.user.avatar_url
             ).set_thumbnail(
-                url=TRANSPARENT
+                url=TRANSPARENT_IMAGE_URL
             ).add_field(
                 name=l(ctx, 'commands.help.description'),
                 value=l(ctx, f'commands.{cmd.name}.cmdDescription') \
@@ -55,15 +54,17 @@ class Information(commands.Cog):
 
         command = l(ctx, 'commons.command')
 
+        creator = self.disco.get_user(self.disco.owner_id)
+
         em = discord.Embed(
             timestap=ctx.message.created_at,
             colour=self.disco.color[0],
             description=l(ctx, 'commands.help.links', {
-                "support": "https://discord.gg/qN5886E",
-                "invite": "https://discobot.site",
-                "donate": "https://patreon.com/discobot",
-                "vote": "https://botsparadiscord.xyz/bots/disco",
-                "github": "https://github.com/Naegin/Disco",
+                "support": SUPPORT_GUILD_INVITE_URL,
+                "invite": BOT_INVITE_URL,
+                "donate": PATREON_DONATE_URL,
+                "vote": BOT_LIST_VOTE_URL,
+                "github": GITHUB_REPOSITORY_URL,
                 "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes)
             })
         ).set_author(
@@ -72,8 +73,8 @@ class Information(commands.Cog):
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).set_footer(
-            text=l(ctx, 'commons.createdBy', {"creator": 'Naegin#0049'}),
-            icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
+            text=l(ctx, 'commons.createdBy', {"creator": creator}),
+            icon_url=creator.avatar_url
         )
 
         for name, cog in self.disco.cogs.items():
@@ -98,25 +99,26 @@ class Information(commands.Cog):
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _bot_info(self, ctx):
         shard_ping = int(self.disco.shards[ctx.guild.shard_id].ws.latency * 1000)
-        uptime = get_length((datetime.utcnow() - self.disco.started_at).total_seconds() * 1000,
-            True)
+        uptime = get_length((datetime.utcnow() - self.disco.started_at).total_seconds() * 1000, True)
+
+        creator = self.disco.get_user(self.disco.owner_id)
 
         em = discord.Embed(
             colour=self.disco.color[0],
             title=l(ctx, 'commands.botinfo.statistics'),
             description=l(ctx, 'commands.botinfo.links', {
-                "support": "https://discord.gg/qN5886E",
-                "invite": "https://discobot.site",
-                "donate": "https://patreon.com/discobot",
-                "vote": "https://botsparadiscord.xyz/bots/disco",
-                "github": "https://github.com/Naegin/Disco"
+                "support": SUPPORT_GUILD_INVITE_URL,
+                "invite": BOT_INVITE_URL,
+                "donate": PATREON_DONATE_URL,
+                "vote": BOT_LIST_VOTE_URL,
+                "github": GITHUB_REPOSITORY_URL
             })
         ).set_author(
             name=ctx.me.name,
             icon_url=self.disco.user.avatar_url
         ).set_footer(
-            text=l(ctx, 'commons.createdBy', {"creator": "Naegin#0049"}),
-            icon_url='https://cdn.naeg.in/i/naegin-avatar.gif'
+            text=l(ctx, 'commons.createdBy', {"creator": creator}),
+            icon_url=creator.avatar_url
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).add_field(
@@ -160,7 +162,7 @@ class Information(commands.Cog):
     async def _invite(self, ctx):
         em = discord.Embed(
             colour=self.disco.color[1],
-            description=l(ctx, 'commands.invite.text', {"link": "https://discobot.site"})
+            description=l(ctx, 'commands.invite.text', {"link": BOT_INVITE_URL})
         ).set_author(
             name=ctx.me.name,
             icon_url=self.disco.user.avatar_url
@@ -178,7 +180,7 @@ class Information(commands.Cog):
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _donate(self, ctx):
         await ctx.send(l(ctx, 'commands.donate.text', {"emoji": self.disco.emoji["featured"],
-            "link": "https://patreon.com/discobot"}))
+            "link": PATREON_DONATE_URL}))
 
     @commands.command(name='shards', aliases=['latencies'])
     @commands.cooldown(1, 8, commands.BucketType.user)

@@ -7,7 +7,7 @@ from discord import Game
 from discord.ext.commands import AutoShardedBot
 
 from database import BanManager, GuildManager, ShardManager, db
-from utils import emojis, custom_prefix
+from utils import emojis, custom_prefix, DEFAULT_EMBED_COLORS
 from models import DiscoPlayer
 
 log = logging.getLogger('disco')
@@ -32,7 +32,7 @@ class Disco(AutoShardedBot):
         self._shards = ShardManager(db.shards)
         self.log = log
         self.emoji = emojis
-        self.color = [0xB70DB3, 0xFF3DD3]
+        self.color = DEFAULT_EMBED_COLORS
         self.loaded = False
         self.launched_shards = []
         self.started_at = datetime.utcnow()

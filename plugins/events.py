@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.errors import *
 
-from utils import l
+from utils import l, SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL
 from utils.errors import *
 
 
@@ -162,7 +162,7 @@ class Events(commands.Cog):
             await ctx.send(l(ctx, 'errors.unexpectedError', {"emoji": self.disco.emoji["false"],
                                                              "author": ctx.author.name,
                                                              "command": ctx.command.qualified_name,
-                                                             "support": "https://invite.gg/disco"}))
+                                                             "support": SUPPORT_GUILD_INVITE_URL}))
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
@@ -179,7 +179,7 @@ class Events(commands.Cog):
 
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 7) == 1:
             await ctx.send(l(ctx.locale, 'commands.donate.text', {
-                "emoji": self.disco.emoji["featured"], "link": "https://patreon.com/discobot"}))
+                "emoji": self.disco.emoji["featured"], "link": PATREON_DONATE_URL}))
 
 
 def setup(disco):

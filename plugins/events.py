@@ -159,6 +159,11 @@ class Events(commands.Cog):
             await self.error_logs.send(content=f'Comando executado no canal {ctx.channel} ({ctx.channel.id})'
                 f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
 
+            await ctx.send(l(ctx, 'errors.unexpectedError', {"emoji": self.disco.emoji["false"],
+                                                             "author": ctx.author.name,
+                                                             "command": ctx.command.qualified_name,
+                                                             "support": "https://invite.gg/disco"}))
+
     @commands.Cog.listener()
     async def on_command(self, ctx):
         self.disco.invoked_commands += 1

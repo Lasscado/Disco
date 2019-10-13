@@ -5,7 +5,7 @@ from discord.ext import commands
 from humanize import naturalsize
 from prettytable import PrettyTable
 
-from utils import get_length, l, TRANSPARENT_IMAGE_URL, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_INVITE_URL, \
+from utils import get_length, TRANSPARENT_IMAGE_URL, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_INVITE_URL, \
     GITHUB_REPOSITORY_URL, BOT_LIST_VOTE_URL
 
 
@@ -20,30 +20,30 @@ class Information(commands.Cog):
         if command:
             cmd = self.disco.get_command(command)
             if not cmd or cmd.hidden:
-                return await ctx.send(l(ctx, 'commands.help.notFound', {"author": ctx.author.name,
+                return await ctx.send(ctx.t('commands.help.notFound', {"author": ctx.author.name,
                     "emoji": self.disco.emoji["false"]}))
 
-            usage = l(ctx, f'commands.{cmd.name}.cmdUsage')
+            usage = ctx.t(f'commands.{cmd.name}.cmdUsage')
 
             em = discord.Embed(
                 colour=self.disco.color[0],
-                title=l(ctx, 'commands.help.commandName', {"command": cmd.name.title()})
+                title=ctx.t('commands.help.commandName', {"command": cmd.name.title()})
             ).set_author(
                 name=ctx.me.name,
                 icon_url=self.disco.user.avatar_url
             ).set_thumbnail(
                 url=TRANSPARENT_IMAGE_URL
             ).add_field(
-                name=l(ctx, 'commands.help.description'),
-                value=l(ctx, f'commands.{cmd.name}.cmdDescription') \
-                    or l(ctx, 'commands.help.notSupplied')
+                name=ctx.t('commands.help.description'),
+                value=ctx.t(f'commands.{cmd.name}.cmdDescription') \
+                    or ctx.t('commands.help.notSupplied')
             ).add_field(
-                name=l(ctx, 'commands.help.usage'),
+                name=ctx.t('commands.help.usage'),
                 value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
             ).add_field(
-                name=l(ctx, 'commands.help.aliases'),
+                name=ctx.t('commands.help.aliases'),
                 value=' | '.join([f'`{a}`' for a in cmd.aliases]) \
-                    or l(ctx, 'commands.help.notDefined'),
+                    or ctx.t('commands.help.notDefined'),
                 inline=False
             )
 
@@ -52,14 +52,14 @@ class Information(commands.Cog):
         custom_prefix = ctx._guild.data['options']['prefix']
         prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
-        command = l(ctx, 'commons.command')
+        command = ctx.t('commons.command')
 
         creator = self.disco.get_user(self.disco.owner_id)
 
         em = discord.Embed(
             timestap=ctx.message.created_at,
             colour=self.disco.color[0],
-            description=l(ctx, 'commands.help.links', {
+            description=ctx.t('commands.help.links', {
                 "support": SUPPORT_GUILD_INVITE_URL,
                 "invite": BOT_INVITE_URL,
                 "donate": PATREON_DONATE_URL,
@@ -73,7 +73,7 @@ class Information(commands.Cog):
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).set_footer(
-            text=l(ctx, 'commons.createdBy', {"creator": creator}),
+            text=ctx.t('commons.createdBy', {"creator": creator}),
             icon_url=creator.avatar_url
         )
 
@@ -82,14 +82,14 @@ class Information(commands.Cog):
             value = ' | '.join([f'`{c}`' for c in cmds])
 
             if value:
-                em.add_field(name=l(ctx, 'commands.help.categoryCommands', {"total": len(cmds),
-                    "category": l(ctx, f'categories.{name.lower()}'),
+                em.add_field(name=ctx.t('commands.help.categoryCommands', {"total": len(cmds),
+                    "category": ctx.t(f'categories.{name.lower()}'),
                     "emoji": self.disco.emoji["category" + name]}),
                     value=value)
 
         em.add_field(
             name='\u200b',
-            value=l(ctx, 'commands.help.tip', {"command": f'{ctx.prefix}{ctx.invoked_with}'})
+            value=ctx.t('commands.help.tip', {"command": f'{ctx.prefix}{ctx.invoked_with}'})
         )
 
         await ctx.send(content=ctx.author.mention, embed=em)
@@ -105,8 +105,8 @@ class Information(commands.Cog):
 
         em = discord.Embed(
             colour=self.disco.color[0],
-            title=l(ctx, 'commands.botinfo.statistics'),
-            description=l(ctx, 'commands.botinfo.links', {
+            title=ctx.t('commands.botinfo.statistics'),
+            description=ctx.t('commands.botinfo.links', {
                 "support": SUPPORT_GUILD_INVITE_URL,
                 "invite": BOT_INVITE_URL,
                 "donate": PATREON_DONATE_URL,
@@ -117,13 +117,13 @@ class Information(commands.Cog):
             name=ctx.me.name,
             icon_url=self.disco.user.avatar_url
         ).set_footer(
-            text=l(ctx, 'commons.createdBy', {"creator": creator}),
+            text=ctx.t('commons.createdBy', {"creator": creator}),
             icon_url=creator.avatar_url
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).add_field(
-            name=l(ctx, 'commands.botinfo.generalInfoTitle'),
-            value=l(ctx, 'commands.botinfo.generalInfoDescLeft', {
+            name=ctx.t('commands.botinfo.generalInfoTitle'),
+            value=ctx.t('commands.botinfo.generalInfoDescLeft', {
                 "shard": ctx.guild.shard_id+1,
                 "shards": len(self.disco.shards),
                 "ping": shard_ping,
@@ -134,7 +134,7 @@ class Information(commands.Cog):
             })
         ).add_field(
             name='\u200b',
-            value=l(ctx, 'commands.botinfo.generalInfoDescRight', {
+            value=ctx.t('commands.botinfo.generalInfoDescRight', {
                 "uptime": uptime,
                 "messages": f'{self.disco.read_messages:,}',
                 "commands": f'{self.disco.invoked_commands:,}',
@@ -147,7 +147,7 @@ class Information(commands.Cog):
 
             em.add_field(
                 name=f'**LAVALINK NODE {identifier}**',
-                value=l(ctx, 'commands.botinfo.nodeInfo', {
+                value=ctx.t('commands.botinfo.nodeInfo', {
                     "region": node.region.title().replace("_", " "),
                     "uptime": get_length(stats.uptime, True),
                     "stats": stats,
@@ -162,7 +162,7 @@ class Information(commands.Cog):
     async def _invite(self, ctx):
         em = discord.Embed(
             colour=self.disco.color[1],
-            description=l(ctx, 'commands.invite.text', {"link": BOT_INVITE_URL})
+            description=ctx.t('commands.invite.text', {"link": BOT_INVITE_URL})
         ).set_author(
             name=ctx.me.name,
             icon_url=self.disco.user.avatar_url
@@ -179,7 +179,7 @@ class Information(commands.Cog):
     @commands.command(name='donate', aliases=['donation', 'doar'])
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _donate(self, ctx):
-        await ctx.send(l(ctx, 'commands.donate.text', {"emoji": self.disco.emoji["featured"],
+        await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
             "link": PATREON_DONATE_URL}))
 
     @commands.command(name='shards', aliases=['latencies'])
@@ -204,11 +204,11 @@ class Information(commands.Cog):
     @commands.command(name='whatsmyprefix', hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def _whats_my_prefix(self, ctx):
-        command = l(ctx, 'commons.command')
+        command = ctx.t('commons.command')
         custom_prefix = ctx._guild.data['options']['prefix']
         prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
-        await ctx.send(l(ctx, 'commands.whatsmyprefix.message', {"author": ctx.author.name,
+        await ctx.send(ctx.t('commands.whatsmyprefix.message', {"author": ctx.author.name,
             "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes),
             "emoji": self.disco.emoji["alert"]
         }))
@@ -218,41 +218,41 @@ class Information(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     @commands.bot_has_permissions(embed_links=True)
     async def _settings(self, ctx):
-        not_defined = l(ctx, 'commands.serversettings.notDefined')
+        not_defined = ctx.t('commands.serversettings.notDefined')
         options = ctx._guild.data['options']
 
         em = discord.Embed(
             colour=self.disco.color[0],
-            title=l(ctx, 'commands.serversettings.title')
+            title=ctx.t('commands.serversettings.title')
         ).set_author(
             name=ctx.guild.name,
             icon_url=ctx.guild.icon_url
         ).add_field(
-            name=l(ctx, 'commands.serversettings.customPrefix'),
+            name=ctx.t('commands.serversettings.customPrefix'),
             value=f'`{options["prefix"] or not_defined}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.djRole'),
+            name=ctx.t('commands.serversettings.djRole'),
             value=f'`{ctx.guild.get_role(options["djRole"]) or not_defined}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.botChannel'),
+            name=ctx.t('commands.serversettings.botChannel'),
             value=f'`{ctx.guild.get_channel(options["botChannel"]) or not_defined}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.defaultVolume'),
+            name=ctx.t('commands.serversettings.defaultVolume'),
             value=f'`{options["defaultVolume"]}%`' if options['defaultVolume'] else f'`{not_defined}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.locale'),
+            name=ctx.t('commands.serversettings.locale'),
             value=f'`{options["locale"]}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.localBans'),
+            name=ctx.t('commands.serversettings.localBans'),
             value=f'`{len(options["bannedMembers"])}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.disabledRoles'),
+            name=ctx.t('commands.serversettings.disabledRoles'),
             value=f'`{len(options["disabledRoles"])}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.disabledChannels'),
+            name=ctx.t('commands.serversettings.disabledChannels'),
             value=f'`{len(options["disabledChannels"])}`'
         ).add_field(
-            name=l(ctx, 'commands.serversettings.disabledCommands'),
+            name=ctx.t('commands.serversettings.disabledCommands'),
             value=f'`{len(options["disabledCommands"])}`'
         )
 

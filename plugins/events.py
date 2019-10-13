@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.errors import *
 
-from utils import l, SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL
+from utils import SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL
 from utils.errors import *
 
 
@@ -118,30 +118,30 @@ class Events(commands.Cog):
                 return
 
             _, s = divmod(e.retry_after, 60)
-            await ctx.send(l(ctx, 'errors.onCooldown', {"emoji": self.disco.emoji["false"],
+            await ctx.send(ctx.t('errors.onCooldown', {"emoji": self.disco.emoji["false"],
                 "author": ctx.author.name, "cooldown": int(s)}), delete_after=s+6)
 
         elif isinstance(e, MissingRole):
-            await ctx.send(l(ctx, 'errors.missingRole', {"emoji": self.disco.emoji["false"],
+            await ctx.send(ctx.t('errors.missingRole', {"emoji": self.disco.emoji["false"],
                 "role": e.missing_role[0] or "DJ", "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
             if ctx.prefix == f'<@{ctx.me.id}> ':
                 ctx.prefix = f'@{ctx.me.name} '
 
-            usage = l(ctx, f'commands.{ctx.command.name}.cmdUsage')
-            await ctx.send(l(ctx, 'errors.inputError', {"emoji": self.disco.emoji["false"],
+            usage = ctx.t(f'commands.{ctx.command.name}.cmdUsage')
+            await ctx.send(ctx.t('errors.inputError', {"emoji": self.disco.emoji["false"],
                 "usage": f'{ctx.prefix}{ctx.invoked_with} {usage if usage else ""}',
                 "author": ctx.author.name}))
 
         elif isinstance(e, MissingPermissions):
-            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
-            await ctx.send(l(ctx, 'errors.missingPermissions', {"emoji": self.disco.emoji["false"],
+            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
+            await ctx.send(ctx.t('errors.missingPermissions', {"emoji": self.disco.emoji["false"],
                 "permissions": perms, "author": ctx.author.name}))
 
         elif isinstance(e, BotMissingPermissions):
-            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{l(ctx, "permissions." + p).upper()}`**' for p in e.missing_perms])
-            await ctx.send(l(ctx, 'errors.botMissingPermissions', {"emoji": self.disco.emoji["false"],
+            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
+            await ctx.send(ctx.t('errors.botMissingPermissions', {"emoji": self.disco.emoji["false"],
                 "permissions": perms, "author": ctx.author.name}))
 
         else:
@@ -159,7 +159,7 @@ class Events(commands.Cog):
             await self.error_logs.send(content=f'Comando executado no canal {ctx.channel} ({ctx.channel.id})'
                 f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
 
-            await ctx.send(l(ctx, 'errors.unexpectedError', {"emoji": self.disco.emoji["false"],
+            await ctx.send(ctx.t('errors.unexpectedError', {"emoji": self.disco.emoji["false"],
                                                              "author": ctx.author.name,
                                                              "command": ctx.command.qualified_name,
                                                              "support": SUPPORT_GUILD_INVITE_URL}))
@@ -178,8 +178,8 @@ class Events(commands.Cog):
                 self.disco._waiting_for_choice.remove(ctx.author.id)
 
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 7) == 1:
-            await ctx.send(l(ctx.locale, 'commands.donate.text', {
-                "emoji": self.disco.emoji["featured"], "link": PATREON_DONATE_URL}))
+            await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
+                                                          "link": PATREON_DONATE_URL}))
 
 
 def setup(disco):

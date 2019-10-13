@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from os import environ, listdir
 
+import i18n
 import wavelink
 from discord import Game
 from discord.ext.commands import AutoShardedBot
@@ -30,6 +31,7 @@ class Disco(AutoShardedBot):
         self._bans = BanManager(db.bans)
         self._guilds = GuildManager(db.guilds)
         self._shards = ShardManager(db.shards)
+        self.i18n = i18n.I18N(source='pt_BR')
         self.log = log
         self.emoji = emojis
         self.color = DEFAULT_EMBED_COLORS
@@ -80,6 +82,9 @@ class Disco(AutoShardedBot):
 
             log.info('Lista de banidos carregada.')
 
+            self.i18n.load_all_from_path()
+            log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')
+
             self.loaded = True
 
         log.info('Sente o GRAVE!')
@@ -111,6 +116,7 @@ class Disco(AutoShardedBot):
             return
 
         ctx.locale = options['locale']
+        ctx.t = self.i18n.get_t(ctx.locale)
 
         try:
             await self.invoke(ctx)

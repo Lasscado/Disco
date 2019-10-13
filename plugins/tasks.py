@@ -6,7 +6,7 @@ from os import environ
 from discord import Colour, Activity, ActivityType
 from discord.ext import commands, tasks
 
-from utils import avatars, l, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
+from utils import avatars, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
 
 
 class Tasks(commands.Cog):
@@ -105,7 +105,7 @@ class Tasks(commands.Cog):
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
 
         await player.destroy()
-        await player.send(l(player, 'events.disconnectPlayer', {"emoji": self.disco.emoji["alert"]}))
+        await player.send(player.t('events.disconnectPlayer', {"emoji": self.disco.emoji["alert"]}))
 
     @staticmethod
     def has_listeners(guild):

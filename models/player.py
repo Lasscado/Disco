@@ -17,9 +17,11 @@ class DiscoPlayer(Player):
         return len(self.queue)
 
     async def send(self, content=None, embed=None):
+        channel = self.text_channel
+        if channel is None or not channel.permissions_for(channel.guild.me).send_messages:
+            return
+
         try:
-            m = await self.text_channel.send(content=content, embed=embed)
+            await channel.send(content=content, embed=embed)
         except (Forbidden, NotFound):
             pass
-        else:
-            return m

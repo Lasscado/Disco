@@ -74,20 +74,20 @@ class Music(commands.Cog):
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
             name = results.data['playlistInfo']['name']
-            await player.send(ctx.t('commands.play.playlistAdded', {"playlist": name,
-                                                                    "emoji": self.disco.emoji["plus"],
-                                                                    "length": get_length(total_length),
-                                                                    "added": len(tracks)}))
+            await ctx.send(ctx.t('commands.play.playlistAdded', {"playlist": name,
+                                                                 "emoji": self.disco.emoji["plus"],
+                                                                 "length": get_length(total_length),
+                                                                 "added": len(tracks)}))
         else:
             if len(results) == 1:
                 track = results[0]
 
                 player.queue.append(DiscoTrack(ctx.author, track.id, track.info))
 
-                await player.send(ctx.t('commands.play.trackAdded', {"track": track,
-                                                                     "emoji": self.disco.emoji["plus"],
-                                                                     "length": 'LIVESTREAM' if track.is_stream else
-                                                                     get_length(track.length)}))
+                await ctx.send(ctx.t('commands.play.trackAdded', {"track": track,
+                                                                  "emoji": self.disco.emoji["plus"],
+                                                                  "length": 'LIVESTREAM' if track.is_stream else
+                                                                  get_length(track.length)}))
             else:
                 self.disco._waiting_for_choice.add(ctx.author.id)
 
@@ -112,12 +112,11 @@ class Music(commands.Cog):
                     })
                 )
 
-                q = await player.send(content=ctx.author.mention, embed=em)
+                q = await ctx.send(content=ctx.author.mention, embed=em)
 
                 def check(m):
                     return m.channel.id == q.channel.id and m.author.id == ctx.author.id and m.content \
-                           and (m.content.isdigit() and 0 < int(m.content) <= len(
-                        tracks) or m.content.lower() == cancel)
+                        and (m.content.isdigit() and 0 < int(m.content) <= len(tracks) or m.content.lower() == cancel)
 
                 try:
                     a = await self.disco.wait_for('message', timeout=120, check=check)
@@ -138,11 +137,11 @@ class Music(commands.Cog):
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
-            await player.send(ctx.t('events.trackStart', {"author": ctx.author.name,
-                                                          "emoji": self.disco.emoji["download"],
-                                                          "track": player.current,
-                                                          "length": 'LIVESTREAM' if player.current.is_stream else
-                                                          get_length(player.current.length)}))
+            await ctx.send(ctx.t('events.trackStart', {"author": ctx.author.name,
+                                                       "emoji": self.disco.emoji["download"],
+                                                       "track": player.current,
+                                                       "length": 'LIVESTREAM' if player.current.is_stream else
+                                                       get_length(player.current.length)}))
 
             self.disco.played_tracks += 1
 
@@ -152,8 +151,8 @@ class Music(commands.Cog):
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _shuffle(self, ctx):
         shuffle(ctx.player.queue)
-        await ctx.player.send(ctx.t('commands.shuffle.shuffled', {"author": ctx.author.name,
-                                                                  "emoji": self.disco.emoji["shuffle"]}))
+        await ctx.send(ctx.t('commands.shuffle.shuffled', {"author": ctx.author.name,
+                                                           "emoji": self.disco.emoji["shuffle"]}))
 
     @commands.command(name='repeat', aliases=['loop', 'repetir'])
     @checks.staffer_or_dj_role()
@@ -166,14 +165,14 @@ class Music(commands.Cog):
 
         if ctx.player.repeat:
             ctx.player.repeat = None
-            await ctx.player.send(ctx.t('commands.repeat.disable', {"author": ctx.author.name,
-                                                                    "emoji": self.disco.emoji["repeatOne"],
-                                                                    "track": ctx.player.current}))
+            await ctx.send(ctx.t('commands.repeat.disable', {"author": ctx.author.name,
+                                                             "emoji": self.disco.emoji["repeatOne"],
+                                                             "track": ctx.player.current}))
         else:
             ctx.player.repeat = ctx.player.current
-            await ctx.player.send(ctx.t('commands.repeat.enable', {"author": ctx.author.name,
-                                                                   "emoji": self.disco.emoji["repeatOne"],
-                                                                   "track": ctx.player.current}))
+            await ctx.send(ctx.t('commands.repeat.enable', {"author": ctx.author.name,
+                                                            "emoji": self.disco.emoji["repeatOne"],
+                                                            "track": ctx.player.current}))
 
     @commands.command(name='stop', aliases=['disconnect', 'dc', 'parar', 'sair'])
     @checks.staffer_or_dj_role()
@@ -181,9 +180,9 @@ class Music(commands.Cog):
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _stop(self, ctx):
         await ctx.player.destroy()
-        await ctx.player.send(ctx.t('commands.stop.stopped', {"author": ctx.author.name,
-                                                              "emoji": self.disco.emoji["true"],
-                                                              "channel": ctx.me.voice.channel}))
+        await ctx.send(ctx.t('commands.stop.stopped', {"author": ctx.author.name,
+                                                       "emoji": self.disco.emoji["true"],
+                                                       "channel": ctx.me.voice.channel}))
 
     @commands.command(name='volume', aliases=['vol', 'v'])
     @checks.staffer_or_dj_role()
@@ -195,9 +194,9 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         await ctx.player.set_volume(vol)
-        await ctx.player.send(ctx.t('commands.volume.changed', {"author": ctx.author.name,
-                                                                "emoji": self.disco.emoji["volume"],
-                                                                "value": vol}))
+        await ctx.send(ctx.t('commands.volume.changed', {"author": ctx.author.name,
+                                                         "emoji": self.disco.emoji["volume"],
+                                                         "value": vol}))
 
     @commands.command(name='clear', aliases=['reset', 'limpar'])
     @checks.staffer_or_dj_role()
@@ -209,8 +208,8 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         ctx.player.queue.clear()
-        await ctx.player.send(ctx.t('commands.clear.cleaned', {"author": ctx.author.name,
-                                                               "emoji": self.disco.emoji["alert"]}))
+        await ctx.send(ctx.t('commands.clear.cleaned', {"author": ctx.author.name,
+                                                        "emoji": self.disco.emoji["alert"]}))
 
     @commands.command(name='pause', aliases=['pausar'])
     @checks.staffer_or_dj_role()
@@ -222,11 +221,11 @@ class Music(commands.Cog):
                                                               "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.paused:
-            await ctx.player.send(ctx.t('commands.pause.unpause', {"author": ctx.author.name,
-                                                                   "emoji": self.disco.emoji["pause"]}))
+            await ctx.send(ctx.t('commands.pause.unpause', {"author": ctx.author.name,
+                                                            "emoji": self.disco.emoji["pause"]}))
         else:
-            await ctx.player.send(ctx.t('commands.pause.pause', {"author": ctx.author.name,
-                                                                 "emoji": self.disco.emoji["pause"]}))
+            await ctx.send(ctx.t('commands.pause.pause', {"author": ctx.author.name,
+                                                          "emoji": self.disco.emoji["pause"]}))
 
         await ctx.player.set_pause(not ctx.player.paused)
 
@@ -296,9 +295,9 @@ class Music(commands.Cog):
 
         track = ctx.player.current
         if track.requester.id == ctx.author.id:
-            await ctx.player.send(ctx.t('commands.skip.skippedByRequester', {"track": track,
-                                                                             "emoji": self.disco.emoji["alert"],
-                                                                             "author": ctx.author.name}))
+            await ctx.send(ctx.t('commands.skip.skippedByRequester', {"track": track,
+                                                                      "emoji": self.disco.emoji["alert"],
+                                                                      "author": ctx.author.name}))
 
             return await ctx.player.stop()
 
@@ -307,13 +306,13 @@ class Music(commands.Cog):
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
         track.skip_votes.add(ctx.author.id)
-        await ctx.player.send(ctx.t('commands.skip.voteAdded', {"author": ctx.author.name,
-                                                                "emoji": self.disco.emoji["alert"],
-                                                                "votes": len(track.skip_votes)}))
+        await ctx.send(ctx.t('commands.skip.voteAdded', {"author": ctx.author.name,
+                                                         "emoji": self.disco.emoji["alert"],
+                                                         "votes": len(track.skip_votes)}))
 
         if len(track.skip_votes) == 3:
-            await ctx.player.send(ctx.t('commands.skip.skipped', {"track": track,
-                                                                  "emoji": self.disco.emoji["alert"]}))
+            await ctx.send(ctx.t('commands.skip.skipped', {"track": track,
+                                                           "emoji": self.disco.emoji["alert"]}))
 
             await ctx.player.stop()
 
@@ -326,9 +325,9 @@ class Music(commands.Cog):
             return await ctx.send(ctx.t('errors.notPlaying', {"author": ctx.author.name,
                                                               "emoji": self.disco.emoji["false"]}))
 
-        await ctx.player.send(ctx.t('commands.forceskip.skipped', {"track": ctx.player.current,
-                                                                   "emoji": self.disco.emoji["alert"],
-                                                                   "author": ctx.author.name}))
+        await ctx.send(ctx.t('commands.forceskip.skipped', {"track": ctx.player.current,
+                                                            "emoji": self.disco.emoji["alert"],
+                                                            "author": ctx.author.name}))
 
         await ctx.player.stop()
 
@@ -343,11 +342,11 @@ class Music(commands.Cog):
 
         if ctx.player.bass_boost:
             await ctx.player.set_preq('flat')
-            await ctx.player.send(ctx.t('commands.bassboost.disabled', {
+            await ctx.send(ctx.t('commands.bassboost.disabled', {
                 "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
         else:
             await ctx.player.set_preq('boost')
-            await ctx.player.send(ctx.t('commands.bassboost.enabled', {
+            await ctx.send(ctx.t('commands.bassboost.enabled', {
                 "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
 
         ctx.player.bass_boost = not ctx.player.bass_boost
@@ -402,8 +401,8 @@ class Music(commands.Cog):
                                                               "emoji": self.disco.emoji["false"]}))
 
         ctx.player.queue.reverse()
-        await ctx.player.send(ctx.t('commands.reverse.success', {"author": ctx.author.name,
-                                                                 "emoji": self.disco.emoji["shuffle"]}))
+        await ctx.send(ctx.t('commands.reverse.success', {"author": ctx.author.name,
+                                                          "emoji": self.disco.emoji["shuffle"]}))
 
 
 def setup(disco):

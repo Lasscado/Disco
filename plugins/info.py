@@ -21,7 +21,7 @@ class Information(commands.Cog):
             cmd = self.disco.get_command(command)
             if not cmd or cmd.hidden:
                 return await ctx.send(ctx.t('commands.help.notFound', {"author": ctx.author.name,
-                    "emoji": self.disco.emoji["false"]}))
+                                                                       "emoji": self.disco.emoji["false"]}))
 
             usage = ctx.t(f'commands.{cmd.name}.cmdUsage')
 
@@ -36,14 +36,14 @@ class Information(commands.Cog):
             ).add_field(
                 name=ctx.t('commands.help.description'),
                 value=ctx.t(f'commands.{cmd.name}.cmdDescription') \
-                    or ctx.t('commands.help.notSupplied')
+                      or ctx.t('commands.help.notSupplied')
             ).add_field(
                 name=ctx.t('commands.help.usage'),
                 value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
             ).add_field(
                 name=ctx.t('commands.help.aliases'),
                 value=' | '.join([f'`{a}`' for a in cmd.aliases]) \
-                    or ctx.t('commands.help.notDefined'),
+                      or ctx.t('commands.help.notDefined'),
                 inline=False
             )
 
@@ -83,9 +83,11 @@ class Information(commands.Cog):
 
             if value:
                 em.add_field(name=ctx.t('commands.help.categoryCommands', {"total": len(cmds),
-                    "category": ctx.t(f'categories.{name.lower()}'),
-                    "emoji": self.disco.emoji["category" + name]}),
-                    value=value)
+                                                                           "category": ctx.t(
+                                                                               f'categories.{name.lower()}'),
+                                                                           "emoji": self.disco.emoji[
+                                                                               "category" + name]}),
+                             value=value)
 
         em.add_field(
             name='\u200b',
@@ -124,7 +126,7 @@ class Information(commands.Cog):
         ).add_field(
             name=ctx.t('commands.botinfo.generalInfoTitle'),
             value=ctx.t('commands.botinfo.generalInfoDescLeft', {
-                "shard": ctx.guild.shard_id+1,
+                "shard": ctx.guild.shard_id + 1,
                 "shards": len(self.disco.shards),
                 "ping": shard_ping,
                 "servers": len(self.disco.guilds),
@@ -180,7 +182,7 @@ class Information(commands.Cog):
     @commands.cooldown(1, 6, commands.BucketType.user)
     async def _donate(self, ctx):
         await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
-            "link": PATREON_DONATE_URL}))
+                                                      "link": PATREON_DONATE_URL}))
 
     @commands.command(name='shards', aliases=['latencies'])
     @commands.cooldown(1, 8, commands.BucketType.user)
@@ -209,9 +211,10 @@ class Information(commands.Cog):
         prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
         await ctx.send(ctx.t('commands.whatsmyprefix.message', {"author": ctx.author.name,
-            "prefixes": ' | '.join(f'`{prefix}<{command}>`' for prefix in prefixes),
-            "emoji": self.disco.emoji["alert"]
-        }))
+                                                                "prefixes": ' | '.join(
+                                                                    f'`{prefix}<{command}>`' for prefix in prefixes),
+                                                                "emoji": self.disco.emoji["alert"]
+                                                                }))
 
     @commands.command(name='serversettings', aliases=['settings', 'configs'])
     @commands.cooldown(1, 8, commands.BucketType.channel)

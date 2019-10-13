@@ -10,7 +10,4 @@ def custom_prefix(disco, message):
         guild = disco._guilds.get(guild_id)
         disco._prefixes[guild_id] = prefix = guild.data['options']['prefix']
 
-    if prefix:
-        return when_mentioned_or(prefix)(disco, message)
-
-    return when_mentioned_or(*disco.prefixes)(disco, message)
+    return when_mentioned_or(prefix)(disco, message) if prefix else when_mentioned_or(*disco.prefixes)(disco, message)

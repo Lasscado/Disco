@@ -61,7 +61,8 @@ class Tasks(commands.Cog):
 
             await self.disco.change_presence(activity=Activity(type=activity,
                                                                name=message + f' [{shard}]',
-                                                               url=STREAMING_ACTIVITY_URL), shard_id=shard)
+                                                               url=STREAMING_ACTIVITY_URL),
+                                             shard_id=shard)
 
         self.disco.log.info('Presences alteradas.')
 

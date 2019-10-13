@@ -74,6 +74,7 @@ class Disco(AutoShardedBot):
 
             log.info('Fim de carregamento dos plugins.')
 
+
             for ban in self._bans.find(ignore=False):
                 if ban.is_guild:
                     self.guild_blacklist.add(ban.target_id)
@@ -81,6 +82,7 @@ class Disco(AutoShardedBot):
                     self.user_blacklist.add(ban.target_id)
 
             log.info('Lista de banidos carregada.')
+
 
             self.i18n.load_all_from_path()
             log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')
@@ -115,8 +117,7 @@ class Disco(AutoShardedBot):
                 and not ctx.author.guild_permissions.manage_guild):
             return
 
-        ctx.locale = options['locale']
-        ctx.t = self.i18n.get_t(ctx.locale)
+        ctx.t = self.i18n.get_t(options['locale'])
 
         try:
             await self.invoke(ctx)

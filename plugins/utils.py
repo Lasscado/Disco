@@ -179,9 +179,9 @@ class Utils(commands.Cog):
 
         anime = entries[int(a.content) - 1]
         if anime.nsfw and not ctx.channel.nsfw:
-            return await q.edit(embed=None,
-                                content=ctx.t('commands.anime.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
-                                                                              "author": ctx.author.name}))
+            return await q.edit(content=ctx.t('commands.anime.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
+                                                                              "author": ctx.author.name}),
+                                embed=None)
 
         categories = await self.kitsu.fetch_media_categories(anime)
         categories.sort(key=lambda item: item.title)
@@ -299,9 +299,9 @@ class Utils(commands.Cog):
 
         manga = entries[int(a.content) - 1]
         if manga.subtype == 'Doujin' and not ctx.channel.nsfw:
-            return await q.edit(embed=None,
-                                content=ctx.t('commands.manga.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
-                                                                              "author": ctx.author.name}))
+            return await q.edit(content=ctx.t('commands.manga.choiceIsNsfw', {"emoji": self.disco.emoji["false"],
+                                                                              "author": ctx.author.name}),
+                                embed=None)
 
         categories = await self.kitsu.fetch_media_categories(manga)
         categories.sort(key=lambda item: item.title)

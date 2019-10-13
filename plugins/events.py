@@ -26,10 +26,13 @@ class Events(commands.Cog):
         if str(guild.region) == 'brazil':
             g.update({"options.locale": "pt_BR"})
 
-        humans = 0;bots = 0
+        humans = 0
+        bots = 0
         for member in guild.members:
-            if member.bot: bots+=1
-            else: humans+=1
+            if member.bot:
+                bots += 1
+            else:
+                humans += 1
 
         em = discord.Embed(
             colour=0x00ff00,
@@ -65,10 +68,13 @@ class Events(commands.Cog):
     async def on_guild_remove(self, guild):
         self.disco._guilds.get(guild.id).delete()
 
-        humans = 0;bots = 0
+        humans = 0
+        bots = 0
         for member in guild.members:
-            if member.bot: bots+=1
-            else: humans+=1
+            if member.bot:
+                bots += 1
+            else:
+                humans += 1
 
         em = discord.Embed(
             colour=0xfc4b4b,
@@ -119,11 +125,14 @@ class Events(commands.Cog):
 
             _, s = divmod(e.retry_after, 60)
             await ctx.send(ctx.t('errors.onCooldown', {"emoji": self.disco.emoji["false"],
-                "author": ctx.author.name, "cooldown": int(s)}), delete_after=s+6)
+                                                       "author": ctx.author.name,
+                                                       "cooldown": int(s)}),
+                           delete_after=s + 6)
 
         elif isinstance(e, MissingRole):
             await ctx.send(ctx.t('errors.missingRole', {"emoji": self.disco.emoji["false"],
-                "role": e.missing_role[0] or "DJ", "author": ctx.author.name}))
+                                                        "role": e.missing_role[0] or "DJ",
+                                                        "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
             if ctx.prefix == f'<@{ctx.me.id}> ':
@@ -131,18 +140,23 @@ class Events(commands.Cog):
 
             usage = ctx.t(f'commands.{ctx.command.name}.cmdUsage')
             await ctx.send(ctx.t('errors.inputError', {"emoji": self.disco.emoji["false"],
-                "usage": f'{ctx.prefix}{ctx.invoked_with} {usage if usage else ""}',
-                "author": ctx.author.name}))
+                                                       "usage": f'{ctx.prefix}{ctx.invoked_with} '
+                                                                + (usage if usage else ''),
+                                                       "author": ctx.author.name}))
 
         elif isinstance(e, MissingPermissions):
-            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
+            perms = '\n'.join(
+                [f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
             await ctx.send(ctx.t('errors.missingPermissions', {"emoji": self.disco.emoji["false"],
-                "permissions": perms, "author": ctx.author.name}))
+                                                               "permissions": perms,
+                                                               "author": ctx.author.name}))
 
         elif isinstance(e, BotMissingPermissions):
-            perms = '\n'.join([f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
+            perms = '\n'.join(
+                [f'{self.disco.emoji["idle"]} **`{ctx.t("permissions." + p).upper()}`**' for p in e.missing_perms])
             await ctx.send(ctx.t('errors.botMissingPermissions', {"emoji": self.disco.emoji["false"],
-                "permissions": perms, "author": ctx.author.name}))
+                                                                  "permissions": perms,
+                                                                  "author": ctx.author.name}))
 
         else:
             em = discord.Embed(
@@ -157,19 +171,19 @@ class Events(commands.Cog):
             )
 
             await self.error_logs.send(content=f'Comando executado no canal {ctx.channel} ({ctx.channel.id})'
-                f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
+                                               f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
 
             await ctx.send(ctx.t('errors.unexpectedError', {"emoji": self.disco.emoji["false"],
-                                                             "author": ctx.author.name,
-                                                             "command": ctx.command.qualified_name,
-                                                             "support": SUPPORT_GUILD_INVITE_URL}))
+                                                            "author": ctx.author.name,
+                                                            "command": ctx.command.qualified_name,
+                                                            "support": SUPPORT_GUILD_INVITE_URL}))
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
         self.disco.invoked_commands += 1
 
         self.disco.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
-            f'em {ctx.guild} {ctx.guild.id}')
+                            f'em {ctx.guild} {ctx.guild.id}')
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):

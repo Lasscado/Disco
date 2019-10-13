@@ -8,7 +8,7 @@ async def before_play(cog, ctx):
     if not ctx.me.voice:
         if not ctx.author.voice:
             raise MusicError(ctx.t('errors.userNotVoiceConnected', {"author": ctx.author.name,
-                "emoji": ctx.bot.emoji["false"]}))
+                                                                    "emoji": ctx.bot.emoji["false"]}))
 
         vc = ctx.author.voice.channel
         perms = vc.permissions_for(ctx.me)
@@ -19,13 +19,13 @@ async def before_play(cog, ctx):
 
         if vc.user_limit and len(vc.members) + 1 > vc.user_limit and not perms.administrator:
             raise MusicError(ctx.t('errors.fullVoiceChannel', {"author": ctx.author.name,
-                "emoji": ctx.bot.emoji["false"]}))
+                                                               "emoji": ctx.bot.emoji["false"]}))
 
         player.text_channel = ctx.channel
         player.t = ctx.t
         await player.connect(vc.id)
         await ctx.send(ctx.t('commands.play.connected', {"channel": vc,
-            "emoji": ctx.bot.emoji["wireless"]}))
+                                                         "emoji": ctx.bot.emoji["wireless"]}))
 
         default_vol = ctx._guild.data['options']['defaultVolume']
         if default_vol is not None:
@@ -33,11 +33,11 @@ async def before_play(cog, ctx):
 
     elif not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
         raise MusicError(ctx.t('errors.notSameVoiceChannel', {"author": ctx.author.name,
-            "emoji": ctx.bot.emoji["false"]}))
+                                                              "emoji": ctx.bot.emoji["false"]}))
 
     elif player.size > 1499:
         raise MusicError(ctx.t('errors.fullQueue', {"author": ctx.author.name,
-            "emoji": ctx.bot.emoji["false"]}))
+                                                    "emoji": ctx.bot.emoji["false"]}))
 
     return True
 
@@ -59,11 +59,11 @@ class Checks:
         async def predicate(ctx):
             if not ctx.me.voice:
                 raise MusicError(ctx.t('errors.notConnected', {"author": ctx.author.name,
-                    "emoji": ctx.bot.emoji["false"]}))
+                                                               "emoji": ctx.bot.emoji["false"]}))
 
             if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
                 raise MusicError(ctx.t('errors.notSameVoiceChannel', {"author": ctx.author.name,
-                    "emoji": ctx.bot.emoji["false"]}))
+                                                                      "emoji": ctx.bot.emoji["false"]}))
 
             ctx.player = ctx.bot.get_player(ctx.guild.id)
 

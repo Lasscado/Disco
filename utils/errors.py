@@ -1,10 +1,14 @@
 from discord.ext.commands.errors import CommandError
 
 
-class MusicError(CommandError):
+class DiscoError(CommandError):
+    pass
+
+
+class MusicError(DiscoError):
     '''Erro padrão para o módulo de Música'''
     pass
 
 
-class WaitingForPreviousChoice(CommandError):
+class WaitingForPreviousChoice(DiscoError):
     pass

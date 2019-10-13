@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord.ext.commands.errors import *
 
 from utils import SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL
-from utils.errors import *
+from utils.errors import DiscoError, WaitingForPreviousChoice
 
 
 class Events(commands.Cog):
@@ -110,7 +110,7 @@ class Events(commands.Cog):
         if isinstance(original, (discord.NotFound, discord.Forbidden)):
             return
 
-        if isinstance(e, (MusicError, WaitingForPreviousChoice)):
+        if isinstance(e, DiscoError):
             await ctx.send(e)
 
         elif isinstance(e, CommandOnCooldown):

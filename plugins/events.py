@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 from os import environ
 from random import randint
@@ -156,10 +157,12 @@ class Events(commands.Cog):
                                                                   "author": ctx.author.name}))
 
         else:
+            traceback_ = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+
             em = discord.Embed(
                 colour=0xFF0000,
                 timestamp=ctx.message.created_at,
-                description=f'> {ctx.message.content[:1500]}\n```py\n{e.__class__.__name__}: {e}```'
+                description=f'> {ctx.message.content[:1500]}\n```py\n{traceback_}```'
             ).set_author(
                 name=f'{ctx.author} ({ctx.author.id})',
                 icon_url=ctx.author.avatar_url

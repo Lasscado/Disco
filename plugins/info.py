@@ -5,8 +5,8 @@ from discord.ext import commands
 from humanize import naturalsize
 from prettytable import PrettyTable
 
-from utils import get_length, TRANSPARENT_IMAGE_URL, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_INVITE_URL, \
-    GITHUB_REPOSITORY_URL, BOT_LIST_VOTE_URL
+from utils import get_length, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_INVITE_URL, BOT_LIST_VOTE_URL, \
+    GITHUB_REPOSITORY_URL
 
 
 class Information(commands.Cog):
@@ -23,28 +23,33 @@ class Information(commands.Cog):
                 return await ctx.send(ctx.t('commands.help.notFound', {"author": ctx.author.name,
                                                                        "emoji": self.disco.emoji["false"]}))
 
-            usage = ctx.t(f'commands.{cmd.name}.cmdUsage')
+            qualified_name = cmd.qualified_name
+            metadata = ctx.t(f'commands.{qualified_name}.meta') or {}
+            description = metadata.get('description', ctx.t('commands.help.notSupplied'))
+            usage = metadata.get('usage')
 
             em = discord.Embed(
                 colour=self.disco.color[0],
-                title=ctx.t('commands.help.commandName', {"command": cmd.name.title()})
+                title=ctx.t('commands.help.commandName', {"command": qualified_name.title()}),
             ).set_author(
                 name=ctx.me.name,
                 icon_url=self.disco.user.avatar_url
             ).set_thumbnail(
-                url=TRANSPARENT_IMAGE_URL
+                url=self.disco.user.avatar_url
             ).add_field(
-                name=ctx.t('commands.help.description'),
-                value=ctx.t(f'commands.{cmd.name}.cmdDescription') \
-                      or ctx.t('commands.help.notSupplied')
-            ).add_field(
-                name=ctx.t('commands.help.usage'),
-                value=f'{ctx.prefix}{cmd.name} {usage if usage else ""}'
-            ).add_field(
-                name=ctx.t('commands.help.aliases'),
-                value=' | '.join([f'`{a}`' for a in cmd.aliases]) \
-                      or ctx.t('commands.help.notDefined'),
+                name=f'{self.disco.emoji["list"]} **{ctx.t("commands.help.description")}**:',
+                value=description,
                 inline=False
+            ).add_field(
+                name=f'{self.disco.emoji["check"]} **{ctx.t("commands.help.usage")}**:',
+                value=f'`{ctx.prefix}{qualified_name}{" " + usage if usage else ""}`'
+            ).add_field(
+                name=f'{self.disco.emoji["dots"]} **{ctx.t("commands.help.aliases")}**:',
+                value=' | '.join([f'`{a}`' for a in cmd.aliases]) or ctx.t('commands.help.notDefined'),
+                inline=False
+            ).add_field(
+                name='\u200b',
+                value=ctx.t('commands.help.support', {"link": SUPPORT_GUILD_INVITE_URL})
             )
 
             return await ctx.send(content=ctx.author.mention, embed=em)
@@ -77,9 +82,9 @@ class Information(commands.Cog):
             icon_url=creator.avatar_url
         )
 
-        for name, cog in self.disco.cogs.items():
+        for name, cog in sorted(self.disco.cogs.items(), key=lambda c: c[0] == 'Music', reverse=True):
             cmds = [c for c in cog.get_commands() if not c.hidden]
-            value = ' | '.join([f'`{c}`' for c in cmds])
+            value = ' | '.join(f'`{c}`' for c in cmds)
 
             if value:
                 em.add_field(name=ctx.t('commands.help.categoryCommands', {"total": len(cmds),

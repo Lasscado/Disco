@@ -120,7 +120,7 @@ class Events(commands.Cog):
             await ctx.send(e)
 
         elif isinstance(e, CommandOnCooldown):
-            if ctx.command.name == 'whatsmyprefix' and ctx.prefix == ctx.me.mention + ' ':
+            if ctx.command.name == 'whatsmyprefix' and ctx.prefix == f'@{ctx.me.name} ':
                 return
 
             _, s = divmod(e.retry_after, 60)
@@ -135,13 +135,10 @@ class Events(commands.Cog):
                                                         "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
-            if ctx.prefix == f'<@{ctx.me.id}> ':
-                ctx.prefix = f'@{ctx.me.name} '
-
-            usage = ctx.t(f'commands.{ctx.command.name}.cmdUsage')
+            usage = (ctx.t(f'commands.{ctx.command.qualified_name}.meta') or {}).get('usage')
             await ctx.send(ctx.t('errors.inputError', {"emoji": self.disco.emoji["false"],
-                                                       "usage": f'{ctx.prefix}{ctx.invoked_with} '
-                                                                + (usage if usage else ''),
+                                                       "usage": f'{ctx.prefix}{ctx.invoked_with}'
+                                                                + (' ' + usage if usage else ''),
                                                        "author": ctx.author.name}))
 
         elif isinstance(e, MissingPermissions):

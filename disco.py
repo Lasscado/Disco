@@ -119,6 +119,9 @@ class Disco(AutoShardedBot):
 
         ctx.t = self.i18n.get_t(options['locale'])
 
+        if ctx.prefix == f'{ctx.me.mention} ':
+            ctx.prefix = f'@{ctx.me.name} '
+
         try:
             await self.invoke(ctx)
         except Exception as e:

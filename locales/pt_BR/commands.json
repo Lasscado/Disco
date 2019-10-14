@@ -1,10 +1,14 @@
 {
     "invite": {
-        "cmdDescription": "Envia o link de convite para adicionar o Bot.",
+        "meta": {
+            "description": "Envia o link de convite para adicionar o Bot."
+        },
         "text": "[Clique aqui para adicionar o **Disco** em seu servidor]({link})"
     },
     "botinfo": {
-        "cmdDescription": "Mostra informações sobre o Bot.",
+        "meta": {
+            "description": "Mostra informações sobre o Bot."
+        },
         "statistics": "Estatísticas",
         "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\u200b",
         "generalInfoTitle": "**INFORMAÇÕES GERAIS**",
@@ -13,32 +17,44 @@
         "nodeInfo": "**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {stats.playing_players}/{stats.players}\n**Memória Usada**: {memory}"
     },
     "help": {
-        "cmdUsage": "[Comando]",
-        "cmdDescription": "Lista detalhadamente todos os comandos do Bot.",
+        "meta": {
+            "usage": "[Comando]",
+            "description": "Lista detalhadamente todos os comandos do Bot."
+        },
         "notFound": "{emoji} **{author}**, eu não encontrei nenhum comando com o nome fornecido.",
         "commandName": "Comando {command}",
         "description": "Descrição",
         "usage": "Uso",
-        "aliases": "Outros Nomes",
+        "aliases": "Alternativas",
+        "examples": "Examplos",
         "notSupplied": "Não fornecida.",
         "notDefined": "Não definidos.",
         "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** {prefixes}\n\u200b",
         "categoryCommands": "{emoji} **Comandos de {category}**: ({total})",
-        "tip": "Digite **{command} <Comando>** para ver mais informações sobre um comando."
+        "tip": "Digite **{command} <Comando>** para ver mais informações sobre um comando.",
+        "support": "[**DICA**]: Ficou com alguma dúvida? Entre em nosso [servidor de suporte]({link}) que iremos te ajudar!"
     },
     "ping": {
-        "cmdDescription": "Mostra a latência entre a conexão do Bot com o Discord."
+        "meta": {
+            "description": "Mostra a latência entre a conexão do Bot com o Discord."
+        }
     },
     "donate": {
-        "cmdDescription": "Envia o link da página de doações para a Disco.",
+        "meta": {
+            "description": "Envia o link da página de doações para a Disco."
+        },
         "text": "{emoji} Me ajude a ficar Online: <{link}>"
     },
     "whatsmyprefix": {
-        "cmdDescription": "Mostra o prefixo da Disco no servidor.",
+        "meta": {
+            "description": "Mostra o prefixo da Disco no servidor."
+        },
         "message": "{emoji} Olá, **{author}**! Para me usar, basta utilizar um dos seguintes prefixos:\n{prefixes}"
     },
     "serversettings": {
-        "cmdDescription": "Mostra as configurações da Disco no servidor.",
+        "meta": {
+            "description": "Mostra as configurações da Disco no servidor."
+        },
         "title": "Opções do Servidor",
         "customPrefix": "Prefixo Customizado",
         "djRole": "Cargo DJ",
@@ -52,67 +68,87 @@
         "notDefined": "Não definido."
     },
     "djrole": {
-        "cmdUsage": "<@Menção|Nome|ID>",
-        "cmdDescription": "Define o cargo DJ no servidor.",
+        "meta": {
+            "usage": "<@Menção|Nome|ID>",
+            "description": "Define o cargo DJ no servidor."
+        },
         "reset": "{emoji} **{author}**, você resetou o **`Cargo DJ`** desse servidor.",
         "update": "{emoji} **{author}**, você definiu o cargo **`{role}`** como `Cargo DJ`."
     },
     "disablechannel": {
-        "cmdUsage": "<#Menção|Nome|ID>",
-        "cmdDescription": "Desativa ou ativa um canal em que o Bot possa ser usado.",
+        "meta": {
+            "usage": "<#Menção|Nome|ID>",
+            "description": "Desativa ou ativa um canal em que o Bot possa ser usado."
+        },
         "allow": "{emoji} **{author}**, você me permitiu ser usado no canal {channel}.",
         "disallow": "{emoji} **{author}**, você me proibiu de ser usado no canal {channel}."
     },
     "disablerole": {
-        "cmdUsage": "<@Menção|Nome|ID>",
-        "cmdDescription": "Permite ou proíbe membros com um cargo específico de usarem o Bot.",
+        "meta": {
+            "usage": "<@Menção|Nome|ID>",
+            "description": "Permite ou proíbe membros com um cargo específico de usarem o Bot."
+        },
         "higherRole": "{emoji} **{author}**, você não pode desativar um cargo que seja igual ou maior que o seu cargo mais alto.",
         "enabled": "{emoji} **{author}**, você me permitiu ser usado por membros com o cargo **`{role}`**.",
         "disabled": "{emoji} **{author}**, você me proibiu de ser usado por membros com o cargo **`{role}`**."
     },
     "localban": {
-        "cmdUsage": "<@Menção|Nome|ID>",
-        "cmdDescription": "Permite ou proíbe um membro de usar o Bot nesse servidor.",
+        "meta": {
+            "usage": "<@Menção|Nome|ID>",
+            "description": "Permite ou proíbe um membro de usar o Bot nesse servidor."
+        },
         "higherMember": "{emoji} **{author}**, você não pode fazer um banimento local em um membro que possua direitos equivalentes ou maiores que o seu.",
         "unban": "{emoji} **{author}**, você me permitiu ser usado pelo membro **`{member}`** nesse servidor.",
         "ban": "{emoji} **{author}**, você me proibiu de ser usado pelo membro **`{member}`** nesse servidor."
     },
     "disablecommand": {
-        "cmdUsage": "<Nome>",
-        "cmdDescription": "Permite ou proíbe que um comando específico seja usado nesse servidor.",
+        "meta": {
+            "usage": "<Nome>",
+            "description": "Permite ou proíbe que um comando específico seja usado nesse servidor."
+        },
         "cantDisable": "{emoji} **{author}**, você não pode desativar esse comando.",
         "enabled": "{emoji} **{author}**, você permitiu o uso do comando **`{command}`** nesse servidor.",
         "disabled": "{emoji} **{author}**, você proibiu o uso do comando **`{command}`** nesse servidor."
     },
     "botchannel": {
-        "cmdUsage": "<#Menção|Nome|ID>",
-        "cmdDescription": "Restringe o uso do Bot a apenas um canal específico.",
+        "meta": {
+            "usage": "<#Menção|Nome|ID>",
+            "description": "Restringe o uso do Bot a apenas um canal específico."
+        },
         "reset": "{emoji} **{author}**, você resetou o **`Canal do Bot`** nesse servidor.",
         "set": "{emoji} **{author}**, você me restringiu para ser usado apenas no canal {channel}."
     },
     "locale": {
-        "cmdUsage": "<Localidade>",
-        "cmdDescription": "Altera a localidade/idioma das mensagens da Disco no servidor.",
+        "meta": {
+            "usage": "<Localidade>",
+            "description": "Altera a localidade/idioma das mensagens da Disco no servidor."
+        },
         "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Localidades Disponíveis**:\n> {available}",
         "success": "{emoji} **{author}**, você alterou minha localidade nesse servidor para **`{locale}`**."
     },
     "prefix": {
-        "cmdUsage": "<Prefixo>",
-        "cmdDescription": "Altera o prefixo da Disco no servidor.",
+        "meta": {
+            "usage": "<Prefixo>",
+            "description": "Altera o prefixo da Disco no servidor."
+        },
         "invalid": "{emoji} **{author}**, você precisa fornecer um prefixo com até 6 caracteres!",
         "reset": "{emoji} **{author}**, você resetou meu prefixo customizado nesse servidor!",
         "success": "{emoji} **{author}**, agora eu apenas responderei a comandos invocados com o prefixo **`{prefix}`**."
     },
     "defaultvolume": {
-        "cmdUsage": "<1-150>",
-        "cmdDescription": "Altera o volume padrão da Disco nesse servidor. Sempre que a Disco for chamada para tocar algo, ele irá alterar o volume do player para o volume padrão.",
+        "meta": {
+            "usage": "<1-150>",
+            "description": "Altera o volume padrão da Disco nesse servidor. Sempre que a Disco for chamada para tocar algo, ele irá alterar o volume do player para o volume padrão."
+        },
         "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
         "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
         "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."
     },
     "play": {
-        "cmdUsage": "<Nome|URL>",
-        "cmdDescription": "Busca e adiciona à música especificada na fila de reprodução.",
+        "meta": {
+            "usage": "<Nome|URL>",
+            "description": "Busca e adiciona à música especificada na fila de reprodução."
+        },
         "noResults": "{emoji} **{author}**, não consegui obter nenhum resultado para sua busca.",
         "playlistAdded": "{emoji} Adicionei **{added}** faixas `({length})` da playlist **`{playlist}`** na fila.",
         "trackAdded": "{emoji} Adicionei **`{track}`** `({length})` na fila.",
@@ -122,77 +158,107 @@
         "connected": "{emoji} Me conectei ao canal de voz **`{channel}`**."
     },
     "shuffle": {
-        "cmdDescription": "Mistura as faixas da fila de reprodução.",
+        "meta": {
+            "description": "Mistura as faixas da fila de reprodução."
+        },
         "shuffled": "{emoji} **{author}**, você misturou a fila de reprodução."
     },
     "repeat": {
-        "cmdDescription": "Coloca em loop, a música que estiver tocando.",
+        "meta": {
+            "description": "Coloca em loop, a música que estiver tocando."
+        },
         "disable": "{emoji} **{author}**, você desativou o modo repetição para a faixa **`{track}`**.",
         "enable": "{emoji} **{author}**, você ativou o modo repetição para a faixa **`{track}`**."
     },
     "stop": {
-        "cmdDescription": "Limpa a fila de reprodução e desconecta o bot do canal de voz.",
+        "meta": {
+            "description": "Limpa a fila de reprodução e desconecta o bot do canal de voz."
+        },
         "stopped": "{emoji} Limpei a fila & desconectei do canal **`{channel}`** a pedido de **{author}**."
     },
     "volume": {
-        "cmdUsage": "<1-150>",
-        "cmdDescription": "Aumenta ou diminui o volume do player.",
+        "meta": {
+            "usage": "<1-150>",
+            "description": "Aumenta ou diminui o volume do player."
+        },
         "invalidValue": "{emoji} **{author}**, você deve fornecer um valor entre **`1`** e **`150`**.",
         "changed": "{emoji} **{author}** alterou o volume do player para **`{value}%`**."
     },
     "clear": {
-        "cmdDescription": "Limpa a fila de reprodução.",
+        "meta": {
+            "description": "Limpa a fila de reprodução."
+        },
         "alreadyEmpty": "{emoji} **{author}**, a fila de reprodução já está vazia.",
         "cleaned": "{emoji} A fila de reprodução foi limpa por **{author}**."
     },
     "pause": {
-        "cmdDescription": "Pausa e despausa a música que estiver tocando no momento.",
+        "meta": {
+            "description": "Pausa e despausa a música que estiver tocando no momento."
+        },
         "pause": "{emoji} **{author}** pausou o player.",
         "unpause": "{emoji} **{author}** despausou o player."
     },
     "remove": {
-        "cmdUsage": "<Posição>",
-        "cmdDescription": "Remove uma faixa especifica da fila de reprodução.",
+        "meta": {
+            "usage": "<Posição>",
+            "description": "Remove uma faixa especifica da fila de reprodução."
+        },
         "removed": "{emoji} **{author}**, você removeu a faixa **`{track}`** da fila de reprodução."
     },
     "playat": {
-        "cmdUsage": "<Posição>",
-        "cmdDescription": "Pula para uma faixa especifica."
+        "meta": {
+            "usage": "<Posição>",
+            "description": "Pula para uma faixa especifica."
+        }
     },
     "nowplaying": {
-        "cmdDescription": "Mostra detalhes sobre a música que estiver tocando.",
+        "meta": {
+            "description": "Mostra detalhes sobre a música que estiver tocando."
+        },
         "text": "Tocando Agora: **[{track}]({track.uri})** `({length})` - {track.requester.mention}"
     },
     "skip": {
-        "cmdDescription": "Vota para pular a música que estiver tocando.",
+        "meta": {
+            "description": "Vota para pular a música que estiver tocando."
+        },
         "skippedByRequester": "{emoji} A faixa **`{track}`** foi pulada por quem a adicionou. (**{author}**)",
         "alreadyVoted": "{emoji} **{author}**, você já votou para pular essa faixa.",
         "voteAdded": "{emoji} **{author}** votou para pular a música atual. **`({votes}/3)`**",
         "skipped": "{emoji} A faixa **`{track}`** foi pulada pois atingiu a quantia de votos necessários."
     },
     "forceskip": {
-        "cmdDescription": "Força pular a música que estiver tocando.",
+        "meta": {
+            "description": "Força pular a música que estiver tocando."
+        },
         "skipped": "{emoji} **{author}** pulou a faixa **`{track}`** a força."
     },
     "bassboost": {
-        "cmdDescription": "Ativa e desativa o Modo Bass Boost (mais graves).",
+        "meta": {
+            "description": "Ativa e desativa o Modo Bass Boost (mais graves)."
+        },
         "enabled": "{emoji} **{author}** ativou o modo **`BASS BOOST`**. Sente o grave!",
         "disabled": "{emoji} **{author}** desativou o modo **`BASS BOOST`**."
     },
     "queue": {
-        "cmdUsage": "[Página]",
-        "cmdDescription": "Lista todas as faixas da fila de reprodução.",
+        "meta": {
+            "usage": "[Página]",
+            "description": "Lista todas as faixas da fila de reprodução."
+        },
         "currentTrack": "Tocando Agora: [**{track}**]({track.uri}) `[{length}]` - {track.requester.mention}\n\n",
         "name": "Fila de Reprodução",
         "details": "Duração: {length} | Página {page}/{pages}"
     },
     "reverse": {
-        "cmdDescription": "Inverte as faixas da fila de reprodução.",
+        "meta": {
+            "description": "Inverte as faixas da fila de reprodução."
+        },
         "success": "{emoji} **{author}**, você inverteu a fila de reprodução."
     },
     "lyrics": {
-        "cmdUsage": "[Nome da Música]",
-        "cmdDescription": "Mostra a letra da música que estiver tocando ou pesquisa pela letra de outras, caso um nome for fornecido.",
+        "meta": {
+            "usage": "[Nome da Música]",
+            "description": "Mostra a letra da música que estiver tocando ou pesquisa pela letra de outras, caso um nome for fornecido."
+        },
         "notPlaying": "{emoji} **{author}**, eu não estou tocando nada no momento! Tente novamente fornecendo o nome de uma música para ser pesquisada, ou após por algo para tocar.",
         "currentNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao que estou tocando agora.",
         "notFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao nome fornecido.",
@@ -205,14 +271,18 @@
         "viewMore": "... [Ver letra completa]({url})"
     },
     "avatar": {
-        "cmdUsage": "[@Menção|Nome|ID]",
-        "cmdDescription": "Mostra o avatar de um membro.",
+        "meta": {
+            "usage": "[@Menção|Nome|ID]",
+            "description": "Mostra o avatar de um membro."
+        },
         "memberAvatar": "Avatar de {member}",
         "clickToDownload": "[Clique aqui para baixar a imagem.]({url})"
     },
     "anime": {
-        "cmdUsage": "[Nome]",
-        "cmdDescription": "Procura por informações sobre um anime.",
+        "meta": {
+            "usage": "[Nome]",
+            "description": "Procura por informações sobre um anime."
+        },
         "notFound": "{emoji} **{author}**, não foi possível encontrar nenhum anime referente ao nome fornecido.",
         "searchResults": "Resultados da Busca",
         "chooseOne": "Digite o número correspondente ao anime que você deseja ver sobre",
@@ -235,8 +305,10 @@
         "totalLength": "{length} (total)"
     },
     "manga": {
-        "cmdUsage": "[Nome]",
-        "cmdDescription": "Procura por informações sobre um mangá.",
+        "meta": {
+            "usage": "[Nome]",
+            "description": "Procura por informações sobre um mangá."
+        },
         "notFound": "{emoji} **{author}**, não foi possível encontrar nenhum mangá referente ao nome fornecido.",
         "searchResults": "Resultados da Busca",
         "chooseOne": "Digite o número correspondente ao mangá que você deseja ver sobre",

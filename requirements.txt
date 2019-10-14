@@ -8,7 +8,7 @@ humanize==0.5.1
 prettytable==0.7.2
 pymongo==3.8.0
 python-dotenv==0.10.3
-git+https://github.com/DiscoMusic/i18n.git@a4802ff55b7990c53a398e89097e22082969998c
+git+https://github.com/DiscoMusic/i18n.git@b9812f9cef8167af18798de3fc6af64b39d3defa
 git+https://github.com/DiscoMusic/genius-wrapper.git@d0176f3c78dec646a7e531119bebaec098b340ce
 git+https://github.com/DiscoMusic/kitsu-wrapper.git@ab24a6377509a43dbb687cf3c6d9797e2276114c
 git+https://github.com/EvieePy/Wavelink.git@d9c99d0821b12d92fd77e13b93f6bea385e0d741

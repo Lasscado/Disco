@@ -321,5 +321,32 @@
         "material": "Material",
         "volumes": "{volumes} volume(s)",
         "chapters": "\n{chapters} capítulo(s)"
+    },
+    "kiss": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3]",
+            "description": "Beija uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja beijar!",
+        "selfMention": "{emoji} **{author}**, você não pode se beijar!",
+        "botMention": "{emoji} **{author}**, seu b-baka... eu não vou te beijar!",
+        "withReason": [
+            "**{author}** beijou {members} por {reason}.",
+            "**{author}** soltou um beijo em {members} por {reason}.",
+            "**{author}** saiu da seca ao beijar {members} por {reason}.",
+            "**{author}** deu um beijo em {members} por {reason}.",
+            "**{author}** deu um beijo caloroso em {members} por {reason}.",
+            "**{author}** suavemente beijou {members} por {reason}.",
+            "**{author}** não resistiu e beijou {members} por {reason}."
+        ],
+        "noReason": [
+            "**{author}** beijou {members}.",
+            "**{author}** soltou um beijo em {members}.",
+            "**{author}** saiu da seca ao beijar {members}.",
+            "**{author}** deu um beijo em {members}.",
+            "**{author}** deu um beijo caloroso em {members}.",
+            "**{author}** suavemente beijou {members}.",
+            "**{author}** não resistiu e beijou {members}."
+        ]
     }
 }

@@ -1,3 +1,8 @@
+from random import randint
+
+from discord import Colour
+
+
 def web_url(url):
     return url.startswith('https://') or url.startswith('http://')
 
@@ -15,3 +20,8 @@ def get_length(milliseconds, letter: bool = False):
     if d >= 1: output = '%1dd ' % d + output
 
     return output
+
+
+def random_color():
+    r, g, b = randint(0, 255), randint(0, 255), randint(0, 255)
+    return Colour.from_rgb(r, g, b)

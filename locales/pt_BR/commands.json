@@ -324,7 +324,7 @@
     },
     "kiss": {
         "meta": {
-            "usage": "<@Membro> [@Membro 2] [@Membro 3]",
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
             "description": "Beija uma ou mais pessoas."
         },
         "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja beijar!",
@@ -347,6 +347,240 @@
             "**{author}** deu um beijo caloroso em {members}.",
             "**{author}** suavemente beijou {members}.",
             "**{author}** não resistiu e beijou {members}."
+        ]
+    },
+    "cry":  {
+        "meta": {
+            "usage": "[Motivo]",
+            "description": "Chora na frente de todos por algum ou nenhum motivo."
+        },
+        "withReason": [
+            "**{author}** está chorando por {reason}.",
+            "**{author}** caiu nas lágrimas por {reason}.",
+            "**{author}** começou a chorar, pois {reason}.",
+            "**{author}** não conseguiu segurar as lágrimas, pois {reason}.",
+            "**{author}** chorou de tanta tristeza, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** está chorando.",
+            "**{author}** caiu nas lágrimas.",
+            "**{author}** começou a chorar.",
+            "**{author}** não conseguiu segurar as lágrimas.",
+            "**{author}** chorou de tanta tristeza."
+        ]
+    },
+    "stare": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Fixa o olhar em alguém por algum ou nenhum motivo."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja olhar fixamente!",
+        "selfMention": "{emoji} **{author}**, você não pode fixar seu olhar em si mesmo (~~apenas se estiver vendo um reflexo seu...~~)!",
+        "withReason": [
+            "**{author}** fixou o olhar em {members}, pois {reason}.",
+            "**{author}** colocou um olhar amedrontador em cima de {members}, pois {reason}.",
+            "**{author}** está olhando fixamente para {members}, pois {reason}.",
+            "**{author}** está encarando {members}, pois {reason}.",
+            "**{author}** colocou um olhar intimidante em cima de {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** fixou o olhar em {members}.",
+            "**{author}** colocou um olhar amedrontador em cima de {members}.",
+            "**{author}** está olhando fixamente para {members}.",
+            "**{author}** está encarando {members}.",
+            "**{author}** colocou um olhar intimidante em cima de {members}."
+        ]
+    },
+    "hug": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Abraça alguém por algum ou nenhum motivo."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja abraçar!",
+        "selfMention": "{emoji} **{author}**, você não pode abraçar a si mesmo (~~isso é estranho~~)!",
+        "withReason": [
+            "**{author}** abraçou {members}, pois {reason}.",
+            "**{author}** abraçou {members} de tanta felicidade, pois {reason}.",
+            "**{author}** deu um abraço caloroso em {members}, pois {reason}.",
+            "**{author}** não resistiu e abraçou {members}, pois {reason}.",
+            "**{author}** não conseguiu se segurar e abraçou {members}, pois {reason}.",
+            "**{author}** não conseguiu segurar sua felicidade e abraçou {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** abraçou {members}.",
+            "**{author}** abraçou {members} de tanta felicidade.",
+            "**{author}** deu um abraço caloroso em {members}.",
+            "**{author}** não resistiu e abraçou {members}.",
+            "**{author}** não conseguiu se segurar e abraçou {members}.",
+            "**{author}** não conseguiu segurar sua felicidade e abraçou {members}."
+        ]
+    },
+    "pat": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Faz cafuné em alguém por algum ou nenhum motivo."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja fazer cafúne!",
+        "selfMention": "{emoji} **{author}**, você não pode fazer cafuné em si mesmo (~~isso é estranho~~)!",
+        "withReason": [
+            "**{author}** está fazendo cafuné em {members}, pois {reason}.",
+            "**{author}** fez cafuné em {members}, pois {reason}.",
+            "**{author}** está acariciando a cabeça de {members}, pois {reason}.",
+            "**{author}** está fazendo carinho em {members}, pois {reason}.",
+            "**{author}** fez carinho na cabeça de {members}, pois {reason}.",
+            "**{author}** está fazendo carinho na cabeça de {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** está fazendo cafuné em {members}.",
+            "**{author}** fez cafuné em {members}.",
+            "**{author}** está acariciando a cabeça de {members}.",
+            "**{author}** está fazendo carinho em {members}.",
+            "**{author}** fez carinho na cabeça de {members}.",
+            "**{author}** está fazendo carinho na cabeça de {members}."
+        ]
+    },
+    "slap": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Dá uns tapas em uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja dar uns tapas!",
+        "selfMention": "{emoji} **{author}**, você não pode se estapear (~~isso é estranho~~)!",
+        "botMention": "{emoji} **{author}**, você tem problemas? Por que alguém iria querer estapear uma garota l-linda como eu?",
+        "withReason": [
+            "**{author}** estapeou {members} por {reason}.",
+            "**{author}** deu uns tapas em {members} por {reason}.",
+            "**{author}** estapeou {members}, pois {reason}.",
+            "**{author}** deu uns tapas em {members}, pois {reason}.",
+            "**{author}** descontou sua raiva em {members}, pois {reason}.",
+            "**{author}** furiosamente estapeou {members}, pois {reason}.",
+            "**{author}** deu uma lição em {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** estapeou {members}.",
+            "**{author}** deu uns tapas em {members}.",
+            "**{author}** descontou sua raiva em {members}.",
+            "**{author}** furiosamente estapeou {members}.",
+            "**{author}** deu uma lição em {members}."
+        ]
+    },
+    "lick": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Lambe uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja lamber!",
+        "selfMention": "{emoji} **{author}**, você não pode se lamber (~~isso é estranho~~)!",
+        "botMention": "{emoji} **{author}**, seu d-depravado! Acha mesmo que vou deixar você me lamber?",
+        "withReason": [
+            "**{author}** lambeu {members} por {reason}.",
+            "**{author}** lambeu {members}, pois {reason}.",
+            "**{author}** deu uma lambida em {members}, pois {reason}.",
+            "**{author}** deu uma lambida gostosa em {members}, pois {reason}.",
+            "**{author}** estava com a glicose baixa e lambeu {members}, pois {reason}.",
+            "**{author}** quis provar o sabor de alguém e lambeu {members}, pois {reason}.",
+            "**{author}** quis provar a doçura de alguém e lambeu {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** lambeu {members}.",
+            "**{author}** deu uma lambida em {members}.",
+            "**{author}** deu uma lambida gostosa em {members}.",
+            "**{author}** estava com a glicose baixa e lambeu {members}.",
+            "**{author}** quis provar o sabor de alguém e lambeu {members}.",
+            "**{author}** quis provar a doçura de alguém e lambeu {members}."
+        ]
+    },
+    "tickle": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Faz cócegas em uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja fazer cócegas!",
+        "selfMention": "{emoji} **{author}**, você não pode fazer cócegas em si mesmo (~~isso é estranho~~)!",
+        "withReason": [
+            "**{author}** fez cócegas em {members}, pois {reason}.",
+            "**{author}** está fazendo cócegas em {members}, pois {reason}.",
+            "**{author}** está fazendo gracinha com {members}, pois {reason}.",
+            "**{author}** está tentando fazer {members} cair na risada, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** fez cócegas em {members}.",
+            "**{author}** está fazendo cócegas em {members}.",
+            "**{author}** está fazendo gracinha com {members}.",
+            "**{author}** está tentando fazer {members} cair na risada."
+        ]
+    },
+    "bite": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Morde uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja morder!",
+        "selfMention": "{emoji} **{author}**, você não pode fazer se morder (~~isso é estranho~~)!",
+        "botMention": "{emoji} **{author}**, você tem problemas? Por que alguém iria querer morder uma garota l-linda como eu?",
+        "withReason": [
+            "**{author}** está mordendo {members}, pois {reason}.",
+            "**{author}** deu uma mordida em {members}, pois {reason}.",
+            "**{author}** quis saborear algo e mordeu {members}, pois {reason}.",
+            "**{author}** quis saborear algo e deu uma mordida em {members}, pois {reason}.",
+            "**{author}** furiosamente mordeu {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** está mordendo {members}.",
+            "**{author}** deu uma mordida em {members}.",
+            "**{author}** quis saborear algo e mordeu {members}.",
+            "**{author}** quis saborear algo e deu uma mordida em {members}.",
+            "**{author}** furiosamente mordeu {members}."
+        ]
+    },
+    "greet": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Cumprimenta uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que deseja cumprimentar!",
+        "selfMention": "{emoji} **{author}**, você não pode cumprimentar a si mesmo (~~isso é estranho~~)!",
+        "withReason": [
+            "**{author}** está cumprimentando {members}, pois {reason}.",
+            "**{author}** cumprimentou {members}, pois {reason}.",
+            "**{author}** gentilmente cumprimentou {members}, pois {reason}.",
+            "**{author}** foi gentil e cumprimentou {members}, pois {reason}.",
+            "**{author}** quis ser gentil e cumprimentou {members}, pois {reason}.",
+            "**{author}** deu um cumprimento amigável em {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** está cumprimentando {members}.",
+            "**{author}** cumprimentou {members}.",
+            "**{author}** gentilmente cumprimentou {members}.",
+            "**{author}** foi gentil e cumprimentou {members}.",
+            "**{author}** quis ser gentil e cumprimentou {members}.",
+            "**{author}** deu um cumprimento amigável em {members}."
+        ]
+    },
+    "smile": {
+        "meta": {
+            "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",
+            "description": "Dá um sorriso para uma ou mais pessoas."
+        },
+        "noMention": "{emoji} **{author}**, você precisa mencionar as pessoas que para quem deseja sorrir!",
+        "selfMention": "{emoji} **{author}**, você não pode sorrir para si mesmo (~~use seu belo sorriso sorrindo para os outros~~)!",
+        "withReason": [
+            "**{author}** está sorrindo para {members}, pois {reason}.",
+            "**{author}** gentilmente sorriu para {members}, pois {reason}.",
+            "**{author}** deu um sorriso gentil para {members}, pois {reason}.",
+            "**{author}** sorriu para {members}, pois {reason}.",
+            "**{author}** sorriu gentilemente para {members}, pois {reason}.",
+            "**{author}** sorriu de felicidade para {members}, pois {reason}.",
+            "**{author}** não aguentou sua felicidade e sorriu para {members}, pois {reason}."
+        ],
+        "noReason": [
+            "**{author}** está sorrindo para {members}.",
+            "**{author}** gentilmente sorriu para {members}.",
+            "**{author}** deu um sorriso gentil para {members}.",
+            "**{author}** sorriu para {members}.",
+            "**{author}** sorriu gentilemente para {members}.",
+            "**{author}** sorriu de felicidade para {members}.",
+            "**{author}** não aguentou sua felicidade e sorriu para {members}."
         ]
     }
 }

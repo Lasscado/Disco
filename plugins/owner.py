@@ -66,10 +66,10 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         if command.enabled:
             command.enabled = False
             command.disabled_reason = reason
+            await ctx.send('Desativado.')
         else:
             command.enabled = True
-
-        await ctx.message.add_reaction(self.disco.emoji["true"])
+            await ctx.send('Ativado.')
 
     @commands.command(name='globalban', aliases=['gban'], usage='<Guild/User> <ID> <Motivo>')
     @commands.is_owner()

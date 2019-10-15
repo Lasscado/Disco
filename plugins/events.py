@@ -156,6 +156,13 @@ class Events(commands.Cog):
                                                                   "permissions": perms,
                                                                   "author": ctx.author.name}))
 
+        elif isinstance(e, DisabledCommand):
+            await ctx.send(ctx.t('errors.disabledCommand', {"emoji": self.disco.emoji["false"],
+                                                            "author": ctx.author.name,
+                                                            "command": ctx.command.qualified_name,
+                                                            "reason": ctx.command.disabled_reason
+                                                                      or ctx.t('commons.unknown')}))
+
         else:
             traceback_ = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 

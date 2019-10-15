@@ -56,6 +56,21 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
             await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
             await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
 
+    @commands.command(name='disablecommandglobal', aliases=['dcmdg'])
+    @commands.is_owner()
+    async def _disable_command_global(self, ctx, command, *, reason=None):
+        command = self.disco.get_command(command)
+        if command is None:
+            return await ctx.send(self.disco.emoji["false"])
+
+        if command.enabled:
+            command.enabled = False
+            command.disabled_reason = reason
+        else:
+            command.enabled = True
+
+        await ctx.message.add_reaction(self.disco.emoji["true"])
+
     @commands.command(name='globalban', aliases=['gban'], usage='<Guild/User> <ID> <Motivo>')
     @commands.is_owner()
     async def _global_ban(self, ctx, target_type, target_id: int, *, reason):

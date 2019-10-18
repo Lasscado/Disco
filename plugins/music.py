@@ -30,7 +30,7 @@ class Music(commands.Cog):
 
         if isinstance(event, TrackException):
             await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
-                                                                 "track": event.track,
+                                                                 "track": player.current,
                                                                  "error": event.error}))
 
         if player.repeat:
@@ -116,7 +116,7 @@ class Music(commands.Cog):
 
                 def check(m):
                     return m.channel.id == q.channel.id and m.author.id == ctx.author.id and m.content \
-                        and (m.content.isdigit() and 0 < int(m.content) <= len(tracks) or m.content.lower() == cancel)
+                        and (m.content.isdecimal() and 0 < int(m.content) <= len(tracks) or m.content.lower() == cancel)
 
                 try:
                     a = await self.disco.wait_for('message', timeout=120, check=check)

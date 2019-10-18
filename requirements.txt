@@ -2,7 +2,7 @@ aiodns==2.0.0
 babel==2.7.0
 cchardet==2.1.4
 coloredlogs==10.0
-discord.py==1.2.3
+discord.py==1.2.4
 dnspython==1.16.0
 humanize==0.5.1
 prettytable==0.7.2

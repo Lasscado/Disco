@@ -17,7 +17,7 @@ class Action(commands.Cog):
     @commands.command(name='kiss')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _kiss(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _kiss(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.kiss.noMention', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
@@ -50,7 +50,7 @@ class Action(commands.Cog):
     @commands.command(name='stare')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _stare(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _stare(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.stare.noMention', {"emoji": self.disco.emoji["false"],
                                                                      "author": ctx.author.name}))
@@ -79,7 +79,7 @@ class Action(commands.Cog):
     @commands.command(name='hug')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _hug(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _hug(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.hug.noMention', {"emoji": self.disco.emoji["false"],
                                                                    "author": ctx.author.name}))
@@ -108,7 +108,7 @@ class Action(commands.Cog):
     @commands.command(name='pat')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _pat(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _pat(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.pat.noMention', {"emoji": self.disco.emoji["false"],
                                                                    "author": ctx.author.name}))
@@ -137,7 +137,7 @@ class Action(commands.Cog):
     @commands.command(name='slap')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _slap(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _slap(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.slap.noMention', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
@@ -170,7 +170,7 @@ class Action(commands.Cog):
     @commands.command(name='lick')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _lick(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _lick(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.lick.noMention', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
@@ -203,7 +203,7 @@ class Action(commands.Cog):
     @commands.command(name='tickle')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _tickle(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _tickle(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.tickle.noMention', {"emoji": self.disco.emoji["false"],
                                                                       "author": ctx.author.name}))
@@ -232,7 +232,7 @@ class Action(commands.Cog):
     @commands.command(name='bite')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _bite(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _bite(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.bite.noMention', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
@@ -265,7 +265,7 @@ class Action(commands.Cog):
     @commands.command(name='greet')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _greet(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _greet(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.greet.noMention', {"emoji": self.disco.emoji["false"],
                                                                      "author": ctx.author.name}))
@@ -294,7 +294,7 @@ class Action(commands.Cog):
     @commands.command(name='smile')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _smile(self, ctx, members: commands.Greedy[discord.Member], *, reason=''):
+    async def _smile(self, ctx, members: commands.Greedy[discord.Member], *, reason: commands.clean_content = ''):
         if not members:
             return await ctx.send(ctx.t('commands.smile.noMention', {"emoji": self.disco.emoji["false"],
                                                                      "author": ctx.author.name}))
@@ -323,7 +323,7 @@ class Action(commands.Cog):
     @commands.command(name='cry')
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 6, commands.BucketType.user)
-    async def _cry(self, ctx, *, reason=''):
+    async def _cry(self, ctx, *, reason: commands.clean_content = ''):
         image = await self.weeb.random_image('cry')
         emoji = random_choice(self.disco.emoji['cry'])
         phrase = random_choice(ctx.t('commands.cry.withReason' if reason else 'commands.cry.noReason')).format(

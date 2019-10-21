@@ -169,7 +169,7 @@ class Events(commands.Cog):
             em = discord.Embed(
                 colour=0xFF0000,
                 timestamp=ctx.message.created_at,
-                description=f'> {ctx.message.content[:1500]}\n```py\n{traceback_}```'
+                description=f'```py\n{traceback_[:2038]}```'
             ).set_author(
                 name=f'{ctx.author} ({ctx.author.id})',
                 icon_url=ctx.author.avatar_url
@@ -178,7 +178,8 @@ class Events(commands.Cog):
             )
 
             await self.error_logs.send(content=f'Comando executado no canal {ctx.channel} ({ctx.channel.id})'
-                                               f' do servidor {ctx.guild} ({ctx.guild.id}).', embed=em)
+                                               f' do servidor {ctx.guild} ({ctx.guild.id}).'
+                                               f'\n> {ctx.message.content[:1500]}', embed=em)
 
             await ctx.send(ctx.t('errors.unexpectedError', {"emoji": self.disco.emoji["false"],
                                                             "author": ctx.author.name,

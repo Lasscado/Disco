@@ -582,5 +582,62 @@
             "**{author}** sorriu de felicidade para {members}.",
             "**{author}** não aguentou sua felicidade e sorriu para {members}."
         ]
+    },
+    "ban": {
+        "meta": {
+            "usage": "<@Menções|Nomes|IDs> [Motivo]",
+            "description": "Bane até 10 membros de uma só vez."
+        },
+        "successfully": "{emoji} **{member}** foi banido com sucesso!",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
+        "reasonNotSpecified": "Motivo não fornecido."
+    },
+    "kick": {
+        "meta": {
+            "usage": "<@Menções|Nomes|IDs> [Motivo]",
+            "description": "Expulsa até 10 membros de uma só vez."
+        },
+        "successfully": "{emoji} **{member}** foi expulso com sucesso!",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser expulsos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
+        "reasonNotSpecified": "Motivo não fornecido."
+    },
+    "softban": {
+        "meta": {
+            "usage": "<@Menções|Nomes|IDs> [Motivo]",
+            "description": "Bane e desbane até 10 membros de uma só vez."
+        },
+        "successfully": "{emoji} **{member}** foi banido e desbanido com sucesso!",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos e desbanidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
+        "reasonNotSpecified": "Motivo não fornecido."
+    },
+    "forceban": {
+        "meta": {
+            "usage": "<ID do Usuário> [Motivo]",
+            "description": "Bane um membro que não está no servidor, através do ID dele."
+        },
+        "higherRole": "{emoji} **{author}**, eu não posso banir **`{member}`** pois ele possui cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
+        "userNotFound": "{emoji} **{author}**, não foi possível encontrar um usuário com o ID fornecido.",
+        "alreadyBanned": "{emoji} **{author}**, não foi possível banir **`{user}`** pois ele já está banido desse servidor por **`{reason}`**.",
+        "success": "{emoji} **{author}**, você baniu **`{user}`** com sucesso!",
+        "reasonNotSpecified": "Motivo não fornecido."
+    },
+    "unban": {
+        "meta": {
+            "usage": "<ID do Usuário> [Motivo]",
+            "description": "Desbane um usuário, através do ID dele."
+        },
+        "userNotFound": "{emoji} **{author}**, não foi possível encontrar um usuário com o ID fornecido.",
+        "notBanned": "{emoji} **{author}**, **`{user}`** não está banido desse servidor.",
+        "success": "{emoji} **{author}**, você desbaniu **`{user}`** com sucesso!",
+        "reasonNotSpecified": "Motivo não fornecido."
+    },
+    "clean": {
+        "meta": {
+            "usage": "[Quantia] [#Canal de Texto] [@Membro] [Conteúdo]",
+            "description": "Limpa até 100 mensagens de uma só vez, podendo utilizar até três filtros ao mesmo tempo: o canal, autor e conteúdo que cada uma das mensagens deve conter."
+        },
+        "invalidAmount": "{emoji} **{author}**, você só pode deletar até **`100`** mensagens por vez.",
+        "success": "{emoji} **{author}**, **`{amount}`** mensagens foram limpas do canal {channel} com sucesso.",
+        "successWithMember": "{emoji} **{author}**, **`{amount}`** mensagens de **`{member}`** foram limpas do canal {channel} com sucesso."
     }
 }

@@ -50,6 +50,17 @@ async def before_play(cog, ctx):
 
 class Checks:
     @staticmethod
+    def mod_role_or_permission(permission):
+        async def predicate(ctx):
+            if getattr(ctx.author.guild_permissions, permission) or \
+                    ctx.guild.get_role(ctx._guild.data['options']['modRole']) in ctx.author.roles:
+                return True
+
+            raise commands.errors.MissingPermissions([permission])
+
+        return commands.check(predicate)
+
+    @staticmethod
     def staffer_or_dj_role():
         async def predicate(ctx):
             role = ctx.guild.get_role(ctx.gdb.options['dj_role'])

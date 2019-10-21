@@ -91,7 +91,7 @@ class Utils(commands.Cog):
 
         def check(m):
             return m.channel.id == q.channel.id and m.author.id == ctx.author.id and m.content \
-                   and (m.content.isdigit() and 0 < int(m.content) <= len(songs) or m.content.lower() == cancel)
+                   and (m.content.isdecimal() and 0 < int(m.content) <= len(songs) or m.content.lower() == cancel)
 
         try:
             a = await self.disco.wait_for('message', timeout=120, check=check)
@@ -167,7 +167,7 @@ class Utils(commands.Cog):
 
         def check(m):
             return m.channel.id == q.channel.id and m.author.id == ctx.author.id \
-                   and (m.content.isdigit() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
+                   and (m.content.isdecimal() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
 
         try:
             a = await self.disco.wait_for('message', timeout=120, check=check)
@@ -287,7 +287,7 @@ class Utils(commands.Cog):
 
         def check(m):
             return m.channel.id == q.channel.id and m.author.id == ctx.author.id \
-                   and (m.content.isdigit() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
+                   and (m.content.isdecimal() and 0 < int(m.content) <= len(entries) or m.content.lower() == cancel)
 
         try:
             a = await self.disco.wait_for('message', timeout=120, check=check)

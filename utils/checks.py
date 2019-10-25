@@ -1,9 +1,15 @@
 from discord.ext import commands
 
+from .constants import PATREON_DONATE_URL
 from .errors import *
 
 
 async def before_play(cog, ctx):
+    if not any(n for n in ctx.bot.wavelink.nodes.values() if n.is_available):
+        raise MusicError(ctx.t('errors.noMusicNodesAvailable', {"author": ctx.author.name,
+                                                                "emoji": ctx.bot.emoji["false"],
+                                                                "donate": PATREON_DONATE_URL}))
+
     ctx.player = player = ctx.bot.get_player(ctx.guild.id)
     if not ctx.me.voice:
         if not ctx.author.voice:

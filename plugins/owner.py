@@ -29,32 +29,20 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command(name='reload', aliases=['rl'])
     @commands.is_owner()
     async def _reload(self, ctx, plugin):
-        try:
-            self.disco.reload_extension('plugins.' + plugin)
-            await ctx.message.add_reaction('<:discoTrue:512912547108749312>')
-        except Exception as e:
-            await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
-            await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
+        self.disco.reload_extension('plugins.' + plugin)
+        await ctx.message.add_reaction(self.disco.emoji["true"])
 
     @commands.command(name='load', aliases=['ld'])
     @commands.is_owner()
     async def _load(self, ctx, plugin):
-        try:
-            self.disco.load_extension('plugins.' + plugin)
-            await ctx.message.add_reaction('<:discoTrue:512912547108749312>')
-        except Exception as e:
-            await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
-            await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
+        self.disco.load_extension('plugins.' + plugin)
+        await ctx.message.add_reaction(self.disco.emoji["true"])
 
     @commands.command(name='unload', aliases=['ul'])
     @commands.is_owner()
     async def _unload(self, ctx, plugin):
-        try:
-            self.disco.unload_extension('plugins.' + plugin)
-            await ctx.message.add_reaction('<:discoTrue:512912547108749312>')
-        except Exception as e:
-            await ctx.send(f'```py\n{e.__class__.__name__}: {e}```')
-            await ctx.message.add_reaction('<:discoFalse:512912546869673999>')
+        self.disco.unload_extension('plugins.' + plugin)
+        await ctx.message.add_reaction(self.disco.emoji["true"])
 
     @commands.command(name='disablecommandglobal', aliases=['dcmdg'])
     @commands.is_owner()

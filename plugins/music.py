@@ -5,7 +5,7 @@ from math import ceil
 
 import discord
 from discord.ext import commands
-from wavelink.events import TrackException
+from wavelink.events import TrackException, TrackStuck
 
 from utils import web_url, get_length, checks
 from models import DiscoTrack
@@ -29,9 +29,13 @@ class Music(commands.Cog):
         player = event.player
 
         if isinstance(event, TrackException):
-            await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
-                                                                 "track": player.current,
-                                                                 "error": event.error}))
+            return await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
+                                                                        "track": player.current,
+                                                                        "error": event.error}))
+        if isinstance(event, TrackStuck):
+            return await player.send(player.t('errors.trackStuck', {"emoji": self.disco.emoji["alert"],
+                                                                    "track": player.current,
+                                                                    "threshold": event.threshold}))
 
         if player.repeat:
             track = player.repeat

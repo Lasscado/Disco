@@ -15,6 +15,7 @@
     "fullQueue": "{emoji} **{author}**, a fila de reprodução desse servidor está lotada! Remova alguma faixa ou tente novamente mais tarde.",
     "notEnoughPermissionsToJoin": "{emoji} **{author}**, eu preciso das permissões **`CONECTAR`** e **`FALAR`** no seu canal de voz.",
     "trackException": "{emoji} Um erro ocorreu durante a reprodução da faixa **`{track}`**. Pulando para a próxima.\n>>> {error}",
+    "trackStuck": "{emoji} Oops... Infelizmente meu servidor de áudio emperrou e eu não posso reproduzir a faixa **`{track}`**. Pulando para a próxima. ||{threshold}||",
     "unexpectedError": "{emoji} **{author}**, um erro inesperado ocorreu durante a execução do comando **`{command}`**.\nNão se preocupe, eu acabei de contar sobre isso para meu desenvolvedor e ele irá corrigir essa falha assim que possível.\n\nSe você possuir alguma dúvida sobre mim, não se esqueça de entrar em meu servidor de suporte: <{support}>.",
     "disabledCommand": "{emoji} **{author}**, o comando **`{command}`** está temporariamente desativado.\n**Motivo**: `{reason}`"
 }

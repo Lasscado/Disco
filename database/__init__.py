@@ -1,2 +1,1 @@
-from .managers import BanManager, GuildManager, ShardManager
-from .connection import db
+from .manager import DatabaseManager

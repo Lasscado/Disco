@@ -1,5 +1,14 @@
 from wavelink.player import Player
+from wavelink.player import Track
 from discord import Forbidden, NotFound
+
+
+class DiscoTrack(Track):
+    def __init__(self, requester, _id, info, query=None):
+        super().__init__(_id, info, query)
+
+        self.requester = requester
+        self.skip_votes = set()
 
 
 class DiscoPlayer(Player):

@@ -8,8 +8,8 @@ from discord import Game
 from discord.ext.commands import AutoShardedBot
 
 from database import DatabaseManager
-from utils import emojis, custom_prefix, DEFAULT_EMBED_COLORS
-from models import DiscoPlayer
+from utils import emojis, custom_prefix, DiscoPlayer, DEFAULT_EMBED_COLORS
+
 
 log = logging.getLogger('disco')
 

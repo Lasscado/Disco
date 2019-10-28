@@ -7,8 +7,7 @@ import discord
 from discord.ext import commands
 from wavelink.events import TrackException, TrackStuck
 
-from utils import web_url, get_length, checks
-from models import DiscoTrack
+from utils import web_url, get_length, checks, DiscoTrack
 
 
 class Music(commands.Cog):

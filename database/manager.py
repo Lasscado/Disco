@@ -30,8 +30,12 @@ class DatabaseManager:
         elif register:
             return await self.register_guild(guild_id)
 
-    def get_bans(self, **kwargs):
-        return self._bans.find(kwargs)
+    async def get_bans(self, **kwargs):
+        bans = []
+        async for data in self._bans.find(kwargs):
+            bans.append(DiscoBan(data, self._bans))
+
+        return bans
 
     async def get_last_ban(self, **kwargs):
         if data := await self._bans.find(kwargs).sort('date', -1).limit(1).to_list(None):

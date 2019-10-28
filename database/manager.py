@@ -25,26 +25,24 @@ class DatabaseManager:
         await self._db.command('ping')
 
     async def get_guild(self, guild_id, register=True):
-        if data := self._guilds.find_one({"_id": guild_id}):
+        if data := await self._guilds.find_one({"_id": guild_id}):
             return DiscoGuild(data, self._guilds)
         elif register:
             return await self.register_guild(guild_id)
 
     async def get_bans(self, **kwargs):
-        if data := self._bans.find(kwargs):
-            return [DiscoBan(data, self._bans) for data in data]
+        return self._bans.find(kwargs)
 
     async def get_last_ban(self, **kwargs):
-        if data := self._bans.find_one(kwargs).sort('date', -1):
+        if data := await self._bans.find_one(kwargs).sort('date', -1):
             return DiscoBan(data, self._bans)
 
     async def get_first_ban(self, **kwargs):
-        if data := self._bans.find_one(kwargs).sort('date', 1):
+        if data := await self._bans.find_one(kwargs).sort('date', 1):
             return DiscoBan(data, self._bans)
 
     async def get_shards(self, **kwargs):
-        if data := self._shards.find(kwargs):
-            return [DiscoShard(data, self._shards) for data in data]
+        return self._shards.find(kwargs)
 
     async def get_shard(self, shard_id, register=True):
         if data := await self._shards.find_one({"_id": shard_id}):

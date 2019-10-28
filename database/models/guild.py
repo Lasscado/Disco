@@ -8,7 +8,7 @@ class DiscoGuild:
         self.id = data['_id']
         self.options = data['options']
 
-    async def update(self, data):
+    async def set(self, data):
         await self._db.update_one({"_id": self.id}, {"$set": data})
 
     async def inc(self, data):

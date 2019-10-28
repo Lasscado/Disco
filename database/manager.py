@@ -34,12 +34,12 @@ class DatabaseManager:
         return self._bans.find(kwargs)
 
     async def get_last_ban(self, **kwargs):
-        if data := await self._bans.find_one(kwargs).sort('date', -1):
-            return DiscoBan(data, self._bans)
+        if data := await self._bans.find(kwargs).sort('date', -1).limit(1).to_list(None):
+            return DiscoBan(data[0], self._bans)
 
     async def get_first_ban(self, **kwargs):
-        if data := await self._bans.find_one(kwargs).sort('date', 1):
-            return DiscoBan(data, self._bans)
+        if data := await self._bans.find(kwargs).sort('date', 1).limit(1).to_list(None):
+            return DiscoBan(data[0], self._bans)
 
     def get_shards(self, **kwargs):
         return self._shards.find(kwargs)

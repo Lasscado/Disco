@@ -20,8 +20,8 @@ class DiscoBan:
     def __str__(self):
         return self.reason
 
-    async def update(self, data):
-        await self._db.update_one({"_id": self.id}, {"$set": data})
+    async def update(self, **kwargs):
+        await self._db.update_one({"_id": self.id}, {"$set": kwargs})
 
     async def ignore(self):
-        await self.update({"ignore": True, "ignored_at": datetime.utcnow().timestamp()})
+        await self.update(ignore=True, ignored_at=datetime.utcnow().timestamp())

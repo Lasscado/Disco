@@ -30,7 +30,7 @@ class DatabaseManager:
         elif register:
             return await self.register_guild(guild_id)
 
-    async def get_bans(self, **kwargs):
+    def get_bans(self, **kwargs):
         return self._bans.find(kwargs)
 
     async def get_last_ban(self, **kwargs):
@@ -41,7 +41,7 @@ class DatabaseManager:
         if data := await self._bans.find_one(kwargs).sort('date', 1):
             return DiscoBan(data, self._bans)
 
-    async def get_shards(self, **kwargs):
+    def get_shards(self, **kwargs):
         return self._shards.find(kwargs)
 
     async def get_shard(self, shard_id, register=True):

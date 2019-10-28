@@ -64,9 +64,9 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
     async def _global_ban(self, ctx, target_type, target_id: int, *, reason):
         target_type = target_type.lower()
 
-        if self.disco._bans.find(targetID=target_id, ignore=False):
+        if ban := await self.disco.db.get_last_ban(target_id=target_id):
             return await ctx.send(f'{self.disco.emoji["false"]} **{ctx.author.name}**, esse alvo '
-                                  'já está banido do meu sistema.')
+                                  f'já está banido do meu sistema por `{ban}`.')
 
         if target_type in ['user', 'u']:
             try:
@@ -92,18 +92,16 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             raise commands.UserInputError()
 
-        self.disco._bans.new(
-            target_id=target.id,
-            author_id=ctx.author.id,
-            is_guild=isinstance(target, discord.Guild),
-            reason=reason
-        )
+        await self.disco.db.register_ban(target_id=target.id,
+                                         author_id=ctx.author.id,
+                                         is_guild=isinstance(target, discord.Guild),
+                                         reason=reason)
 
         await ctx.message.add_reaction(self.disco.emoji["true"])
 
         em = discord.Embed(
             colour=0xb10448,
-            title=f'Banimento Global #{self.disco._bans.total} | {target_type}',
+            title=f'Banimento Global #{await self.disco.db.total_bans} | {target_type}',
             timestamp=ctx.message.created_at
         ).set_author(
             name=str(target),

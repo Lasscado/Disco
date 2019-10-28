@@ -54,7 +54,7 @@ class Information(commands.Cog):
 
             return await ctx.send(content=ctx.author.mention, embed=em)
 
-        custom_prefix = ctx._guild.data['options']['prefix']
+        custom_prefix = ctx.gdb.options['prefix']
         prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
         command = ctx.t('commons.command')
@@ -194,7 +194,7 @@ class Information(commands.Cog):
     async def _shards(self, ctx):
         table = PrettyTable(['Shard ID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Last Update'])
 
-        for shard in self.disco._shards.all():
+        for shard in await self.disco.db.get_shards().to_list(None):
             now = datetime.utcnow()
             latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
             guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'
@@ -212,7 +212,7 @@ class Information(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def _whats_my_prefix(self, ctx):
         command = ctx.t('commons.command')
-        custom_prefix = ctx._guild.data['options']['prefix']
+        custom_prefix = ctx.gdb.options['prefix']
         prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
 
         await ctx.send(ctx.t('commands.whatsmyprefix.message', {"author": ctx.author.name,
@@ -227,7 +227,7 @@ class Information(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def _settings(self, ctx):
         not_defined = ctx.t('commands.serversettings.notDefined')
-        options = ctx._guild.data['options']
+        options = ctx.gdb.options
 
         em = discord.Embed(
             colour=self.disco.color[0],
@@ -240,28 +240,28 @@ class Information(commands.Cog):
             value=f'`{options["prefix"] or not_defined}`'
         ).add_field(
             name=ctx.t('commands.serversettings.djRole'),
-            value=f'`{ctx.guild.get_role(options["djRole"]) or not_defined}`'
+            value=f'`{ctx.guild.get_role(options["dj_role"]) or not_defined}`'
         ).add_field(
             name=ctx.t('commands.serversettings.botChannel'),
-            value=f'`{ctx.guild.get_channel(options["botChannel"]) or not_defined}`'
+            value=f'`{ctx.guild.get_channel(options["bot_channel"]) or not_defined}`'
         ).add_field(
             name=ctx.t('commands.serversettings.defaultVolume'),
-            value=f'`{options["defaultVolume"]}%`' if options['defaultVolume'] else f'`{not_defined}`'
+            value=f'`{options["default_volume"]}%`' if options['default_volume'] else f'`{not_defined}`'
         ).add_field(
             name=ctx.t('commands.serversettings.locale'),
             value=f'`{options["locale"]}`'
         ).add_field(
             name=ctx.t('commands.serversettings.localBans'),
-            value=f'`{len(options["bannedMembers"])}`'
+            value=f'`{len(options["banned_members"])}`'
         ).add_field(
             name=ctx.t('commands.serversettings.disabledRoles'),
-            value=f'`{len(options["disabledRoles"])}`'
+            value=f'`{len(options["disabled_roles"])}`'
         ).add_field(
             name=ctx.t('commands.serversettings.disabledChannels'),
-            value=f'`{len(options["disabledChannels"])}`'
+            value=f'`{len(options["disabled_channels"])}`'
         ).add_field(
             name=ctx.t('commands.serversettings.disabledCommands'),
-            value=f'`{len(options["disabledCommands"])}`'
+            value=f'`{len(options["disabled_commands"])}`'
         )
 
         await ctx.send(embed=em)

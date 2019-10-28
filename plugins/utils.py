@@ -193,7 +193,7 @@ class Utils(commands.Cog):
             anime.synopsis = anime.synopsis[:2048 - len(full_synopsis)] + full_synopsis
 
         unknown = ctx.t('commons.unknown')
-        locale = ctx._guild.data['options']['locale']
+        locale = ctx.gdb.options['locale']
         started_at = format_date(anime.started_at, format='short', locale=locale) if anime.started_at else unknown
         ended_at = format_date(anime.ended_at, format='short', locale=locale) if anime.ended_at else unknown
         total_length = ctx.t('commands.anime.totalLength', {"length": format_timedelta(
@@ -311,7 +311,7 @@ class Utils(commands.Cog):
             manga.synopsis = manga.synopsis[:2048 - len(full_synopsis)] + full_synopsis
 
         unknown = ctx.t('commons.unknown')
-        locale = ctx._guild.data['options']['locale']
+        locale = ctx.gdb.options['locale']
         started_at = format_date(manga.started_at, format='short', locale=locale) if manga.started_at else unknown
         ended_at = format_date(manga.ended_at, format='short', locale=locale) if manga.ended_at else unknown
         volume_count = ctx.t('commands.manga.volumes', {"volumes": manga.volume_count}) if manga.volume_count else ''

@@ -23,9 +23,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        g = self.disco._guilds.get(guild.id)
+        gdb = await self.disco.db.get_guild(guild.id)
         if str(guild.region) == 'brazil':
-            g.update({"options.locale": "pt_BR"})
+            gdb.update({"options.locale": "pt_BR"})
 
         humans = 0
         bots = 0
@@ -67,7 +67,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        self.disco._guilds.get(guild.id).delete()
+        if gdb := await self.disco.db.get_guild(guild.id):
+            await gdb.delete()
 
         humans = 0
         bots = 0

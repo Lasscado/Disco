@@ -7,7 +7,7 @@ import wavelink
 from discord import Game
 from discord.ext.commands import AutoShardedBot
 
-from database import BanManager, GuildManager, ShardManager, db
+from database import DatabaseManager
 from utils import emojis, custom_prefix, DEFAULT_EMBED_COLORS
 from models import DiscoPlayer
 
@@ -27,10 +27,7 @@ class Disco(AutoShardedBot):
             activity=Game(f'Prefix: {self.prefixes[0]}')
         )
 
-        self.db = db
-        self._bans = BanManager(db.bans)
-        self._guilds = GuildManager(db.guilds)
-        self._shards = ShardManager(db.shards)
+        self.db = DatabaseManager(environ['DATABASE_NAME'], environ['DATABASE_URI'])
         self.i18n = i18n.I18N(source='pt_BR')
         self.log = log
         self.emoji = emojis
@@ -55,12 +52,11 @@ class Disco(AutoShardedBot):
         log.info(f'Shard {shard_id} conectada.')
 
         guilds = [g for g in self.guilds if g.shard_id == shard_id]
-        self._shards.get(shard_id).update({
-            "launchedAt": datetime.utcnow().timestamp(),
-            "latency": self.shards[shard_id].ws.latency,
-            "guilds": len(guilds),
-            "members": sum(g.member_count for g in guilds if hasattr(g, '_member_count'))
-        })
+        shard = await self.db.get_shard(shard_id)
+        await shard.update(launched_at=datetime.utcnow().timestamp(),
+                           latency=self.shards[shard_id].ws.latency,
+                           guilds=len(guilds),
+                           members=sum(g.member_count for g in guilds if hasattr(g, '_member_count')))
 
     async def on_ready(self):
         if not self.loaded:
@@ -74,15 +70,13 @@ class Disco(AutoShardedBot):
 
             log.info('Fim de carregamento dos plugins.')
 
-
-            for ban in self._bans.find(ignore=False):
+            async for ban in self.db.get_bans(ignore=False):
                 if ban.is_guild:
                     self.guild_blacklist.add(ban.target_id)
                 else:
                     self.user_blacklist.add(ban.target_id)
 
             log.info('Lista de banidos carregada.')
-
 
             self.i18n.load_all_from_path()
             log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')
@@ -106,14 +100,14 @@ class Disco(AutoShardedBot):
                 or ctx.author.id in self.user_blacklist or ctx.guild.id in self.guild_blacklist):
             return
 
-        ctx._guild = self._guilds.get(ctx.guild.id)
-        options = ctx._guild.data['options']
-        bot_channel = options['botChannel']
-        if ((ctx.channel.id in options['disabledChannels']
-             or ctx.command.name in options['disabledCommands']
-             or ctx.author.id in options['bannedMembers']
+        ctx.gdb = await self.db.get_guild(ctx.guild.id)
+        options = ctx.gdb.options
+        bot_channel = options['bot_channel']
+        if ((ctx.channel.id in options['disabled_channels']
+             or ctx.command.name in options['disabled_commands']
+             or ctx.author.id in options['banned_members']
              or bot_channel and bot_channel != ctx.channel.id
-             or any(r for r in ctx.author.roles if r.id in options['disabledRoles']))
+             or any(r for r in ctx.author.roles if r.id in options['disabled_roles']))
                 and not ctx.author.guild_permissions.manage_guild):
             return
 

@@ -11,14 +11,14 @@ class Admin(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     async def _dj_role(self, ctx, *, role: discord.Role = None):
         if not role:
-            if not ctx._guild.data['options']['djRole']:
+            if not ctx.gdb.options['dj_role']:
                 raise commands.UserInputError()
 
-            ctx._guild.update({"options.djRole": None})
+            ctx.gdb.update({"options.dj_role": None})
             return await ctx.send(ctx.t('commands.djrole.reset', {"author": ctx.author.name,
                                                                   "emoji": self.disco.emoji["true"]}))
 
-        ctx._guild.update({"options.djRole": role.id})
+        ctx.gdb.update({"options.djRole": role.id})
         await ctx.send(ctx.t('commands.djrole.update', {"author": ctx.author.name,
                                                         "emoji": self.disco.emoji["true"], "role": role}))
 
@@ -29,13 +29,13 @@ class Admin(commands.Cog):
         if not channel:
             channel = ctx.channel
 
-        if channel.id in ctx._guild.data['options']['disabledChannels']:
-            ctx._guild.remove({"options.disabledChannels": channel.id})
+        if channel.id in ctx.gdb.options['disabled_channels']:
+            await ctx.gdb.pull({"options.disabled_channels": channel.id})
             await ctx.send(ctx.t('commands.disablechannel.allow', {"author": ctx.author.name,
                                                                    "emoji": self.disco.emoji["true"],
                                                                    "channel": channel.mention}))
         else:
-            ctx._guild.insert({"options.disabledChannels": channel.id})
+            await ctx.gdb.push({"options.disabled_channels": channel.id})
             await ctx.send(ctx.t('commands.disablechannel.disallow', {"author": ctx.author.name,
                                                                       "emoji": self.disco.emoji["true"],
                                                                       "channel": channel.mention}))
@@ -48,13 +48,13 @@ class Admin(commands.Cog):
             return await ctx.send(ctx.t('commands.disablerole.higherRole', {
                 "author": ctx.author.name, "emoji": self.disco.emoji["false"]}))
 
-        if role.id in ctx._guild.data['options']['disabledRoles']:
-            ctx._guild.remove({"options.disabledRoles": role.id})
+        if role.id in ctx.gdb.options['disabled_roles']:
+            await ctx.gdb.pull({"options.disabled_roles": role.id})
             await ctx.send(ctx.t('commands.disablerole.enabled', {"role": role,
                                                                   "emoji": self.disco.emoji["true"],
                                                                   "author": ctx.author.name}))
         else:
-            ctx._guild.insert({"options.disabledRoles": role.id})
+            await ctx.gdb.push({"options.disabled_roles": role.id})
             await ctx.send(ctx.t('commands.disablerole.disabled', {"role": role,
                                                                    "emoji": self.disco.emoji["true"],
                                                                    "author": ctx.author.name}))
@@ -67,12 +67,12 @@ class Admin(commands.Cog):
             return await ctx.send(ctx.t('commands.localban.higherMember', {
                 "emoji": self.disco.emoji["false"], "author": ctx.author.name}))
 
-        if member.id in ctx._guild.data['options']['bannedMembers']:
-            ctx._guild.remove({"options.bannedMembers": member.id})
+        if member.id in ctx.gdb.options['banned_members']:
+            await ctx.gdb.pull({"options.banned_members": member.id})
             await ctx.send(ctx.t('commands.localban.unban', {"emoji": self.disco.emoji["true"],
                                                              "author": ctx.author.name, "member": member}))
         else:
-            ctx._guild.insert({"options.bannedMembers": member.id})
+            await ctx.gdb.push({"options.banned_members": member.id})
             await ctx.send(ctx.t('commands.localban.ban', {"emoji": self.disco.emoji["true"],
                                                            "author": ctx.author.name, "member": member}))
 
@@ -88,13 +88,13 @@ class Admin(commands.Cog):
             return await ctx.send(ctx.t('commands.disablecommand.cantDisable', {"emoji": self.disco.emoji["false"],
                                                                                 "author": ctx.author.name}))
 
-        if command.name in ctx._guild.data['options']['disabledCommands']:
-            ctx._guild.remove({"options.disabledCommands": command.name})
+        if command.name in ctx.gdb.options['disabled_commands']:
+            await ctx.gdb.pull({"options.disabled_commands": command.name})
             await ctx.send(ctx.t('commands.disablecommand.enabled', {"command": command.name,
                                                                      "emoji": self.disco.emoji["true"],
                                                                      "author": ctx.author.name}))
         else:
-            ctx._guild.insert({"options.disabledCommands": command.name})
+            await ctx.gdb.push({"options.disabled_commands": command.name})
             await ctx.send(ctx.t('commands.disablecommand.disabled', {"command": command.name,
                                                                       "emoji": self.disco.emoji["true"],
                                                                       "author": ctx.author.name}))
@@ -104,14 +104,14 @@ class Admin(commands.Cog):
     @commands.has_permissions(manage_guild=True, manage_channels=True)
     async def _bot_channel(self, ctx, *, channel: discord.TextChannel = None):
         if not channel:
-            if not ctx._guild.data['options']['botChannel']:
+            if not ctx.gdb.options['bot_channel']:
                 raise commands.UserInputError()
 
-            ctx._guild.update({"options.botChannel": None})
+            await ctx.gdb.set({"options.bot_channel": None})
             return await ctx.send(ctx.t('commands.botchannel.reset', {"author": ctx.author.name,
                                                                       "emoji": self.disco.emoji["true"]}))
 
-        ctx._guild.update({"options.botChannel": channel.id})
+        await ctx.gdb.set({"options.bot_channel": channel.id})
         await ctx.send(ctx.t('commands.botchannel.set', {"author": ctx.author.name,
                                                          "emoji": self.disco.emoji["true"],
                                                          "channel": channel.mention}))
@@ -130,7 +130,7 @@ class Admin(commands.Cog):
                                                                     "author": ctx.author.name}))
 
         ctx.t = self.disco.i18n.get_t(locale)
-        ctx._guild.update({"options.locale": locale})
+        await ctx.gdb.set({"options.locale": locale})
         await ctx.send(ctx.t('commands.locale.success', {"locale": locale,
                                                          "emoji": self.disco.emoji["true"],
                                                          "author": ctx.author.name}))
@@ -145,10 +145,10 @@ class Admin(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     async def _set_prefix(self, ctx, prefix=None):
         if not prefix:
-            if not ctx._guild.data['options']['prefix']:
+            if not ctx.gdb.options['prefix']:
                 raise commands.UserInputError
 
-            ctx._guild.update({"options.prefix": None})
+            await ctx.gdb.set({"options.prefix": None})
             self.disco._prefixes[ctx.guild.id] = None
             return await ctx.send(ctx.t('commands.prefix.reset', {"author": ctx.author.name,
                                                                   "emoji": self.disco.emoji["true"]}))
@@ -157,7 +157,7 @@ class Admin(commands.Cog):
             return await ctx.send(ctx.t('commands.prefix.invalid', {"author": ctx.author.name,
                                                                     "emoji": self.disco.emoji["false"]}))
 
-        ctx._guild.update({"options.prefix": prefix})
+        await ctx.gdb.set({"options.prefix": prefix})
         self.disco._prefixes[ctx.guild.id] = prefix
         await ctx.send(ctx.t('commands.prefix.success', {"author": ctx.author.name,
                                                          "emoji": self.disco.emoji["true"],
@@ -168,10 +168,10 @@ class Admin(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     async def _default_volume(self, ctx, vol: int = None):
         if not vol:
-            if not ctx._guild.data['options']['defaultVolume']:
+            if not ctx.gdb.options['default_volume']:
                 raise commands.UserInputError
 
-            ctx._guild.update({"options.defaultVolume": None})
+            await ctx.gdb.set({"options.default_volume": None})
             return await ctx.send(ctx.t('commands.defaultvolume.reset', {"author": ctx.author.name,
                                                                          "emoji": self.disco.emoji["true"]}))
 
@@ -179,7 +179,7 @@ class Admin(commands.Cog):
             return await ctx.send(ctx.t('commands.defaultvolume.invalid', {"author": ctx.author.name,
                                                                            "emoji": self.disco.emoji["false"]}))
 
-        ctx._guild.update({"options.defaultVolume": vol})
+        await ctx.gdb.set({"options.default_volume": vol})
         await ctx.send(ctx.t('commands.defaultvolume.success', {"author": ctx.author.name,
                                                                 "emoji": self.disco.emoji["true"],
                                                                 "volume": vol}))

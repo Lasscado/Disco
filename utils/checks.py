@@ -33,7 +33,7 @@ async def before_play(cog, ctx):
         await ctx.send(ctx.t('commands.play.connected', {"channel": vc,
                                                          "emoji": ctx.bot.emoji["wireless"]}))
 
-        default_vol = ctx._guild.data['options']['defaultVolume']
+        default_vol = ctx.gdb.options['default_volume']
         if default_vol is not None:
             await player.set_volume(default_vol)
 
@@ -52,7 +52,7 @@ class Checks:
     @staticmethod
     def staffer_or_dj_role():
         async def predicate(ctx):
-            role = ctx.guild.get_role(ctx._guild.data['options']['djRole'])
+            role = ctx.guild.get_role(ctx.gdb.options['dj_role'])
             if ctx.author.guild_permissions.manage_guild or role in ctx.author.roles:
                 return True
 

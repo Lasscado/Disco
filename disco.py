@@ -70,7 +70,7 @@ class Disco(AutoShardedBot):
 
             log.info('Fim de carregamento dos plugins.')
 
-            async for ban in self.db.get_bans(ignore=False):
+            for ban in await self.db.get_bans(ignore=False):
                 if ban.is_guild:
                     self.guild_blacklist.add(ban.target_id)
                 else:

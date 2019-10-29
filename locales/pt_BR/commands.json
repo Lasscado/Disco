@@ -58,6 +58,8 @@
         "title": "Opções do Servidor",
         "customPrefix": "Prefixo Customizado",
         "djRole": "Cargo DJ",
+        "modRole": "Cargo de Moderador",
+        "modLogsChannel": "Logs Moderativos",
         "botChannel": "Canal do Bot",
         "locale": "Localidade",
         "defaultVolume": "Volume Padrão",
@@ -143,6 +145,23 @@
         "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
         "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
         "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."
+    },
+    "modrole": {
+        "meta": {
+            "usage": "<@Cargo|Nome|ID>",
+            "description": "Define um cargo como Cargo de Moderador, dando permissões de uso dos comandos moderativos para quem possuir ele."
+        },
+        "reset": "{emoji} **{author}**, você resetou o **`Cargo de Moderador`** desse servidor.",
+        "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo de Moderador`** desse servidor. De agora em diante, quem possuir esse cargo poderá utilizar meus comandos moderativos."
+    },
+    "modlogs": {
+        "meta": {
+            "usage": "<#Canal|Nome|ID>",
+            "description": "Define um canal como Canal de Logs Moderativos, que irá receber registros de uso do meu sistema moderativo."
+        },
+        "reset": "{emoji} **{author}**, você resetou o **`Cargo de Logs Moderativos`** desse servidor.",
+        "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs Moderativos__:\n\n{permissions}",
+        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs Moderativos`** desse servidor. De agora em diante, quem possuir esse cargo poderá utilizar meus comandos moderativos."
     },
     "play": {
         "meta": {

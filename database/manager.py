@@ -65,6 +65,8 @@ class DatabaseManager:
                 "locale": "en_US",
                 "prefix": None,
                 "dj_role": None,
+                "mod_role": None,
+                "mod_logs_channel": None,
                 "bot_channel": None,
                 "default_volume": None,
                 "disabled_commands": [],

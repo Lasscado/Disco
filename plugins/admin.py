@@ -184,6 +184,57 @@ class Admin(commands.Cog):
                                                                 "emoji": self.disco.emoji["true"],
                                                                 "volume": vol}))
 
+    @commands.command(name='modrole', aliases=['mrole', 'mr'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _mod_role(self, ctx, *, role: discord.Role = None):
+        if role is None:
+            if not ctx.gdb.options['mod_role']:
+                raise commands.UserInputError
+
+            await ctx.gdb.set({"options.mod_role": None})
+            return await ctx.send(ctx.t('commands.modrole.reset', {"author": ctx.author.name,
+                                                                   "emoji": self.disco.emoji["true"]}))
+
+        await ctx.gdb.set({"options.mod_role": role.id})
+        await ctx.send(ctx.t('commands.modrole.success', {"author": ctx.author.name,
+                                                          "emoji": self.disco.emoji["true"],
+                                                          "role": role.name}))
+
+    @commands.command(name='modlogs', aliases=['modlog', 'mlogs', 'mlog'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _mod_logs(self, ctx, *, channel: discord.TextChannel = None):
+        if channel is None:
+            if not ctx.gdb.options['mod_logs_channel']:
+                raise commands.UserInputError
+
+            await ctx.gdb.set({"options.mod_logs_channel": None})
+            return await ctx.send(ctx.t('commands.modlogs.reset', {"author": ctx.author.name,
+                                                                   "emoji": self.disco.emoji["true"]}))
+
+        permissions = channel.permissions_for(ctx.me)
+        missing = []
+        emoji = self.disco.emoji["idle"]
+        if not permissions.send_messages:
+            missing.append(f'{emoji} **`{ctx.t("permissions.send_messages").upper()}`**')
+        if not permissions.read_messages:
+            missing.append(f'{emoji} **`{ctx.t("permissions.read_messages").upper()}`**')
+        if not permissions.read_message_history:
+            missing.append(f'{emoji} **`{ctx.t("permissions.read_message_history").upper()}`**')
+        if not permissions.embed_links:
+            missing.append(f'{emoji} **`{ctx.t("permissions.embed_links").upper()}`**')
+
+        if missing:
+            return await ctx.send(ctx.t('commands.modlogs.missingPermissions', {"emoji": self.disco.emoji["false"],
+                                                                                "author": ctx.author.name,
+                                                                                "channel": channel.mention,
+                                                                                "permissions": '\n'.join(missing)}))
+
+        await ctx.gdb.set({"options.mod_logs_channel": channel.id})
+        await ctx.send(ctx.t('commands.modlogs.success', {"author": ctx.author.name,
+                                                          "emoji": self.disco.emoji["true"],
+                                                          "channel": channel.mention}))
 
 def setup(disco):
     disco.add_cog(Admin(disco))

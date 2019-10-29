@@ -205,6 +205,7 @@ class Information(commands.Cog):
                 if shard.last_update else 'Unknown'
 
             table.add_row([shard.id, latency, uptime, guilds, members, last_update])
+            table.add_row([shard.id, latency, uptime, guilds, members, last_update])
 
         await ctx.send(f'```{table.get_string()}```')
 
@@ -241,6 +242,12 @@ class Information(commands.Cog):
         ).add_field(
             name=ctx.t('commands.serversettings.djRole'),
             value=f'`{ctx.guild.get_role(options["dj_role"]) or not_defined}`'
+        ).add_field(
+            name=ctx.t('commands.serversettings.modRole'),
+            value=f'`{ctx.guild.get_role(options["mod_role"]) or not_defined}`'
+        ).add_field(
+            name=ctx.t('commands.serversettings.modLogsChannel'),
+            value=f'`{ctx.guild.get_channel(options["mod_logs_channel"]) or not_defined}`'
         ).add_field(
             name=ctx.t('commands.serversettings.botChannel'),
             value=f'`{ctx.guild.get_channel(options["bot_channel"]) or not_defined}`'

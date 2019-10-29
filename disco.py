@@ -1,4 +1,5 @@
 import logging
+import traceback
 from datetime import datetime
 from os import environ, listdir
 
@@ -64,7 +65,8 @@ class Disco(AutoShardedBot):
                 try:
                     self.load_extension('plugins.' + plugin)
                 except Exception as e:
-                    log.error(f'Falha ao carregar o plugin \'{plugin}\'\n-\n{e.__class__.__name__}: {e}\n-')
+                    log.error(f'Falha ao carregar o plugin \'{plugin}\':')
+                    traceback.print_exception(type(e), e, e.__traceback__)
                 else:
                     log.info(f'Plugin {plugin} carregado com sucesso.')
 

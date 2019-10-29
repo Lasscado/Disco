@@ -3,7 +3,7 @@ import typing
 import discord
 from discord.ext import commands
 
-from utils import checks, TimeConverter
+from utils import checks
 
 
 class Moderation(commands.Cog):
@@ -196,13 +196,6 @@ class Moderation(commands.Cog):
                               "amount": len(deleted),
                               "member": member,
                               "channel": channel.mention}))
-
-    @commands.command(name='mute')
-    @commands.bot_has_permissions(manage_roles=True)
-    @commands.cooldown(1, 6, commands.BucketType.guild)
-    @checks.mod_role_or_permission('manage_roles')
-    async def _mute(self, ctx, members: commands.Greedy[discord.Member], *, extra: TimeConverter):
-        pass
 
 
 def setup(disco):

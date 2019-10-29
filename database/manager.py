@@ -45,8 +45,12 @@ class DatabaseManager:
         if data := await self._bans.find(kwargs).sort('date', 1).limit(1).to_list(None):
             return DiscoBan(data[0], self._bans)
 
-    def get_shards(self, **kwargs):
-        return self._shards.find(kwargs)
+    async def get_shards(self, **kwargs):
+        shards = []
+        async for data in self._shards.find(kwargs):
+            shards.append(DiscoShard(data, self._shards))
+
+        return shards
 
     async def get_shard(self, shard_id, register=True):
         if data := await self._shards.find_one({"_id": shard_id}):

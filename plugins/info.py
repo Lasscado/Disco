@@ -194,7 +194,7 @@ class Information(commands.Cog):
     async def _shards(self, ctx):
         table = PrettyTable(['Shard ID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Last Update'])
 
-        for shard in await self.disco.db.get_shards().to_list(None):
+        for shard in await self.disco.db.get_shards():
             now = datetime.utcnow()
             latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
             guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'

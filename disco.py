@@ -47,10 +47,10 @@ class Disco(AutoShardedBot):
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:
-            return log.info(f'Shard {shard_id} reconectada.')
-
-        self.launched_shards.append(shard_id)
-        log.info(f'Shard {shard_id} conectada.')
+            log.info(f'Shard {shard_id} reconectada.')
+        else:
+            self.launched_shards.append(shard_id)
+            log.info(f'Shard {shard_id} conectada.')
 
         guilds = [g for g in self.guilds if g.shard_id == shard_id]
         shard = await self.db.get_shard(shard_id)

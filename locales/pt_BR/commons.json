@@ -14,5 +14,11 @@
     "movie": "Filme",
     "music": "Música",
     "special": "Especial",
-    "averageRating": "Classificação Média"
+    "averageRating": "Classiicação Média",
+    "user": "Usuário",
+    "channel": "Canal",
+    "moderator": "Moderador",
+    "reason": "Motivo",
+    "caseId": "ID do Caso: #{id}",
+    "modAction": "Ação: {name}"
 }

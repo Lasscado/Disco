@@ -602,6 +602,17 @@
             "**{author}** não aguentou sua felicidade e sorriu para {members}."
         ]
     },
+    "reason": {
+        "meta": {
+            "usage": "<ID do Caso> <Novo Motivo>",
+            "description": "Atualiza o motivo de uma ação, no Registro Moderativo do Disco."
+        },
+        "success": "{emoji} **{author}**, você atualizou o motivo do caso **`#{id}`** com sucesso!",
+        "notFound": "{emoji} **{author}**, não foi possível encontrar um caso referente ao ID que você forneceu.",
+        "notAuthor": "{emoji} **{author}**, você precisaria ter sido o autor da ação representada por esse caso para poder o editar.",
+        "channelNotFound": "{emoji} **{author}**, não foi possível encontrar o canal de texto onde esse caso foi salvo. (Talvez o canal tenha sido deletado?)",
+        "messageNotFound": "{emoji} **{author}**, não foi possível encontrar a mensagem correspondente a esse caso. (Talvez a mensagem tenha sido deletada?)"
+    },
     "ban": {
         "meta": {
             "usage": "<@Menções|Nomes|IDs> [Motivo]",
@@ -609,7 +620,9 @@
         },
         "successfully": "{emoji} **{member}** foi banido com sucesso!",
         "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
-        "reasonNotSpecified": "Motivo não fornecido."
+        "reasonNotSpecified": "Motivo não fornecido.",
+        "logMessage": "**{user.name}**#{user.discriminator} foi banido por **{moderator.name}**#{moderator.discriminator}.",
+        "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
     },
     "kick": {
         "meta": {
@@ -618,7 +631,9 @@
         },
         "successfully": "{emoji} **{member}** foi expulso com sucesso!",
         "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser expulsos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
-        "reasonNotSpecified": "Motivo não fornecido."
+        "reasonNotSpecified": "Motivo não fornecido.",
+        "logMessage": "**{user.name}**#{user.discriminator} foi expulso por **{moderator.name}**#{moderator.discriminator}.",
+        "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
     },
     "softban": {
         "meta": {
@@ -627,7 +642,9 @@
         },
         "successfully": "{emoji} **{member}** foi banido e desbanido com sucesso!",
         "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos e desbanidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
-        "reasonNotSpecified": "Motivo não fornecido."
+        "reasonNotSpecified": "Motivo não fornecido.",
+        "logMessage": "**{user.name}**#{user.discriminator} foi soft-banido por **{moderator.name}**#{moderator.discriminator}.",
+        "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
     },
     "forceban": {
         "meta": {
@@ -638,7 +655,8 @@
         "userNotFound": "{emoji} **{author}**, não foi possível encontrar um usuário com o ID fornecido.",
         "alreadyBanned": "{emoji} **{author}**, não foi possível banir **`{user}`** pois ele já está banido desse servidor por **`{reason}`**.",
         "success": "{emoji} **{author}**, você baniu **`{user}`** com sucesso!",
-        "reasonNotSpecified": "Motivo não fornecido."
+        "reasonNotSpecified": "Motivo não fornecido.",
+        "logMessage": "**{user.name}**#{user.discriminator} foi banido a força por **{moderator.name}**#{moderator.discriminator}."
     },
     "unban": {
         "meta": {
@@ -648,7 +666,8 @@
         "userNotFound": "{emoji} **{author}**, não foi possível encontrar um usuário com o ID fornecido.",
         "notBanned": "{emoji} **{author}**, **`{user}`** não está banido desse servidor.",
         "success": "{emoji} **{author}**, você desbaniu **`{user}`** com sucesso!",
-        "reasonNotSpecified": "Motivo não fornecido."
+        "reasonNotSpecified": "Motivo não fornecido.",
+        "logMessage": "**{user.name}**#{user.discriminator} foi desbanido por **{moderator.name}**#{moderator.discriminator}."
     },
     "clean": {
         "meta": {
@@ -657,6 +676,7 @@
         },
         "invalidAmount": "{emoji} **{author}**, você só pode deletar até **`100`** mensagens por vez.",
         "success": "{emoji} **{author}**, **`{amount}`** mensagens foram limpas do canal {channel} com sucesso.",
-        "successWithMember": "{emoji} **{author}**, **`{amount}`** mensagens de **`{member}`** foram limpas do canal {channel} com sucesso."
+        "successWithMember": "{emoji} **{author}**, **`{amount}`** mensagens de **`{member}`** foram limpas do canal {channel} com sucesso.",
+        "logMessage": "**{moderator.name}**#{moderator.discriminator} limpou **`{amount}`** mensagens do canal {channel}."
     }
 }

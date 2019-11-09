@@ -2,7 +2,7 @@ from datetime import datetime
 
 from motor import motor_asyncio
 
-from .models import DiscoBan, DiscoGuild, DiscoShard
+from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard
 
 
 class DatabaseManager:
@@ -12,6 +12,7 @@ class DatabaseManager:
         self._bans = db.bans
         self._guilds = db.guilds
         self._shards = db.shards
+        self._mod_logs = db.mod_logs
 
     @property
     async def total_bans(self):
@@ -20,6 +21,9 @@ class DatabaseManager:
     @property
     async def total_shards(self):
         return await self._shards.count_documents({})
+
+    async def total_mod_logs(self, guild_id):
+        return await self._mod_logs.count_documents({"guild_id": guild_id})
 
     async def connect(self):
         await self._db.command('ping')
@@ -57,6 +61,10 @@ class DatabaseManager:
             return DiscoShard(data, self._shards)
         elif register:
             return await self.register_shard(shard_id)
+
+    async def get_mod_log(self, guild_id, case_id):
+        if data := await self._mod_logs.find_one({"guild_id": guild_id, "case_id": case_id}):
+            return DiscoModLog(data)
 
     async def register_guild(self, guild_id):
         data = {
@@ -110,3 +118,18 @@ class DatabaseManager:
         await self._shards.insert_one(data)
 
         return DiscoShard(data, self._shards)
+
+    async def register_mod_log(self, action, case_id, moderator_id, guild_id, channel_id, message_id):
+        data = {
+            "action": action,
+            "case_id": case_id,
+            "moderator_id": moderator_id,
+            "guild_id": guild_id,
+            "channel_id": channel_id,
+            "message_id": message_id,
+            "date": datetime.utcnow().timestamp()
+        }
+
+        await self._mod_logs.insert_one(data)
+
+        return DiscoModLog(data)

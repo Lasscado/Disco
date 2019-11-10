@@ -18,5 +18,6 @@
     "trackStuck": "{emoji} Oops... Infelizmente meu servidor de áudio emperrou e eu não posso reproduzir a faixa **`{track}`**. Pulando para a próxima. ||{threshold}||",
     "noMusicNodesAvailable": "{emoji} **{author}**, parece que eu não tenho nenhum servidor de áudio disponível no momento ;(\n> Ao fazer uma doação, você estará me ajudando a conseguir novos servidores de áudio: <{donate}>.",
     "unexpectedError": "{emoji} **{author}**, um erro inesperado ocorreu durante a execução do comando **`{command}`**.\nNão se preocupe, eu acabei de contar sobre isso para meu desenvolvedor e ele irá corrigir essa falha assim que possível.\n\nSe você possuir alguma dúvida sobre mim, não se esqueça de entrar em meu servidor de suporte: <{support}>.",
-    "disabledCommand": "{emoji} **{author}**, o comando **`{command}`** está temporariamente desativado.\n**Motivo**: `{reason}`"
+    "disabledCommand": "{emoji} **{author}**, o comando **`{command}`** está temporariamente desativado.\n**Motivo**: `{reason}`",
+    "hitModThreshold": "{emoji} **{author}**, você atingiu o limite de usos da ação **`{action}`**, que está definido em **`{threshold}`** vezes por dia. Peça para um Administrador aumentar esse limite ou aguarde **`{next}`** até que seu próximo uso fique disponível."
 }

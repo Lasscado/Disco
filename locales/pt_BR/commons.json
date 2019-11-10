@@ -20,5 +20,6 @@
     "moderator": "Moderador",
     "reason": "Motivo",
     "caseId": "ID do Caso: #{id}",
-    "modAction": "Ação: {name}"
+    "modAction": "Ação: {name}",
+    "unknownEta": "Tempo Desconhecido"
 }

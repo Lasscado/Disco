@@ -236,5 +236,38 @@ class Admin(commands.Cog):
                                                           "emoji": self.disco.emoji["true"],
                                                           "channel": channel.mention}))
 
+    @commands.command(name='modthreshold', aliases=['modlimit', 'mthreshold', 'mlimit'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    async def _mod_threshold(self, ctx, action, threshold: int = None):
+        mod_threshold = ctx.gdb.options['mod_threshold']
+        actions = mod_threshold.keys()
+        if action not in actions:
+            return await ctx.send(ctx.t('commands.modthreshold.invalidAction', {"emoji": self.disco.emoji["false"],
+                                                                                "author": ctx.author.name,
+                                                                                "actions": ', '.join(f'**`{a}`**'
+                                                                                                     for a in actions)
+                                                                                }))
+
+        if threshold is None:
+            if mod_threshold[action] is None:
+                raise commands.MissingRequiredArgument
+
+            await ctx.gdb.set({f"options.mod_threshold.{action}": None})
+            return await ctx.send(ctx.t('commands.modthreshold.reset', {"emoji": self.disco.emoji["true"],
+                                                                        "author": ctx.author.name,
+                                                                        "action": action}))
+
+        if not 0 < threshold < 1001:
+            return await ctx.send(ctx.t('commands.modthreshold.invalidThreshold', {"emoji": self.disco.emoji["false"],
+                                                                                   "author": ctx.author.name}))
+
+        await ctx.gdb.set({f"options.mod_threshold.{action}": threshold})
+        await ctx.send(ctx.t('commands.modthreshold.success', {"emoji": self.disco.emoji["true"],
+                                                               "author": ctx.author.name,
+                                                               "action": action,
+                                                               "threshold": threshold}))
+
+
 def setup(disco):
     disco.add_cog(Admin(disco))

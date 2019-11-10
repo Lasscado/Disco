@@ -6,3 +6,4 @@ class DiscoModLog:
         self.guild_id = data['guild_id']
         self.channel_id = data['channel_id']
         self.message_id = data['message_id']
+        self.date = data['date']

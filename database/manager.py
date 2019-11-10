@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from motor import motor_asyncio
 
@@ -24,6 +24,13 @@ class DatabaseManager:
 
     async def total_mod_logs(self, guild_id):
         return await self._mod_logs.count_documents({"guild_id": guild_id})
+
+    async def total_daily_mod_logs(self, action, guild_id, moderator_id):
+        return await self._mod_logs.count_documents({"action": action, "guild_id": guild_id,
+                                                     "moderator_id": moderator_id,
+                                                     "date": {
+                                                         "$gt": (datetime.utcnow() - timedelta(days=1)).timestamp()
+                                                     }})
 
     async def connect(self):
         await self._db.command('ping')
@@ -62,9 +69,13 @@ class DatabaseManager:
         elif register:
             return await self.register_shard(shard_id)
 
-    async def get_mod_log(self, guild_id, case_id):
-        if data := await self._mod_logs.find_one({"guild_id": guild_id, "case_id": case_id}):
+    async def get_mod_log(self, **kwargs):
+        if data := await self._mod_logs.find_one(kwargs):
             return DiscoModLog(data)
+
+    async def get_last_mod_log(self, **kwargs):
+        if data := await self._mod_logs.find(kwargs).sort('date', -1).limit(1).to_list(None):
+            return DiscoModLog(data[0])
 
     async def register_guild(self, guild_id):
         data = {
@@ -77,6 +88,13 @@ class DatabaseManager:
                 "mod_logs_channel": None,
                 "bot_channel": None,
                 "default_volume": None,
+                "mod_threshold": {
+                    "ban": None,
+                    "kick": None,
+                    "softban": None,
+                    "unban": None,
+                    "clean": None
+                },
                 "disabled_commands": [],
                 "disabled_channels": [],
                 "disabled_roles": [],

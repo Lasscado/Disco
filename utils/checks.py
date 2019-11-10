@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+from babel.dates import format_timedelta
 from discord.ext import commands
 
 from .constants import PATREON_DONATE_URL
@@ -49,6 +52,34 @@ async def before_play(cog, ctx):
 
 
 class Checks:
+    @staticmethod
+    def is_below_mod_threshold(action=None):
+        async def predicate(ctx):
+            action_ = action or ctx.command.name
+            if threshold := ctx.gdb.options['mod_threshold'][action_]:
+                if (count := await ctx.bot.db.total_daily_mod_logs(action_, ctx.guild.id, ctx.author.id)) > threshold:
+                    if last_action := await ctx.bot.db.get_last_mod_log(action=action_, guild_id=ctx.guild.id,
+                                                                        moderator_id=ctx.author.id):
+                        next_use = format_timedelta(datetime.utcnow() - (datetime.utcfromtimestamp(last_action.date)
+                                                                         + timedelta(days=1)),
+                                                    locale=ctx.gdb.options['locale'])
+                    else:
+                        next_use = ctx.t('commons.unknownEta')
+
+                    raise DiscoError(ctx.t('errors.hitModThreshold', {"emoji": ctx.bot.emoji["false"],
+                                                                      "author": ctx.author.name,
+                                                                      "action": action_,
+                                                                      "threshold": threshold,
+                                                                      "count": count,
+                                                                      "next": next_use}))
+
+                ctx.daily_action_count = count
+            ctx.action_threshold = threshold
+
+            return True
+
+        return commands.check(predicate)
+
     @staticmethod
     def mod_role_or_permission(permission):
         async def predicate(ctx):

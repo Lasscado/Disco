@@ -104,6 +104,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
+    @checks.is_below_mod_threshold()
     async def _ban(self, ctx, members: commands.Greedy[discord.Member], *, reason=None):
         if not members:
             return await ctx.send(ctx.t('commands.ban.noMentions', {"author": ctx.author.name,
@@ -114,7 +115,7 @@ class Moderation(commands.Cog):
         reason_ = f'{ctx.author} - {ctx.author.id}: {reason}'[:512]
         final_targets = list(set(members))[:5]
         bans = []
-        for member in final_targets:
+        for member in final_targets[:ctx.action_threshold - ctx.daily_action_count if ctx.action_threshold else None]:
             if member.top_role >= ctx.author.top_role or member.top_role > ctx.me.top_role:
                 continue
 
@@ -138,6 +139,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('kick_members')
+    @checks.is_below_mod_threshold()
     async def _kick(self, ctx, members: commands.Greedy[discord.Member], *, reason=None):
         if not members:
             return await ctx.send(ctx.t('commands.kick.noMentions', {"author": ctx.author.name,
@@ -148,7 +150,7 @@ class Moderation(commands.Cog):
         reason_ = f'{ctx.author} - {ctx.author.id}: {reason}'[:512]
         final_targets = list(set(members))[:5]
         kicks = []
-        for member in final_targets:
+        for member in final_targets[:ctx.action_threshold - ctx.daily_action_count if ctx.action_threshold else None]:
             if member.top_role >= ctx.author.top_role or member.top_role > ctx.me.top_role:
                 continue
 
@@ -172,6 +174,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(2, 12, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
+    @checks.is_below_mod_threshold()
     async def _soft_ban(self, ctx, members: commands.Greedy[discord.Member], *, reason=None):
         if not members:
             return await ctx.send(ctx.t('commands.softban.noMentions', {"author": ctx.author.name,
@@ -182,7 +185,7 @@ class Moderation(commands.Cog):
         reason_ = f'{ctx.author} - {ctx.author.id}: {reason}'[:512]
         final_targets = list(set(members))[:5]
         soft_bans = []
-        for member in final_targets:
+        for member in final_targets[:ctx.action_threshold - ctx.daily_action_count if ctx.action_threshold else None]:
             if member.top_role >= ctx.author.top_role or member.top_role > ctx.me.top_role:
                 continue
 
@@ -207,6 +210,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
+    @checks.is_below_mod_threshold('ban')
     async def _force_ban(self, ctx, user_id: int, *, reason=None):
         if (user := ctx.guild.get_member(user_id)) and (user.top_role >= ctx.author.top_role
                                                         or user.top_role >= ctx.me.top_role):
@@ -245,6 +249,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
+    @checks.is_below_mod_threshold()
     async def _unban(self, ctx, user_id: int, *, reason=None):
         if (user := self.disco.get_user(user_id)) is None:
             try:
@@ -274,6 +279,7 @@ class Moderation(commands.Cog):
     @commands.bot_has_permissions(manage_messages=True, read_message_history=True)
     @commands.cooldown(3, 12, commands.BucketType.guild)
     @checks.mod_role_or_permission('manage_messages')
+    @checks.is_below_mod_threshold()
     async def _clean(self, ctx, amount: typing.Optional[int] = 100,
                      channel: typing.Optional[discord.TextChannel] = None,
                      member: typing.Optional[discord.Member] = None, *, content=None):

@@ -82,7 +82,7 @@ class Tasks(commands.Cog):
         self.disco.log.info('Procurando por players inativos')
         for player in self.disco.wavelink.players.values():
             guild = self.disco.get_guild(player.guild_id)
-            if guild is None or guild.me.voice is None or player.current is None and not player.queue or \
+            if guild is None or guild.me and guild.me.voice is None or player.current is None and not player.queue or \
                     not self.has_listeners(guild):
                 self.disco.loop.create_task(self._disconnect_player(player))
 

@@ -301,21 +301,24 @@ class Moderation(commands.Cog):
                 raise commands.BotMissingPermissions(missing)
 
         try:
-            deleted = await channel.purge(limit=amount, check=lambda m: (m.author == member if member else True)
-                                                                        and (content in m.content
-                                                                             if content and m.content else True))
+            deleted = await channel.purge(limit=amount + 1, check=lambda m: (m.author == member if member else True)
+                                                                            and (content in m.content
+                                                                                 if content and m.content else True))
         except discord.Forbidden:
             raise commands.BotMissingPermissions(['manage_messages', 'read_message_history'])
 
-        self.disco.loop.create_task(self._mod_log(ctx, targets=[member, channel], moderator=ctx.author, amount=amount,
+        deleted = len(deleted) - 1
+
+        self.disco.loop.create_task(self._mod_log(ctx, targets=[member, channel], moderator=ctx.author, amount=deleted,
                                                   channel=channel.mention, colour=0xffe017))
 
         await ctx.send(ctx.t('commands.clean.successWithMember' if member else 'commands.clean.success',
                              {"emoji": self.disco.emoji["true"],
                               "author": ctx.author.name,
-                              "amount": len(deleted),
+                              "amount": deleted,
                               "member": member,
-                              "channel": channel.mention}))
+                              "channel": channel.mention}),
+                       delete_after=8)
 
 
 def setup(disco):

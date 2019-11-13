@@ -92,7 +92,8 @@ class Information(commands.Cog):
                                                                                f'categories.{name.lower()}'),
                                                                            "emoji": self.disco.emoji[
                                                                                "category" + name]}),
-                             value=value)
+                             value=value,
+                             inline=False)
 
         em.add_field(
             name='\u200b',
@@ -158,7 +159,8 @@ class Information(commands.Cog):
                     "region": node.region.title().replace("_", " "),
                     "uptime": get_length(stats.uptime, True),
                     "stats": stats,
-                    "memory": naturalsize(stats.memory_used)})
+                    "memory": naturalsize(stats.memory_used)}),
+                inline=False
             )
 
         await ctx.send(content=ctx.author.mention, embed=em)

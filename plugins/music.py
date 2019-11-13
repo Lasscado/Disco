@@ -94,7 +94,7 @@ class Music(commands.Cog):
             else:
                 self.disco._waiting_for_choice.add(ctx.author.id)
 
-                tracks = results[:10]
+                tracks = results[:8]
                 options = '\n'.join(f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`'
                                     for i, track in enumerate(tracks, 1))
 
@@ -365,7 +365,7 @@ class Music(commands.Cog):
 
         length = get_length(sum(track.length for track in player.queue), True)
 
-        per_page = 10
+        per_page = 8
         pages = ceil(player.size / per_page)
         if not 0 < page <= pages:
             page = 1

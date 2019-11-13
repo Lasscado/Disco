@@ -90,7 +90,7 @@ class Disco(AutoShardedBot):
     async def on_message(self, message):
         self.read_messages += 1
 
-        if (not self.loaded or not self.is_ready() or message.author.bot or not message.guild
+        if (not self.loaded or message.author.bot or not message.guild
                 or not message.channel.permissions_for(message.guild.me).send_messages):
             return
 

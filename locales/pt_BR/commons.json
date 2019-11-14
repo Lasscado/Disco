@@ -23,5 +23,9 @@
     "modAction": "Ação: {name}",
     "unknownEta": "Tempo Desconhecido",
     "before": "Antes",
-    "after": "Depois"
+    "after": "Depois",
+    "accountCreation": "Criação da Conta",
+    "position": "Posição",
+    "daysAgo": "**`{days}`** dias atrás",
+    "joinedAt": "Data de Entrada"
 }

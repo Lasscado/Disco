@@ -4,5 +4,7 @@
     "trackStart": "{emoji} Tocando agora: **`{track}`** `({length})`. Requisitado por **{track.requester.name}**.",
     "bulkMessageDelete": "**`{amount}` mensagens foram deletadas em massa no canal {channel}**.",
     "messageDelete": "**Mensagem de {author} deletada em {channel}**.",
-    "messageEdit": "**Mensagem de {author} editada em {channel}**.\n[Clique aqui para ir até a mensagem.]({url})"
+    "messageEdit": "**Mensagem de {author} editada em {channel}**.\n[Clique aqui para ir até a mensagem.]({url})",
+    "memberJoin": "Entrou no servidor",
+    "memberLeave": "Saiu do servidor"
 }

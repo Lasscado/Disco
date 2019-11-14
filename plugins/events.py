@@ -4,6 +4,7 @@ from os import environ
 from random import randint
 
 import discord
+from babel.dates import format_datetime
 from discord.ext import commands
 from discord.ext.commands.errors import *
 
@@ -355,6 +356,71 @@ class Events(commands.Cog):
             inline=False
         ).set_footer(
             text=f'ID: {after.id}'
+        )
+
+        await logs.send(embed=em)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        options = (await self.disco.db.get_guild(member.guild.id)).options
+        logs = member.guild.get_channel(options['member_logs_channel'])
+        if logs is None or not self.can_send(logs):
+            return
+
+        t = self.disco.i18n.get_t(options['locale'])
+
+        em = discord.Embed(
+            title=(self.disco.emoji['bot'] + ' ' if member.bot else '') + t('events.memberJoin'),
+            description=member.mention,
+            colour=0x414FCB,
+            timestamp=member.joined_at
+        ).set_author(
+            name=str(member),
+            icon_url=member.avatar_url
+        ).set_thumbnail(
+            url=member.avatar_url
+        ).set_footer(
+            text=f'ID: {member.id}'
+        ).add_field(
+            name=f'**{t("commons.accountCreation")}** ::',
+            value='%s\n%s' % (format_datetime(member.created_at, format='short', locale=options["locale"]),
+                              t('commons.daysAgo', {"days": (datetime.utcnow() - member.created_at).days}))
+        ).add_field(
+            name=f'**{t("commons.position")}** ::',
+            value=f'#{member.guild.member_count}'
+        )
+
+        await logs.send(embed=em)
+
+    @commands.Cog.listener()
+    async def on_member_leave(self, member):
+        options = (await self.disco.db.get_guild(member.guild.id)).options
+        logs = member.guild.get_channel(options['member_logs_channel'])
+        if logs is None or not self.can_send(logs):
+            return
+
+        t = self.disco.i18n.get_t(options['locale'])
+
+        em = discord.Embed(
+            title=(self.disco.emoji['bot'] + ' ' if member.bot else '') + t('events.memberLeave'),
+            description=member.mention,
+            colour=0xFF4A50,
+            timestamp=datetime.utcnow()
+        ).set_author(
+            name=str(member),
+            icon_url=member.avatar_url
+        ).set_thumbnail(
+            url=member.avatar_url
+        ).set_footer(
+            text=f'ID: {member.id}'
+        ).add_field(
+            name=f'**{t("commons.accountCreation")}** ::',
+            value='%s\n%s' % (format_datetime(member.created_at, format='short', locale=options["locale"]),
+                              t('commons.daysAgo', {"days": (datetime.utcnow() - member.created_at).days}))
+        ).add_field(
+            name=f'**{t("commons.joinedAt")}** ::',
+            value='%s\n%s' % (format_datetime(member.joined_at, format='short', locale=options["locale"]),
+                              t('commons.daysAgo', {"days": (datetime.utcnow() - member.joined_at).days}))
         )
 
         await logs.send(embed=em)

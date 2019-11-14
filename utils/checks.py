@@ -84,7 +84,7 @@ class Checks:
     def mod_role_or_permission(permission):
         async def predicate(ctx):
             if getattr(ctx.author.guild_permissions, permission) or \
-                    ctx.guild.get_role(ctx._guild.data['options']['modRole']) in ctx.author.roles:
+                    ctx.guild.get_role(ctx.gdb.options['mod_role']) in ctx.author.roles:
                 return True
 
             raise commands.errors.MissingPermissions([permission])

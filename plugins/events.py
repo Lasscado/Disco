@@ -205,7 +205,7 @@ class Events(commands.Cog):
             if ctx.author.id in self.disco._waiting_for_choice:
                 self.disco._waiting_for_choice.remove(ctx.author.id)
 
-        if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 7) == 1:
+        if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 9) == 1:
             await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
                                                           "link": PATREON_DONATE_URL}))
 

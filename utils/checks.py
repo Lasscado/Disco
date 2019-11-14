@@ -51,93 +51,91 @@ async def before_play(cog, ctx):
     return True
 
 
-class Checks:
-    @staticmethod
-    def is_below_mod_threshold(action=None):
-        async def predicate(ctx):
-            action_ = action or ctx.command.name
-            if threshold := ctx.gdb.options['mod_threshold'][action_]:
-                if (count := await ctx.bot.db.total_daily_mod_logs(action_, ctx.guild.id, ctx.author.id)) > threshold:
-                    if last_action := await ctx.bot.db.get_last_mod_log(action=action_, guild_id=ctx.guild.id,
-                                                                        moderator_id=ctx.author.id):
-                        next_use = format_timedelta(datetime.utcnow() - (datetime.utcfromtimestamp(last_action.date)
-                                                                         + timedelta(days=1)),
-                                                    locale=ctx.gdb.options['locale'])
-                    else:
-                        next_use = ctx.t('commons.unknownEta')
+def is_below_mod_threshold(action=None):
+    async def predicate(ctx):
+        action_ = action or ctx.command.name
+        if threshold := ctx.gdb.options['mod_threshold'][action_]:
+            if (count := await ctx.bot.db.total_daily_mod_logs(action_, ctx.guild.id, ctx.author.id)) > threshold:
+                if last_action := await ctx.bot.db.get_last_mod_log(action=action_, guild_id=ctx.guild.id,
+                                                                    moderator_id=ctx.author.id):
+                    next_use = format_timedelta(datetime.utcnow() - (datetime.utcfromtimestamp(last_action.date)
+                                                                     + timedelta(days=1)),
+                                                locale=ctx.gdb.options['locale'])
+                else:
+                    next_use = ctx.t('commons.unknownEta')
 
-                    raise DiscoError(ctx.t('errors.hitModThreshold', {"emoji": ctx.bot.emoji["false"],
-                                                                      "author": ctx.author.name,
-                                                                      "action": action_,
-                                                                      "threshold": threshold,
-                                                                      "count": count,
-                                                                      "next": next_use}))
+                raise DiscoError(ctx.t('errors.hitModThreshold', {"emoji": ctx.bot.emoji["false"],
+                                                                  "author": ctx.author.name,
+                                                                  "action": action_,
+                                                                  "threshold": threshold,
+                                                                  "count": count,
+                                                                  "next": next_use}))
 
-                ctx.daily_action_count = count
-            ctx.action_threshold = threshold
+            ctx.daily_action_count = count
+        ctx.action_threshold = threshold
 
+        return True
+
+    return commands.check(predicate)
+
+
+def mod_role_or_permission(permission):
+    async def predicate(ctx):
+        if getattr(ctx.author.guild_permissions, permission) or \
+                ctx.guild.get_role(ctx.gdb.options['mod_role']) in ctx.author.roles:
             return True
 
-        return commands.check(predicate)
+        raise commands.errors.MissingPermissions([permission])
 
-    @staticmethod
-    def mod_role_or_permission(permission):
-        async def predicate(ctx):
-            if getattr(ctx.author.guild_permissions, permission) or \
-                    ctx.guild.get_role(ctx.gdb.options['mod_role']) in ctx.author.roles:
-                return True
+    return commands.check(predicate)
 
-            raise commands.errors.MissingPermissions([permission])
 
-        return commands.check(predicate)
-
-    @staticmethod
-    def staffer_or_dj_role():
-        async def predicate(ctx):
-            role = ctx.guild.get_role(ctx.gdb.options['dj_role'])
-            if ctx.author.guild_permissions.manage_guild or role in ctx.author.roles:
-                return True
-
-            raise commands.errors.MissingRole([role])
-
-        return commands.check(predicate)
-
-    @staticmethod
-    def is_voice_connected():
-        async def predicate(ctx):
-            if not ctx.me.voice:
-                raise MusicError(ctx.t('errors.notConnected', {"author": ctx.author.name,
-                                                               "emoji": ctx.bot.emoji["false"]}))
-
-            if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
-                raise MusicError(ctx.t('errors.notSameVoiceChannel', {"author": ctx.author.name,
-                                                                      "emoji": ctx.bot.emoji["false"]}))
-
-            ctx.player = ctx.bot.get_player(ctx.guild.id)
-
+def staffer_or_dj_role():
+    async def predicate(ctx):
+        role = ctx.guild.get_role(ctx.gdb.options['dj_role'])
+        if ctx.author.guild_permissions.manage_guild or role in ctx.author.roles:
             return True
 
-        return commands.check(predicate)
+        raise commands.errors.MissingRole([role])
 
-    @staticmethod
-    def ensure_voice_connection():
-        async def predicate(ctx):
-            if not ctx.command._before_invoke:
-                ctx.command._before_invoke = before_play
+    return commands.check(predicate)
 
-            return True
 
-        return commands.check(predicate)
+def is_voice_connected():
+    async def predicate(ctx):
+        if not ctx.me.voice:
+            raise MusicError(ctx.t('errors.notConnected', {"author": ctx.author.name,
+                                                           "emoji": ctx.bot.emoji["false"]}))
 
-    @staticmethod
-    def requires_user_choices():
-        async def predicate(ctx):
-            if ctx.author.id in ctx.bot._waiting_for_choice:
-                raise WaitingForPreviousChoice((ctx.t('errors.waitingForPreviousChoice', {
-                    "author": ctx.author.name, "emoji": ctx.bot.emoji["false"]})))
+        if not ctx.author.voice or ctx.author.voice.channel.id != ctx.me.voice.channel.id:
+            raise MusicError(ctx.t('errors.notSameVoiceChannel', {"author": ctx.author.name,
+                                                                  "emoji": ctx.bot.emoji["false"]}))
 
-            ctx._remove_from_waiting = True
+        ctx.player = ctx.bot.get_player(ctx.guild.id)
 
-            return True
+        return True
 
-        return commands.check(predicate)
+    return commands.check(predicate)
+
+
+def ensure_voice_connection():
+    async def predicate(ctx):
+        if not ctx.command._before_invoke:
+            ctx.command._before_invoke = before_play
+
+        return True
+
+    return commands.check(predicate)
+
+
+def requires_user_choices():
+    async def predicate(ctx):
+        if ctx.author.id in ctx.bot._waiting_for_choice:
+            raise WaitingForPreviousChoice((ctx.t('errors.waitingForPreviousChoice', {
+                "author": ctx.author.name, "emoji": ctx.bot.emoji["false"]})))
+
+        ctx._remove_from_waiting = True
+
+        return True
+
+    return commands.check(predicate)

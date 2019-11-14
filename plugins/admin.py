@@ -271,7 +271,7 @@ class Admin(commands.Cog):
     @commands.command(name='messagelogs', aliases=['messagelog'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
-    async def _message_logs(self, ctx, *, channel: discord.TextChannel):
+    async def _message_logs(self, ctx, *, channel: discord.TextChannel = None):
         if channel is None:
             if not ctx.gdb.options['message_logs_channel']:
                 raise commands.UserInputError
@@ -304,7 +304,7 @@ class Admin(commands.Cog):
     @commands.command(name='memberlogs', aliases=['memberlog', 'meblogs', 'meblog'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
     @commands.has_permissions(manage_guild=True)
-    async def _member_logs(self, ctx, *, channel: discord.TextChannel):
+    async def _member_logs(self, ctx, *, channel: discord.TextChannel = None):
         if channel is None:
             if not ctx.gdb.options['member_logs_channel']:
                 raise commands.UserInputError
@@ -333,6 +333,30 @@ class Admin(commands.Cog):
         await ctx.send(ctx.t('commands.memberlogs.success', {"author": ctx.author.name,
                                                              "emoji": self.disco.emoji["true"],
                                                              "channel": channel.mention}))
+
+    @commands.command(name='autorole', aliases=['ar', 'arole'])
+    @commands.cooldown(1, 8, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    async def _auto_role(self, ctx, *, role: discord.Role = None):
+        if role is None:
+            if not ctx.gdb.options['auto_role']:
+                raise commands.UserInputError
+
+            await ctx.gdb.set({"options.auto_role": None})
+            return await ctx.send(ctx.t('commands.autorole.reset', {"author": ctx.author.name,
+                                                                    "emoji": self.disco.emoji["true"]}))
+
+        if role >= ctx.me.top_role:
+            return await ctx.send(ctx.t('commands.autorole.roleIsHigherThanMine', {"author": ctx.author.name,
+                                                                                   "emoji": self.disco.emoji["true"],
+                                                                                   "role": role.name}))
+
+        await ctx.gdb.set({"options.auto_role": role.id})
+
+        await ctx.send(ctx.t('commands.autorole.success', {"author": ctx.author.name,
+                                                           "emoji": self.disco.emoji["true"],
+                                                           "role": role.name}))
 
 
 def setup(disco):

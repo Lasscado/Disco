@@ -182,6 +182,15 @@
         "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Mensagens__:\n\n{permissions}",
         "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Mensagens`** desse servidor."
     },
+    "autorole": {
+        "meta": {
+            "usage": "<@Cargo|Nome|ID>",
+            "description": "Define um cargo que será adicionado em um membro sempre que ele entrar no servidor."
+        },
+        "reset": "{emoji} **{author}**, você resetou o **`Cargo Automático`** desse servidor.",
+        "roleIsHigherThanMine": "{emoji} **{author}**, o cargo **`{role}`** é maior ou equivalente ao meu maior cargo nesse servidor. É necessário que meu maior cargo esteja acima do cargo que você deseja definir como automático, pois só assim eu poderei adicioná-lo aos membros.",
+        "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo Automático`** desse servidor. De agora em diante, sempre que um membro entrar nesse servidor, ele irá receber esse cargo."
+    },
     "memberlogs": {
         "meta": {
             "usage": "<#Canal|Nome|ID>",

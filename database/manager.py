@@ -87,6 +87,7 @@ class DatabaseManager:
                 "mod_role": None,
                 "mod_logs_channel": None,
                 "bot_channel": None,
+                "message_logs_channel": None,
                 "default_volume": None,
                 "mod_threshold": {
                     "ban": None,

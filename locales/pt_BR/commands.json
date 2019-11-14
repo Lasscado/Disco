@@ -159,9 +159,9 @@
             "usage": "<#Canal|Nome|ID>",
             "description": "Define um canal como Canal de Logs Moderativos, que irá receber registros de uso do meu sistema moderativo."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Cargo de Logs Moderativos`** desse servidor.",
+        "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs Moderativos`** desse servidor.",
         "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs Moderativos__:\n\n{permissions}",
-        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs Moderativos`** desse servidor. De agora em diante, quem possuir esse cargo poderá utilizar meus comandos moderativos."
+        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs Moderativos`** desse servidor."
     },
     "modthreshold": {
         "meta": {
@@ -172,6 +172,15 @@
         "reset": "{emoji} **{author}**, você resetou o limite de usos diários da ação **`{action}`** com sucesso!",
         "invalidThreshold": "{emoji} **{author}**, você precisa fornecer um limite entre **`1`** e **`1000`**.",
         "success": "{emoji} **{author}**, você definiu o limite de usos para a ação moderativa **`{action}`** para **`{threshold}`** vezes por dia."
+    },
+    "messagelogs": {
+        "meta": {
+            "usage": "<#Canal|Nome|ID>",
+            "description": "Define um canal como Canal de Logs de Mensagens, que irá receber registros sobre modificações em mensagens."
+        },
+        "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Mensagens`** desse servidor.",
+        "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Mensagens__:\n\n{permissions}",
+        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Mensagens`** desse servidor."
     },
     "play": {
         "meta": {

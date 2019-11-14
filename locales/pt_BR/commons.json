@@ -21,5 +21,7 @@
     "reason": "Motivo",
     "caseId": "ID do Caso: #{id}",
     "modAction": "Ação: {name}",
-    "unknownEta": "Tempo Desconhecido"
+    "unknownEta": "Tempo Desconhecido",
+    "before": "Antes",
+    "after": "Depois"
 }

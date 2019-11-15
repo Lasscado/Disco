@@ -207,7 +207,6 @@ class Information(commands.Cog):
                 if shard.last_update else 'Unknown'
 
             table.add_row([shard.id, latency, uptime, guilds, members, last_update])
-            table.add_row([shard.id, latency, uptime, guilds, members, last_update])
 
         await ctx.send(f'```{table.get_string()}```')
 

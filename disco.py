@@ -23,8 +23,7 @@ class Disco(AutoShardedBot):
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
-            guild_subscriptions=False,
-            max_messages=101,
+            max_messages=15000,
             activity=Game(f'Prefix: {self.prefixes[0]}')
         )
 

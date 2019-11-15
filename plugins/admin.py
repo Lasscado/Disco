@@ -14,11 +14,11 @@ class Admin(commands.Cog):
             if not ctx.gdb.options['dj_role']:
                 raise commands.UserInputError()
 
-            ctx.gdb.update({"options.dj_role": None})
+            await ctx.gdb.set({"options.dj_role": None})
             return await ctx.send(ctx.t('commands.djrole.reset', {"author": ctx.author.name,
                                                                   "emoji": self.disco.emoji["true"]}))
 
-        ctx.gdb.update({"options.djRole": role.id})
+        await ctx.gdb.set({"options.dj_role": role.id})
         await ctx.send(ctx.t('commands.djrole.update', {"author": ctx.author.name,
                                                         "emoji": self.disco.emoji["true"], "role": role}))
 

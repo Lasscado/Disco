@@ -317,7 +317,7 @@ class Events(commands.Cog):
             icon_url=author.avatar_url
         ).add_field(
             name=t('commons.after'),
-            value=payload.data['content'][:2048],
+            value=payload.data['content'][:1024],
             inline=False
         ).set_footer(
             text=f'ID: {payload.message_id}'

@@ -1,3 +1,4 @@
+import traceback
 from asyncio import sleep
 from random import choice
 from json import loads
@@ -13,9 +14,6 @@ class Tasks(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
 
-        # if disco.user.id == int(environ['BOT_ID']):
-        #    self._change_avatar.start()
-
         self._activities = [
             ActivityType.listening,
             ActivityType.watching,
@@ -23,17 +21,24 @@ class Tasks(commands.Cog):
             ActivityType.playing
         ]
 
-        self._change_presence.start()
-        self._disconnect_inactive_players.start()
-        self._update_shard_stats.start()
+        self._tasks = [
+            ('change_presence', self._change_presence.start()),
+            ('disconnect_inactive_players', self._disconnect_inactive_players.start()),
+            ('update_shard_stats', self._update_shard_stats.start())
+        ]
+
+        # if disco.user.id == int(environ['BOT_ID']):
+        #    self._tasks.append(('change_avatar', self._change_avatar.start()))
 
     def cog_unload(self):
-        if self.disco.user.id == int(environ['BOT_ID']):
-            self._change_avatar.cancel()
-
-        self._change_presence.cancel()
-        self._disconnect_inactive_players.cancel()
-        self._update_shard_stats.cancel()
+        for name, task in self._tasks:
+            try:
+                task.cancel()
+            except Exception as e:
+                self.disco.log.error(f'Falha ao cancelar a task \'{name}\':')
+                traceback.print_exception(type(e), e, e.__traceback__)
+            else:
+                self.disco.log.info(f'Task \'{name}\' cancelada com sucesso.')
 
     @tasks.loop(minutes=30)
     async def _change_avatar(self):

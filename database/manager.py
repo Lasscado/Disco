@@ -130,10 +130,10 @@ class DatabaseManager:
             "created_at": datetime.utcnow().timestamp(),
             "launched_at": None,
             "last_update": None,
-            "latency": None,
-            "guilds": None,
-            "members": None,
-            "players": None
+            "latency": 0,
+            "guilds": 0,
+            "members": 0,
+            "players": 0
         }
 
         await self._shards.insert_one(data)

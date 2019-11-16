@@ -76,7 +76,7 @@ class Events(commands.Cog):
             await gdb.delete()
 
         try:
-            del self.disco._prefixes[ctx.guild.id]
+            del self.disco._prefixes[guild.id]
         except KeyError:
             pass
 

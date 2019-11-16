@@ -73,7 +73,7 @@ class Tasks(commands.Cog):
             shard = await self.disco.db.get_shard(shard_id)
             await shard.update(latency=self.disco.shards[shard_id].ws.latency,
                                guilds=len(guilds),
-                               members=sum(g.member_count for g in guilds if hasattr(g, '_member_count')))
+                               members=sum(g.member_count for g in guilds if not g.unavailable))
 
         self.disco.log.info('As estatísticas das Shards foram atualizadas.')
 

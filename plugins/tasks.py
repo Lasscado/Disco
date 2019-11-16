@@ -94,12 +94,13 @@ class Tasks(commands.Cog):
         except KeyError:
             return
 
-        guild = self.disco.get_guild(player.guild_id)
-        if guild is None or guild.me.voice is None:
+        if not (guild := self.disco.get_guild(player.guild_id)) or guild.unavailable or not guild.me.voice:
             await player.node._send(op='destroy', guildId=str(player.guild_id))
             del player.node.players[player.guild_id]
             return
-        elif (player.current or player.queue) and self.has_listeners(guild):
+        elif (player.current or player.queue) and self.has_listeners(guild) or \
+                any(m for m in guild.me.voice.channel.members
+                    if not m.bot and m.id in self.disco._waiting_for_choice):
             return
 
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')

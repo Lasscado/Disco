@@ -1,44 +1,48 @@
-![Disco Lite](https://i.imgur.com/H6ZGe4k.png)
-
+[![Disco](https://i.imgur.com/DWa6iY0.png)][bot-invite-url]
 ---
+[![Discord][discord-badge]][discord-url] [![Codacy Badge][codacy-badge]][codacy-url] [![License][license-badge]][license-url] 
+[![Twitter][twitter-badge]][twitter-url] 
 
-## Disco Lite: Sobre
+## Disco
 
-Cansado de complicações ao adicionar um bot, ainda mais quando se trata de um bot de música? Pois bem, eu te apresento o [**Disco Lite**](https://lite.discobot.site). 
+Um bot brasileiro para o Discord - Música de Alta Qualidade, com comandos como **`volume`** e **`bass boost`** liberados para todos. Além disso, você pode salvar a música que estiver tocando no momento e a ouvir depois, pelo sistema de playlists.
 
-Ele é um bot bem simples de se usar, basta adicionar em seu servidor e rodar o comando `play` ou `tocar`. Mas não para por ai, ao contrário de outros bots, nós não cobramos por coisas simples como o comando de aumentar/abaixar o **volume** das músicas, nem mesmo o de **Bass Boost** (adicionar graves no som). Com o Disco Lite, você tem tudo isso de graça, sem complicações e com muita facilidade e rapidez.
+Disco também conta com:
+- Sistema de Moderação, onde você pode definir quantas ações (banimentos, expulsões, etc) um moderador pode fazer dentro de um período de 24 horas.
+- Sistema de Logs de Mensagens e entrada/saída de membros.
+- Sistema de Cargo Automático - Auto role (adicionar um cargo em um usuário, quando ele entrar no servidor).
+- Sistema Multilinguagem (suporta vários idiomas).
+- Comandos de Ação (kiss, slap, pat, hug, smile, etc).
+- Comandos de Utilidade (ver a letra da música que está tocando ou de outras, pesquisar por informações sobre um anime/mangá, etc).
+- Comandos NSFW (sim, isso mesmo que você está pensando).
 
-Deseja que apenas certas pessoas possam usar os comandos mais "importantes" (chega de trollzinhos), como o de desconectar o Bot, ativar o BassBoost ou mudar o Volume? Sem problemas, nós já pensamos nisso! Para ter acesso a esse tipo de comando, você precisa ter um cargo chamado `DJ` (basta criar um com esse nome e aplicar em você ou em outra pessoa) ou a permissão `Gerenciar Servidor`. Perfeito, não é? Prático demais!
+> Para ver todos os comandos do bot, utilize **`d.help`** dentro de um servidor que tenha ele adicionado.
 
-Por que você ainda está lendo essa mensagem chata? [**Adicione**](https://lite.discobot.site) o **Disco Lite** agora mesmo!
+O que está esperando? [Adicione o Disco][bot-invite-url] hoje mesmo em seu servidor! Ficou com alguma dúvida? Entre em nosso [servidor de suporte][discord-url].
 
-[**SERVIDOR DE SUPORTE**](https://discord.gg/qN5886E) | [**DOAR**](https://patreon.com/discobot) | [**VOTAR**](https://botsparadiscord.xyz/bots/discolite/votar)
+## Contribuir
 
-## Disco Lite: Lista de Comandos
+Você pode contribuir das seguintes formas:
+ - Fazendo uma doação - https://patreon.com/discobot.
+ - Traduzindo o bot - https://disco.crowdin.com/disco.
+ - Enviando uma Pull Request com correção de códigos ou adição de novas funcionalidades.
+ - Resolvendo as dúvidas dos usuários do Disco - https://discord.gg/qN5886E.
+ - Votando diariamente no site Bots Para Discord - https://botsparadiscord.xyz/bots/disco/votar.
+ 
+<br/>
+<p align="center"><b>Disco</b> foi criado e é desenvolvido por <b>Naegin</b>.</p>
 
-| Nome           | Uso                        | Descrição                                                              |
-| -------------- | -------------------------- | ---------------------------------------------------------------------- |
-| help           | d!help \[Comando]          | Lista detalhadamente todos os comandos do Bot.                         |
-| play           | d!play <Nome/URL>          | Busca e adiciona a música especificada na fila de reprodução.          |
-| volume         | d!volume <1-150>           | Aumenta ou diminui o volume do player.                                 |
-| bassboost      | d!bassboost                | Ativa e desativa o Modo Bass Boost (mais graves).                      |
-| queue          | d!queue \[Página]          | Lista todas as faixas da fila de reprodução.                           |
-| repeat         | d!repeat                   | Coloca em loop, a música que estiver tocando.                          |
-| playat         | d!playat <Posição>         | Pula para uma faixa especifica.                                        |
-| remove         | d!remove <Posição>         | Remove uma faixa especifica da fila de reprodução.                     |
-| forceskip      | d!forceskip                | Força pular a música que estiver tocando.                              |
-| shuffle        | d!shuffle                  | Mistura as faixas da fila de reprodução.                               |
-| reverse        | d!reverse                  | Inverte as faixas da fila de reprodução.                               |
-| skip           | d!skip                     | Vota para pular a música que estiver tocando.                          |
-| clear          | d!clear                    | Limpa a fila de reprodução.                                            |
-| stop           | d!stop                     | Limpa a fila de reprodução e desconecta o bot do canal de voz.         |
-| nowplaying     | d!nowplaying               | Mostra detalhes sobre a música que estiver tocando.                    |
-| pause          | d!pause                    | Pausa e despausa a música que estiver tocando no momento.              |
-| invite         | d!invite                   | Envia o link de convite para adicionar o Bot.                          |
-| botinfo        | d!botinfo                  | Mostra informações sobre o Bot.                                        |
-| djrole         | d!djrole <Cargo>           | Define o cargo DJ no servidor.                                         |
-| disablechannel | d!disablechannel <Canal>   | Desativa ou ativa um canal em que o Bot possa ser usado.               |
-| disablerole    | d!disablerole <Cargo>      | Permite ou proíbe membros com um cargo específico de usarem o Bot.     |
-| disablecommand | d!disablecommand <Comando> | Permite ou proíbe que um comando específico seja usado nesse servidor. |
-| localban       | d!localban <@Membro>       | Permite ou proíbe um membro de usar o Bot nesse servidor.              |
-| botchannel     | d!botchannel <#Canal>      | Restringe o uso do Bot para apenas um canal específico.                |
+
+[bot-invite-url]: https://discobot.site/invite
+
+[discord-badge]: https://img.shields.io/discord/516346444463210542?label=chat&logo=discord
+[discord-url]: https://discord.gg/qN5886E
+
+[codacy-badge]: https://api.codacy.com/project/badge/Grade/42cc1a8fc60b4cc9b84b489701d4faab
+[codacy-url]: https://www.codacy.com/manual/Naegin/Disco?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Naegin/Disco&amp;utm_campaign=Badge_Grade
+
+[license-badge]: https://img.shields.io/github/license/Naegin/Disco
+[license-url]: https://github.com/Naegin/Disco/tree/master/LICENSE
+
+[twitter-badge]: https://img.shields.io/twitter/follow/DiscoTheBot
+[twitter-url]: https://twitter.com/DiscoTheBot

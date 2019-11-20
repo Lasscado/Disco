@@ -261,7 +261,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if message.author.bot or message.guild is None:
+        if message.author.bot or message.guild is None \
+                or not (content := message.content or (message.attachments[0].proxy_url if message.attachments else 0)):
             return
 
         options = (await self.disco.db.get_guild(message.guild.id)).options
@@ -273,7 +274,7 @@ class Events(commands.Cog):
                                                                                 "channel": message.channel.mention})
 
         em = discord.Embed(
-            description=f'{msg}\n>>> {message.content[:2047 - len(msg)] or "​"}',
+            description=f'{msg}\n{content[:2047 - len(msg)]}',
             colour=0xdb0f0f,
             timestamp=datetime.utcnow()
         ).set_author(
@@ -292,7 +293,7 @@ class Events(commands.Cog):
             return
 
         guild = self.disco.get_guild(guild_id)
-        if (author := guild.get_member(author_id)).bot:
+        if (author := guild.get_member(author_id)) and author.bot:
             return
 
         options = (await self.disco.db.get_guild(guild_id)).options

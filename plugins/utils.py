@@ -68,7 +68,7 @@ class Utils(commands.Cog):
 
         self.disco._waiting_for_choice.add(ctx.author.id)
 
-        options = '\n'.join(f'**`»`** `{i}` [**{song} - {song.artist}**]({song.url})'
+        options = '\n'.join(f'**`»`** `{i}` [**{song.artist} - {song}**]({song.url})'
                             for i, song in enumerate(songs, 1))
 
         cancel = ctx.t('commons.exit').lower()
@@ -115,7 +115,7 @@ class Utils(commands.Cog):
 
         em = discord.Embed(
             colour=self.disco.color[1],
-            title=f'{song} - {song.artist}',
+            title=f'{song.artist} - {song}',
             description=lyrics,
             url=song.url
         ).set_thumbnail(

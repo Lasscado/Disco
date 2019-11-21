@@ -23,5 +23,5 @@ class DiscoBan:
     async def update(self, **kwargs):
         await self._db.update_one({"_id": self.id}, {"$set": kwargs})
 
-    async def ignore(self):
+    async def ignore_ban(self):
         await self.update(ignore=True, ignored_at=datetime.utcnow().timestamp())

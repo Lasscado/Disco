@@ -399,7 +399,7 @@ class Events(commands.Cog):
         await logs.send(embed=em)
 
     @commands.Cog.listener()
-    async def on_member_leave(self, member):
+    async def on_member_remove(self, member):
         options = (await self.disco.db.get_guild(member.guild.id)).options
         logs = member.guild.get_channel(options['member_logs_channel'])
         if logs is None or not self.can_send(logs):

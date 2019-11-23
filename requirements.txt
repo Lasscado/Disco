@@ -8,8 +8,8 @@ humanize==0.5.1
 motor==2.0.0
 prettytable==0.7.2
 python-dotenv==0.10.3
+wavelink==0.3.4
 git+https://github.com/DiscoMusic/i18n.git@b9812f9cef8167af18798de3fc6af64b39d3defa
 git+https://github.com/DiscoMusic/genius-wrapper.git@d0176f3c78dec646a7e531119bebaec098b340ce
 git+https://github.com/DiscoMusic/kitsu-wrapper.git@ab24a6377509a43dbb687cf3c6d9797e2276114c
 git+https://github.com/DiscoMusic/weeb-wrapper.git@422ed36df6437907c8ad74985c31cdf1fd9f23be
-git+https://github.com/EvieePy/Wavelink.git@d9c99d0821b12d92fd77e13b93f6bea385e0d741

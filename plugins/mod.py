@@ -57,7 +57,7 @@ class Moderation(commands.Cog):
         if case_id[0] == '#':
             case_id = case_id[1:]
         if not case_id.isdecimal() or not 999 < (case_id := int(case_id)) < 999999999:
-            raise commands.MissingRequiredArgument
+            raise commands.UserInputError
 
         log = await self.disco.db.get_mod_log(ctx.guild.id, case_id)
         if log is None:

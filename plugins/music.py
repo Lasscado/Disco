@@ -60,7 +60,7 @@ class Music(commands.Cog):
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
         if not web_url(query):
-            query = f'ytsearch:{query}'
+            query = f'scsearch:{query}'
 
         results = await self.disco.wavelink.get_tracks(query)
         if not results:

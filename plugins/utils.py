@@ -44,27 +44,26 @@ class Utils(commands.Cog):
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _lyrics(self, ctx, *, query=None):
         if not query:
-            if not (ctx.author.voice and ctx.me.voice) \
-                    or ctx.author.voice.channel != ctx.me.voice.channel:
+            if activities := [a for a in ctx.author.activities if isinstance(a, discord.Spotify)]:
+                to_search = '{0.artist} {0.title}'.format(activities[0])
+            elif (ctx.author.voice and ctx.me.voice) and ctx.author.voice.channel == ctx.me.voice.channel:
+                if playing := self.disco.get_player(ctx.guild.id).current:
+                    to_search = playing.title
+                else:
+                    return await ctx.send(ctx.t('commands.lyrics.notPlaying', {"emoji": self.disco.emoji['false'],
+                                                                               "author": ctx.author.name}))
+            else:
                 raise commands.UserInputError
 
-            playing = self.disco.get_player(ctx.guild.id).current
-            if not playing:
-                return await ctx.send(ctx.t('commands.lyrics.notPlaying', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
-
-            songs = await self.genius.search(playing.title)
+            songs = await self.genius.search(to_search)
             if not songs:
-                return await ctx.send(ctx.t('commands.lyrics.currentNotFound', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
+                return await ctx.send(ctx.t('commands.lyrics.currentNotFound', {"emoji": self.disco.emoji['false'],
+                                                                                "author": ctx.author.name}))
         else:
             songs = await self.genius.search(query)
             if not songs:
-                return await ctx.send(ctx.t('commands.lyrics.notFound', {
-                    "emoji": self.disco.emoji['false'], "author": ctx.author.name
-                }))
+                return await ctx.send(ctx.t('commands.lyrics.notFound', {"emoji": self.disco.emoji['false'],
+                                                                         "author": ctx.author.name}))
 
         self.disco._waiting_for_choice.add(ctx.author.id)
 
@@ -79,7 +78,10 @@ class Utils(commands.Cog):
             description=options
         ).set_author(
             name=ctx.t('commands.lyrics.searchResults') + ('' if query else ' '
-                                                                            + ctx.t("commands.lyrics.nowPlaying")),
+                                                                            + ctx.t('commands.lyrics.listeningOnSpotify'
+                                                                                    if 'activities' in locals()
+                                                                                       and activities
+                                                                                    else 'commands.lyrics.nowPlaying')),
             icon_url=ctx.guild.icon_url
         ).set_thumbnail(
             url=self.disco.user.avatar_url

@@ -316,12 +316,13 @@
             "description": "Mostra a letra da música que estiver tocando ou pesquisa pela letra de outras, caso um nome for fornecido."
         },
         "notPlaying": "{emoji} **{author}**, eu não estou tocando nada no momento! Tente novamente fornecendo o nome de uma música para ser pesquisada, ou após por algo para tocar.",
-        "currentNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao que estou tocando agora.",
+        "currentNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao que estou tocando agora ou ao que você está ouvindo no Spotify.",
         "notFound": "{emoji} **{author}**, eu não consegui encontrar nenhum resultado referente ao nome fornecido.",
         "lyricsNotFound": "{emoji} **{author}**, eu não consegui encontrar nenhuma letra referente ao que você selecionou.",
         "searchResults": "Resultados da Busca",
         "chooseOne": "Digite o número correspondente a música que você deseja ver as letras",
         "nowPlaying": "(Tocando Agora)",
+        "listeningOnSpotify": "(Ouvindo no Spotify)",
         "typeToCancel" :"Digite \"{value}\" para cancelar.",
         "songLyrics": "Letras da Música",
         "viewMore": "... [Ver letra completa]({url})"

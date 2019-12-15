@@ -379,6 +379,13 @@
         "volumes": "{volumes} volume(s)",
         "chapters": "\n{chapters} capítulo(s)"
     },
+    "youtube": {
+        "meta": {
+            "usage": "[Nome]",
+            "description": "Pesquisa por vídeos no YouTube e retorna o link do primeiro resultado."
+        },
+        "noResults": "{emoji} **{author}**, não foi possível encontrar nenhum resultado referente ao nome fornecido."
+    },
     "kiss": {
         "meta": {
             "usage": "<@Membro> [@Membro 2] [@Membro 3] [Motivo]",

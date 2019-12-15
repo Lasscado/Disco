@@ -365,6 +365,17 @@ class Utils(commands.Cog):
 
         await q.edit(content=None, embed=em)
 
+    @commands.command(name='youtube', aliases=['yt'])
+    @commands.cooldown(3, 10, commands.BucketType.guild)
+    @commands.bot_has_permissions(embed_links=True)
+    async def _youtube(self, ctx, *, query):
+        results = await self.disco.wavelink.get_tracks(f'ytsearch:{query}')
+        if not results:
+            return await ctx.send(ctx.t('commands.youtube.noResults', {"emoji": self.disco.emoji["false"],
+                                                                       "author": ctx.author.name}))
+
+        await ctx.send(results[0].uri)
+
 
 def setup(disco):
     disco.add_cog(Utils(disco))

@@ -33,7 +33,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('kiss')
         emoji = random_choice(self.disco.emoji['kiss'])
         phrase = random_choice(ctx.t('commands.kiss.withReason' if reason else 'commands.kiss.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -62,7 +62,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('stare')
         emoji = random_choice(self.disco.emoji['stare'])
         phrase = random_choice(ctx.t('commands.stare.withReason' if reason else 'commands.stare.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -91,7 +91,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('hug')
         emoji = random_choice(self.disco.emoji['hug'])
         phrase = random_choice(ctx.t('commands.hug.withReason' if reason else 'commands.hug.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -120,7 +120,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('pat')
         emoji = random_choice(self.disco.emoji['pat'])
         phrase = random_choice(ctx.t('commands.pat.withReason' if reason else 'commands.pat.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -153,7 +153,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('slap')
         emoji = random_choice(self.disco.emoji['slap'])
         phrase = random_choice(ctx.t('commands.slap.withReason' if reason else 'commands.slap.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -186,7 +186,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('lick')
         emoji = random_choice(self.disco.emoji['lick'])
         phrase = random_choice(ctx.t('commands.lick.withReason' if reason else 'commands.lick.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -215,7 +215,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('tickle')
         emoji = random_choice(self.disco.emoji['tickle'])
         phrase = random_choice(ctx.t('commands.tickle.withReason' if reason else 'commands.tickle.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -248,7 +248,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('bite')
         emoji = random_choice(self.disco.emoji['bite'])
         phrase = random_choice(ctx.t('commands.bite.withReason' if reason else 'commands.bite.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -277,7 +277,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('greet')
         emoji = random_choice(self.disco.emoji['greet'])
         phrase = random_choice(ctx.t('commands.greet.withReason' if reason else 'commands.greet.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -306,7 +306,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('smile')
         emoji = random_choice(self.disco.emoji['smile'])
         phrase = random_choice(ctx.t('commands.smile.withReason' if reason else 'commands.smile.noReason')).format(
-            author=ctx.author.display_name, members=', '.join(f'**{m.display_name}**' for m in list(set(members))[:3]),
+            author=ctx.author.name, members=', '.join(f'**{m.name}**' for m in list(set(members))[:3]),
             reason=reason[:1500],
         )
 
@@ -327,7 +327,7 @@ class Action(commands.Cog):
         image = await self.weeb.random_image('cry')
         emoji = random_choice(self.disco.emoji['cry'])
         phrase = random_choice(ctx.t('commands.cry.withReason' if reason else 'commands.cry.noReason')).format(
-            author=ctx.author.display_name, reason=reason[:1500]
+            author=ctx.author.name, reason=reason[:1500]
         )
 
         em = discord.Embed(

@@ -384,7 +384,8 @@
             "usage": "[Nome]",
             "description": "Pesquisa por vídeos no YouTube e retorna o link do primeiro resultado."
         },
-        "noResults": "{emoji} **{author}**, não foi possível encontrar nenhum resultado referente ao nome fornecido."
+        "noResults": "{emoji} **{author}**, não foi possível encontrar nenhum resultado referente ao nome fornecido.",
+        "zeroNodes": "{emoji} **{author}**, infelizmente meus servidores de busca de vídeos emperraram e eu não posso executar esse comando no momento ;("
     },
     "kiss": {
         "meta": {

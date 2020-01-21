@@ -7,6 +7,7 @@ import genius
 import kitsu
 from babel.dates import format_date, format_timedelta
 from discord.ext import commands
+from wavelink.errors import ZeroConnectedNodes
 
 from utils import checks
 
@@ -369,7 +370,12 @@ class Utils(commands.Cog):
     @commands.cooldown(3, 10, commands.BucketType.guild)
     @commands.bot_has_permissions(embed_links=True)
     async def _youtube(self, ctx, *, query):
-        results = await self.disco.wavelink.get_tracks(f'ytsearch:{query}')
+        try:
+            results = await self.disco.wavelink.get_tracks(f'ytsearch:{query}')
+        except ZeroConnectedNodes:
+            return await ctx.send(ctx.t('commands.youtube.zeroNodes', {"emoji": self.disco.emoji["false"],
+                                                                       "author": ctx.author.name}))
+
         if not results:
             return await ctx.send(ctx.t('commands.youtube.noResults', {"emoji": self.disco.emoji["false"],
                                                                        "author": ctx.author.name}))

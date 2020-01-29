@@ -17,14 +17,13 @@ log = logging.getLogger('disco')
 
 class Disco(AutoShardedBot):
     def __init__(self):
-        self.prefixes = environ['PREFIXES'].split(', ')
         super().__init__(
             command_prefix=custom_prefix,
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
             max_messages=15000,
-            activity=Game(f'Prefix: {self.prefixes[0]}')
+            activity=Game(f'Loading...')
         )
 
         self.db = DatabaseManager(environ['DATABASE_NAME'], environ['DATABASE_URI'])
@@ -41,6 +40,7 @@ class Disco(AutoShardedBot):
         self.invoked_commands = 0
         self.read_messages = 0
         self.played_tracks = 0
+        self.prefixes = environ['PREFIXES'].split(', ')
         self._prefixes = {}
         self._waiting_for_choice = set()
 

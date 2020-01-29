@@ -276,6 +276,7 @@ class Admin(commands.Cog):
             if not ctx.gdb.options['message_logs_channel']:
                 raise commands.UserInputError
 
+            self.disco._message_logs.remove(ctx.guild.id)
             await ctx.gdb.set({"options.message_logs_channel": None})
             return await ctx.send(ctx.t('commands.messagelogs.reset', {"author": ctx.author.name,
                                                                        "emoji": self.disco.emoji["true"]}))
@@ -296,6 +297,7 @@ class Admin(commands.Cog):
                                                                                     "channel": channel.mention,
                                                                                     "permissions": '\n'.join(missing)}))
 
+        self.disco._message_logs.add(ctx.guild.id)
         await ctx.gdb.set({"options.message_logs_channel": channel.id})
         await ctx.send(ctx.t('commands.messagelogs.success', {"author": ctx.author.name,
                                                               "emoji": self.disco.emoji["true"],

@@ -43,6 +43,7 @@ class Disco(AutoShardedBot):
         self.prefixes = environ['PREFIXES'].split(', ')
         self._prefixes = {}
         self._waiting_for_choice = set()
+        self._message_logs = set()
 
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:
@@ -77,6 +78,9 @@ class Disco(AutoShardedBot):
                 else:
                     self.user_blacklist.add(ban.target_id)
 
+            async for guild in self.db._guilds.find({"options.message_logs_channel": {"$ne": None}}):
+                self._message_logs.add(guild['_id'])
+
             log.info('Lista de banidos carregada.')
 
             self.i18n.load_all_from_path()
@@ -89,8 +93,13 @@ class Disco(AutoShardedBot):
     async def on_message(self, message):
         self.read_messages += 1
 
-        if (not self.loaded or message.author.bot or not message.guild
-                or not message.channel.permissions_for(message.guild.me).send_messages):
+        if not self.loaded or message.author.bot or not message.guild:
+            return
+
+        if message.guild.id in self._message_logs:
+            self.loop.create_task(self.db.register_message(message))
+
+        if not message.channel.permissions_for(message.guild.me).send_messages:
             return
 
         if message.content == message.guild.me.mention:

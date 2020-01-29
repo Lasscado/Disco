@@ -3,7 +3,7 @@ from asyncio import sleep
 from random import choice
 from json import loads
 
-from discord import Colour, Activity, ActivityType
+from discord import Colour, Activity, ActivityType, ConnectionClosed
 from discord.ext import commands, tasks
 
 from utils import avatars, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
@@ -23,7 +23,8 @@ class Tasks(commands.Cog):
         self._tasks = [
             ('change_presence', self._change_presence.start()),
             ('disconnect_inactive_players', self._disconnect_inactive_players.start()),
-            ('update_shard_stats', self._update_shard_stats.start())
+            ('update_shard_stats', self._update_shard_stats.start()),
+            ('delete_messages_days', self._delete_messages_days.start())
         ]
 
         # if disco.user.id == int(environ['BOT_ID']):
@@ -38,6 +39,11 @@ class Tasks(commands.Cog):
                 traceback.print_exception(type(e), e, e.__traceback__)
             else:
                 self.disco.log.info(f'Task \'{name}\' cancelada com sucesso.')
+
+    @tasks.loop(hours=1)
+    async def _delete_messages_days(self):
+        deleted = await self.disco.db.delete_messages_days(14)
+        self.disco.log.info(f'{deleted} mensagens com mais de 14 dias foram deletadas do banco de dados.')
 
     @tasks.loop(minutes=30)
     async def _change_avatar(self):
@@ -63,10 +69,13 @@ class Tasks(commands.Cog):
                 donate=PATREON_DONATE_URL
             )
 
-            await self.disco.change_presence(activity=Activity(type=activity,
-                                                               name=message + f' [{shard}]',
-                                                               url=STREAMING_ACTIVITY_URL),
-                                             shard_id=shard)
+            try:
+                await self.disco.change_presence(activity=Activity(type=activity,
+                                                                   name=message + f' [{shard}]',
+                                                                   url=STREAMING_ACTIVITY_URL),
+                                                 shard_id=shard)
+            except ConnectionClosed:
+                pass
 
         self.disco.log.info('Presences alteradas.')
 

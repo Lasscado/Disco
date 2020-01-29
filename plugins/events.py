@@ -238,7 +238,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload):
-        if payload.cached_message or payload.guild_id is None:
+        if payload.guild_id is None:
             return
 
         options = (await self.disco.db.get_guild(payload.guild_id)).options
@@ -247,48 +247,30 @@ class Events(commands.Cog):
             return
 
         t = self.disco.i18n.get_t(options['locale'])
-        msg = t('events.messageDelete', {"author": t('commons.unknown'), "channel": f'<#{payload.channel_id}>'})
+        if cached := await self.disco.db.get_message(payload.message_id):
+            msg = t('events.messageDelete', {"author": f"<@{cached.author_id}>",
+                                             "channel": f"<#{cached.channel_id}>"})
+        else:
+            msg = t('events.messageDelete', {"author": t('commons.unknown'),
+                                             "channel": f"<#{payload.channel_id}>"})
 
         em = discord.Embed(
-            description=msg,
+            description=f'{msg}\n{cached.content[:2047 - len(msg)] if cached else ""}',
             colour=0xdb0f0f,
             timestamp=datetime.utcnow()
         ).set_footer(
             text=f'ID: {payload.message_id}'
         )
 
-        await logs.send(embed=em)
-
-    @commands.Cog.listener()
-    async def on_message_delete(self, message):
-        if message.author.bot or message.guild is None \
-                or not (content := message.content or (message.attachments[0].proxy_url if message.attachments else 0)):
-            return
-
-        options = (await self.disco.db.get_guild(message.guild.id)).options
-        logs = message.guild.get_channel(options['message_logs_channel'])
-        if logs is None or not self.can_send(logs):
-            return
-
-        msg = self.disco.i18n.get_t(options['locale'])('events.messageDelete', {"author": message.author.mention,
-                                                                                "channel": message.channel.mention})
-
-        em = discord.Embed(
-            description=f'{msg}\n{content[:2047 - len(msg)]}',
-            colour=0xdb0f0f,
-            timestamp=datetime.utcnow()
-        ).set_author(
-            name=str(message.author),
-            icon_url=message.author.avatar_url
-        ).set_footer(
-            text=f'ID: {message.id}'
-        )
+        if cached and (author := self.disco.get_user(cached.author_id)):
+            em.set_author(name=str(author), icon_url=author.avatar_url)
 
         await logs.send(embed=em)
+        await cached.delete()
 
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):
-        if payload.cached_message or not (guild_id := int(payload.data.get('guild_id', 0))) or \
+        if not (guild_id := int(payload.data.get('guild_id', 0))) or \
                 not (author_id := int(payload.data.get('author', {}).get('id', 0))):
             return
 
@@ -316,48 +298,16 @@ class Events(commands.Cog):
         ).set_author(
             name=str(author),
             icon_url=author.avatar_url
-        ).add_field(
-            name=t('commons.after'),
-            value=payload.data['content'][:1024],
-            inline=False
         ).set_footer(
             text=f'ID: {payload.message_id}'
         )
 
-        await logs.send(embed=em)
+        new_content = payload.data['content']
+        if cached := await self.disco.db.get_message(payload.message_id):
+            em.add_field(name=t('commons.before'), value=cached.content[:1024] or '\u200b', inline=False)
+            self.disco.loop.create_task(cached.edit(new_content))
 
-    @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        if after.author.bot or after.guild is None or before.content == after.content:
-            return
-
-        options = (await self.disco.db.get_guild(after.guild.id)).options
-        logs = self.disco.get_guild(after.guild.id).get_channel(options['message_logs_channel'])
-        if logs is None or not self.can_send(logs):
-            return
-
-        t = self.disco.i18n.get_t(options['locale'])
-        msg = t('events.messageEdit', {"author": after.author.mention,
-                                       "channel": after.channel.mention,
-                                       "url": after.jump_url})
-
-        em = discord.Embed(
-            description=msg,
-            colour=0xfff705,
-            timestamp=after.edited_at
-        ).set_author(
-            name=str(after.author),
-            icon_url=after.author.avatar_url
-        ).add_field(
-            name=t('commons.before'),
-            value=before.content[:1024] or '\u200b'
-        ).add_field(
-            name=t('commons.after'),
-            value=after.content[:1024],
-            inline=False
-        ).set_footer(
-            text=f'ID: {after.id}'
-        )
+        em.add_field(name=t('commons.after'), value=new_content[:1024], inline=False)
 
         await logs.send(embed=em)
 

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from motor import motor_asyncio
 
-from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard
+from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage
 
 
 class DatabaseManager:
@@ -13,6 +13,7 @@ class DatabaseManager:
         self._guilds = db.guilds
         self._shards = db.shards
         self._mod_logs = db.mod_logs
+        self._messages = db.messages
 
     @property
     async def total_bans(self):
@@ -21,6 +22,10 @@ class DatabaseManager:
     @property
     async def total_shards(self):
         return await self._shards.count_documents({})
+
+    @property
+    async def total_messages(self):
+        return await self._messages.count_documents({})
 
     async def total_mod_logs(self, guild_id):
         return await self._mod_logs.count_documents({"guild_id": guild_id})
@@ -76,6 +81,14 @@ class DatabaseManager:
     async def get_last_mod_log(self, **kwargs):
         if data := await self._mod_logs.find(kwargs).sort('date', -1).limit(1).to_list(None):
             return DiscoModLog(data[0])
+
+    async def get_message(self, message_id):
+        if data := await self._messages.find_one({"_id": message_id}):
+            return DiscoMessage(data, self._messages)
+
+    async def delete_messages_days(self, days):
+        timestamp = (datetime.utcnow() - timedelta(days=days)).timestamp()
+        return (await self._messages.delete_many({"timestamp": {"$lte": timestamp}})).deleted_count
 
     async def register_guild(self, guild_id):
         data = {
@@ -154,3 +167,18 @@ class DatabaseManager:
         await self._mod_logs.insert_one(data)
 
         return DiscoModLog(data)
+
+    async def register_message(self, message):
+        data = {
+            "_id": message.id,
+            "author_id": message.author.id,
+            "channel_id": message.channel.id,
+            "guild_id": message.guild.id,
+            "content": message.content or ('\n'.join(attachment.proxy_url for attachment in message.attachments)
+                                           if message.attachments else ''),
+            "timestamp": message.created_at.timestamp()
+        }
+
+        await self._messages.insert_one(data)
+
+        return DiscoMessage(data, self._messages)

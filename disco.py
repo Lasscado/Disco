@@ -102,7 +102,7 @@ class Disco(AutoShardedBot):
         if not message.channel.permissions_for(message.guild.me).send_messages:
             return
 
-        if message.content == message.guild.me.mention:
+        if message.content == f'<@!{self.user.id}>':
             message.content += ' whatsmyprefix'
 
         ctx = await self.get_context(message)

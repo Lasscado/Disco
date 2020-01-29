@@ -1,4 +1,5 @@
 import logging
+import platform
 import traceback
 from datetime import datetime
 from os import environ, listdir
@@ -23,6 +24,7 @@ class Disco(AutoShardedBot):
             case_insensitive=True,
             help_command=None,
             max_messages=None,
+            fetch_offline_members=platform.machine() != 'armv7l',
             activity=Game(f'Loading...')
         )
 

@@ -22,7 +22,7 @@ class Disco(AutoShardedBot):
             owner_id=int(environ['OWNER_ID']),
             case_insensitive=True,
             help_command=None,
-            max_messages=15000,
+            max_messages=None,
             activity=Game(f'Loading...')
         )
 

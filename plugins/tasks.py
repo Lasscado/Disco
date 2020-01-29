@@ -2,7 +2,6 @@ import traceback
 from asyncio import sleep
 from random import choice
 from json import loads
-from os import environ
 
 from discord import Colour, Activity, ActivityType
 from discord.ext import commands, tasks

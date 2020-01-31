@@ -3,8 +3,9 @@ from asyncio import sleep
 from random import choice
 from json import loads
 
-from discord import Colour, Activity, ActivityType, ConnectionClosed
+from discord import Colour, Activity, ActivityType
 from discord.ext import commands, tasks
+from websockets.exceptions import ConnectionClosed
 
 from utils import avatars, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
 
@@ -62,12 +63,10 @@ class Tasks(commands.Cog):
         self.disco.log.info('Alterando Presences em todas as Shards...')
         for shard in self.disco.shards:
             activity = choice(self._activities)
-            message = choice(messages[activity.name]).format(
-                website=WEBSITE_URL,
-                prefix=self.disco.prefixes[0],
-                guilds=guilds,
-                donate=PATREON_DONATE_URL
-            )
+            message = choice(messages[activity.name]).format(website=WEBSITE_URL,
+                                                             prefix=self.disco.prefixes[0],
+                                                             guilds=guilds,
+                                                             donate=PATREON_DONATE_URL)
 
             try:
                 await self.disco.change_presence(activity=Activity(type=activity,
@@ -95,8 +94,8 @@ class Tasks(commands.Cog):
         self.disco.log.info('Procurando por players inativos')
         for player in self.disco.wavelink.players.values():
             guild = self.disco.get_guild(player.guild_id)
-            if guild is None or guild.me and guild.me.voice is None or player.current is None and not player.queue or \
-                    not self.has_listeners(guild):
+            if guild is None or guild.unavailable or guild.me and guild.me.voice is None or \
+                    player.current is None and not player.queue or not self.has_listeners(guild):
                 self.disco.loop.create_task(self._disconnect_player(player))
 
     async def _disconnect_player(self, player):

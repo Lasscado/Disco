@@ -175,7 +175,7 @@ class Events(commands.Cog):
                                                                       or ctx.t('commons.unknown')}))
 
         else:
-            traceback_ = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+            traceback_ = ''.join(traceback.format_exception(type(e), e, e.__traceback__))
 
             em = discord.Embed(
                 colour=0xFF0000,

@@ -95,13 +95,13 @@ class Disco(AutoShardedBot):
     async def on_message(self, message):
         self.read_messages += 1
 
-        if not self.loaded or message.author.bot or not message.guild:
+        if not self.loaded or not message.guild:
             return
 
         if message.guild.id in self._message_logs:
             self.loop.create_task(self.db.register_message(message))
 
-        if not message.channel.permissions_for(message.guild.me).send_messages:
+        if message.author.bot or not message.channel.permissions_for(message.guild.me).send_messages:
             return
 
         if message.content == f'<@!{self.user.id}>':

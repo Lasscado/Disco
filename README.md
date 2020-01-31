@@ -32,7 +32,7 @@ Você pode contribuir das seguintes formas:
 <br/>
 <p align="center"><b>Disco</b> foi criado e é desenvolvido por <b>Naegin</b>.</p>
 
-[bot-invite-url]: https://discobot.site/invite
+[bot-invite-url]: https://is.gd/disco_github
 
 [discord-badge]: https://img.shields.io/discord/516346444463210542?label=chat&logo=discord
 [discord-url]: https://discord.gg/qN5886E

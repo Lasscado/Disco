@@ -267,9 +267,13 @@ class Events(commands.Cog):
 
         t = self.disco.i18n.get_t(options['locale'])
         if cached := await self.disco.db.get_message(payload.message_id):
+            if (author := self.disco.get_user(cached.author_id)) and author.bot:
+                return
+
             msg = t('events.messageDelete', {"author": f"<@{cached.author_id}>",
                                              "channel": f"<#{cached.channel_id}>"})
         else:
+            author = None
             msg = t('events.messageDelete', {"author": t('commons.unknown'),
                                              "channel": f"<#{payload.channel_id}>"})
 
@@ -281,7 +285,7 @@ class Events(commands.Cog):
             text=f'ID: {payload.message_id}'
         )
 
-        if cached and (author := self.disco.get_user(cached.author_id)):
+        if author:
             em.set_author(name=str(author), icon_url=author.avatar_url)
 
         await logs.send(embed=em)
@@ -294,7 +298,7 @@ class Events(commands.Cog):
             return
 
         guild = self.disco.get_guild(guild_id)
-        if (author := guild.get_member(author_id)) and author.bot:
+        if (author := guild.get_member(author_id)).bot:
             return
 
         options = (await self.disco.db.get_guild(guild_id)).options

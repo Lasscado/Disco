@@ -267,6 +267,7 @@ class Events(commands.Cog):
 
         t = self.disco.i18n.get_t(options['locale'])
         if cached := await self.disco.db.get_message(payload.message_id):
+            self.disco.loop.create_task(cached.delete())
             if (author := self.disco.get_user(cached.author_id)) and author.bot:
                 return
 
@@ -289,7 +290,6 @@ class Events(commands.Cog):
             em.set_author(name=str(author), icon_url=author.avatar_url)
 
         await logs.send(embed=em)
-        await cached.delete()
 
     @commands.Cog.listener()
     async def on_raw_message_edit(self, payload):

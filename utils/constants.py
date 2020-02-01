@@ -7,3 +7,5 @@ WEBSITE_URL = 'https://is.gd/discobot'
 TRANSPARENT_IMAGE_URL = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
 STREAMING_ACTIVITY_URL = 'https://twitch.tv/naeg1n'
 DEFAULT_EMBED_COLORS = [0xB70DB3, 0xFF3DD3]
+BANNER_URL = 'https://i.imgur.com/DWa6iY0.png'
+DBOTS_PAGE_URL = 'https://is.gd/disco_dbots'

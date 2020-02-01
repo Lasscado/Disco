@@ -8,13 +8,16 @@ from babel.dates import format_datetime
 from discord.ext import commands
 from discord.ext.commands.errors import *
 
-from utils import SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL
+from utils import TextUploader, SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL, BANNER_URL, DBOTS_PAGE_URL
 from utils.errors import DiscoError, WaitingForPreviousChoice
 
 
 class Events(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self.text_uploader = TextUploader(disco,
+                                          int(environ['TEXT_UPLOADER_GUILD_ID']),
+                                          int(environ['TEXT_UPLOADER_CATEGORY_ID']))
 
         self.disco.loop.create_task(self._fetch_logs_channels())
 
@@ -220,19 +223,35 @@ class Events(commands.Cog):
             return
 
         options = (await self.disco.db.get_guild(payload.guild_id)).options
-        logs = self.disco.get_guild(payload.guild_id).get_channel(options['message_logs_channel'])
+        logs = (guild := self.disco.get_guild(payload.guild_id)).get_channel(options['message_logs_channel'])
         if logs is None or not self.can_send(logs):
             return
 
-        t = self.disco.i18n.get_t(options['locale'])
-        msg = t('events.bulkMessageDelete', {"amount": len(payload.message_ids),
-                                             "channel": f'<#{payload.channel_id}>'})
+        t = self.disco.i18n.get_t(locale := options['locale'])
+        if messages := await self.disco.db.get_messages(list(payload.message_ids)):
+            unknown = t('commons.unknownUser')
+            content = t('events.bulkMessageDeleteLog', {"banner": BANNER_URL,
+                                                        "url": DBOTS_PAGE_URL,
+                                                        "guild": guild,
+                                                        "channel": guild.get_channel(payload.channel_id),
+                                                        "date": format_datetime(datetime.utcnow(), locale=locale)}) \
+                      + ''.join(f'\r\n\r\n[{format_datetime(message.created_at, locale=locale)} GMT] '
+                                f'{guild.get_member(message.author_id) or unknown} ({message.author_id}) : '
+                                + message.content for message in messages)
 
-        em = discord.Embed(
-            description=msg,
-            colour=0xdb0f0f,
-            timestamp=datetime.utcnow()
-        )
+            view, download = await self.text_uploader.upload(t('commons.deletedMessages'), content)
+            msg = t('events.bulkMessageDelete', {"amount": len(payload.message_ids),
+                                                 "channel": f'<#{payload.channel_id}>',
+                                                 "view": view,
+                                                 "download": download,
+                                                 "saved": len(messages)})
+        else:
+            msg = t('events.bulkMessageDeleteUnknown', {"amount": len(payload.message_ids),
+                                                        "channel": f'<#{payload.channel_id}>'})
+
+        em = discord.Embed(description=msg,
+                           colour=0xdb0f0f,
+                           timestamp=datetime.utcnow())
 
         await logs.send(embed=em)
 

@@ -6,3 +6,4 @@ from .errors import *
 from .misc import *
 from .player import DiscoPlayer, DiscoTrack
 from .prefix import custom_prefix
+from .text_uploader import TextUploader

@@ -27,5 +27,7 @@
     "accountCreation": "Criação da Conta",
     "position": "Posição",
     "daysAgo": "**`{days}`** dias atrás",
-    "joinedAt": "Data de Entrada"
+    "joinedAt": "Data de Entrada",
+    "deletedMessages": "MensagensDeletadas",
+    "unknownUser": "Usuário Desconhecido"
 }

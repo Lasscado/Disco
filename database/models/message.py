@@ -12,7 +12,7 @@ class DiscoMessage:
         self.channel_id = data['channel_id']
         self.guild_id = data['guild_id']
         self.content = data['content']
-        self.created_at = datetime.utcfromtimestamp(data['timestamp'])
+        self.created_at = datetime.fromtimestamp(data['timestamp'])
 
     async def edit(self, new_content):
         await self._db.update_one({"_id": self.id}, {"$set": {"content": new_content}})

@@ -47,11 +47,7 @@ class DatabaseManager:
             return await self.register_guild(guild_id)
 
     async def get_bans(self, **kwargs):
-        bans = []
-        async for data in self._bans.find(kwargs):
-            bans.append(DiscoBan(data, self._bans))
-
-        return bans
+        return [DiscoBan(data, self._bans) async for data in self._bans.find(kwargs)]
 
     async def get_last_ban(self, **kwargs):
         if data := await self._bans.find(kwargs).sort('date', -1).limit(1).to_list(None):
@@ -62,11 +58,7 @@ class DatabaseManager:
             return DiscoBan(data[0], self._bans)
 
     async def get_shards(self, **kwargs):
-        shards = []
-        async for data in self._shards.find(kwargs):
-            shards.append(DiscoShard(data, self._shards))
-
-        return shards
+        return [DiscoShard(data, self._shards) async for data in self._shards.find(kwargs)]
 
     async def get_shard(self, shard_id, register=True):
         if data := await self._shards.find_one({"_id": shard_id}):
@@ -85,6 +77,9 @@ class DatabaseManager:
     async def get_message(self, message_id):
         if data := await self._messages.find_one({"_id": message_id}):
             return DiscoMessage(data, self._messages)
+
+    async def get_messages(self, messages_id):
+        return [DiscoMessage(data, self._messages) async for data in self._messages.find({"_id": {"$in": messages_id}})]
 
     async def delete_messages_days(self, days):
         timestamp = (datetime.utcnow() - timedelta(days=days)).timestamp()

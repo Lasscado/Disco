@@ -5,7 +5,8 @@ from math import ceil
 
 import discord
 from discord.ext import commands
-from wavelink.events import TrackException, TrackStuck
+from wavelink.events import TrackStart, TrackEnd, TrackException, TrackStuck
+from wavelink.eqs import Equalizer
 
 from utils import web_url, get_length, checks, DiscoTrack
 
@@ -27,31 +28,31 @@ class Music(commands.Cog):
     async def on_track_event(self, event):
         player = event.player
 
-        if isinstance(event, TrackException):
-            return await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
-                                                                        "track": player.current,
-                                                                        "error": event.error}))
-        if isinstance(event, TrackStuck):
-            return await player.send(player.t('errors.trackStuck', {"emoji": self.disco.emoji["alert"],
-                                                                    "track": player.current,
-                                                                    "threshold": event.threshold}))
-
-        if player.repeat:
-            track = player.repeat
-        elif player.size:
-            track = player.queue.pop(0)
-        else:
-            player.current = None
-            return await player.send(player.t('events.queueEnd', {"emoji": self.disco.emoji["alert"]}))
-
-        await player.play(track)
-        self.disco.played_tracks += 1
-
-        if not player.repeat:
-            await player.send(player.t('events.trackStart', {"track": track,
+        if isinstance(event, TrackStart) and not player.repeat:
+            self.disco.played_tracks += 1
+            await player.send(player.t('events.trackStart', {"track": (track := event.track),
                                                              "emoji": self.disco.emoji["download"],
                                                              "length": 'LIVESTREAM' if track.is_stream else
                                                              get_length(track.length)}))
+
+        elif isinstance(event, TrackEnd):
+            if player.repeat:
+                track = player.repeat
+            elif player.size:
+                track = player.queue.pop(0)
+            else:
+                return await player.send(player.t('events.queueEnd', {"emoji": self.disco.emoji["alert"]}))
+
+            await player.play(track)
+
+        elif isinstance(event, TrackException):
+            await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
+                                                                 "track": player.current,
+                                                                 "error": event.error}))
+        elif isinstance(event, TrackStuck):
+            await player.send(player.t('errors.trackStuck', {"emoji": self.disco.emoji["alert"],
+                                                             "track": player.current,
+                                                             "threshold": event.threshold}))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
     @checks.requires_user_choices()
@@ -60,7 +61,7 @@ class Music(commands.Cog):
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
         if not web_url(query):
-            query = f'scsearch:{query}'
+            query = f'ytsearch:{query}'
 
         results = await self.disco.wavelink.get_tracks(query)
         if not results:
@@ -140,13 +141,6 @@ class Music(commands.Cog):
 
         if not player.current:
             await player.play(ctx.player.queue.pop(0))
-            await ctx.send(ctx.t('events.trackStart', {"author": ctx.author.name,
-                                                       "emoji": self.disco.emoji["download"],
-                                                       "track": player.current,
-                                                       "length": 'LIVESTREAM' if player.current.is_stream else
-                                                       get_length(player.current.length)}))
-
-            self.disco.played_tracks += 1
 
     @commands.command(name='shuffle', aliases=['misturar'])
     @checks.staffer_or_dj_role()
@@ -344,13 +338,13 @@ class Music(commands.Cog):
                                                               "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.bass_boost:
-            await ctx.player.set_preq('flat')
-            await ctx.send(ctx.t('commands.bassboost.disabled', {
-                "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
+            await ctx.player.set_eq(Equalizer.boost())
+            await ctx.send(ctx.t('commands.bassboost.disabled', {"emoji": self.disco.emoji["volume"],
+                                                                 "author": ctx.author.name}))
         else:
-            await ctx.player.set_preq('boost')
-            await ctx.send(ctx.t('commands.bassboost.enabled', {
-                "emoji": self.disco.emoji["volume"], "author": ctx.author.name}))
+            await ctx.player.set_eq(Equalizer.flat())
+            await ctx.send(ctx.t('commands.bassboost.enabled', {"emoji": self.disco.emoji["volume"],
+                                                                "author": ctx.author.name}))
 
         ctx.player.bass_boost = not ctx.player.bass_boost
 

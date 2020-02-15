@@ -1,5 +1,5 @@
-from wavelink.player import Player
-from wavelink.player import Track
+from wavelink.player import Player, Track
+from wavelink.events import TrackEnd, TrackException, TrackStuck
 from discord import Forbidden, NotFound
 
 
@@ -34,3 +34,10 @@ class DiscoPlayer(Player):
             await channel.send(content=content, embed=embed)
         except (Forbidden, NotFound):
             pass
+
+    async def hook(self, event):
+        if isinstance(event, TrackEnd):
+            self.current = None
+        elif isinstance(event, (TrackException, TrackStuck)):
+            self.repeat = None
+            self.current = None

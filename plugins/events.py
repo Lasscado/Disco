@@ -15,9 +15,7 @@ from utils.errors import DiscoError, WaitingForPreviousChoice
 class Events(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
-        self.text_uploader = TextUploader(disco,
-                                          int(environ['TEXT_UPLOADER_GUILD_ID']),
-                                          int(environ['TEXT_UPLOADER_CATEGORY_ID']))
+        self.text_uploader = TextUploader(disco, int(environ['TEXT_UPLOADER_CATEGORY_ID']))
 
         self.disco.loop.create_task(self._fetch_logs_channels())
 
@@ -298,7 +296,7 @@ class Events(commands.Cog):
             return
 
         guild = self.disco.get_guild(guild_id)
-        if (author := guild.get_member(author_id)).bot:
+        if (author := guild.get_member(author_id)) and author.bot:
             return
 
         options = (await self.disco.db.get_guild(guild_id)).options

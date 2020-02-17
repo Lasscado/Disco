@@ -335,7 +335,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         options = (await self.disco.db.get_guild(member.guild.id)).options
-        if member.guild.me.guild_permissions.manage_roles \
+        if not member.bot \
+                and member.guild.me.guild_permissions.manage_roles \
                 and (auto_role := member.guild.get_role(options['auto_role'])) \
                 and member.guild.me.top_role > auto_role:
             self.disco.loop.create_task(member.add_roles(auto_role, reason='Disco Auto Role'))

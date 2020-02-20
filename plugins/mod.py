@@ -102,6 +102,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='ban')
     @commands.bot_has_permissions(ban_members=True)
+    @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
     @checks.is_below_mod_threshold()
@@ -137,6 +138,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='kick')
     @commands.bot_has_permissions(kick_members=True)
+    @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('kick_members')
     @checks.is_below_mod_threshold()
@@ -172,6 +174,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='softban', aliases=['sban'])
     @commands.bot_has_permissions(ban_members=True)
+    @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.cooldown(2, 12, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
     @checks.is_below_mod_threshold()
@@ -208,6 +211,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='forceban')
     @commands.bot_has_permissions(ban_members=True)
+    @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
     @checks.is_below_mod_threshold('ban')
@@ -247,6 +251,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='unban')
     @commands.bot_has_permissions(ban_members=True)
+    @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.cooldown(2, 6, commands.BucketType.guild)
     @checks.mod_role_or_permission('ban_members')
     @checks.is_below_mod_threshold()
@@ -277,6 +282,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='clean', aliases=['purge'])
     @commands.bot_has_permissions(manage_messages=True, read_message_history=True)
+    @commands.max_concurrency(1, commands.BucketType.channel)
     @commands.cooldown(3, 12, commands.BucketType.guild)
     @checks.mod_role_or_permission('manage_messages')
     @checks.is_below_mod_threshold()

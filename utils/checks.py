@@ -126,16 +126,3 @@ def ensure_voice_connection():
         return True
 
     return commands.check(predicate)
-
-
-def requires_user_choices():
-    async def predicate(ctx):
-        if ctx.author.id in ctx.bot._waiting_for_choice:
-            raise WaitingForPreviousChoice((ctx.t('errors.waitingForPreviousChoice', {
-                "author": ctx.author.name, "emoji": ctx.bot.emoji["false"]})))
-
-        ctx._remove_from_waiting = True
-
-        return True
-
-    return commands.check(predicate)

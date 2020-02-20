@@ -9,7 +9,7 @@ from discord.ext import commands
 from discord.ext.commands.errors import *
 
 from utils import TextUploader, SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL, BANNER_URL, DBOTS_PAGE_URL
-from utils.errors import DiscoError, WaitingForPreviousChoice
+from utils.errors import DiscoError
 
 
 class Events(commands.Cog):
@@ -121,10 +121,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, e):
-        if not isinstance(e, WaitingForPreviousChoice) and hasattr(ctx, '_remove_from_waiting'):
-            if ctx.author.id in self.disco._waiting_for_choice:
-                self.disco._waiting_for_choice.remove(ctx.author.id)
-
         original = e.__cause__
         if isinstance(original, (discord.NotFound, discord.Forbidden)):
             return
@@ -146,6 +142,11 @@ class Events(commands.Cog):
             await ctx.send(ctx.t('errors.missingRole', {"emoji": self.disco.emoji["false"],
                                                         "role": e.missing_role[0] or "DJ",
                                                         "author": ctx.author.name}))
+
+        elif isinstance(e, MaxConcurrencyReached):
+            await ctx.send(ctx.t(f'errors.{e.per.name}MaxConcurrencyReached', {"emoji": self.disco.emoji["false"],
+                                                                               "command": ctx.invoked_with,
+                                                                               "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
             usage = (ctx.t(f'commands.{ctx.command.qualified_name}.meta') or {}).get('usage')
@@ -207,10 +208,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        if hasattr(ctx, '_remove_from_waiting'):
-            if ctx.author.id in self.disco._waiting_for_choice:
-                self.disco._waiting_for_choice.remove(ctx.author.id)
-
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 9) == 1:
             await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
                                                           "link": PATREON_DONATE_URL}))

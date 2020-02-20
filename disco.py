@@ -44,7 +44,6 @@ class Disco(AutoShardedBot):
         self.played_tracks = 0
         self.prefixes = environ['PREFIXES'].split(', ')
         self._prefixes = {}
-        self._waiting_for_choice = set()
         self._message_logs = set()
 
     async def on_shard_ready(self, shard_id):

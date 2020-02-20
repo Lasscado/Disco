@@ -8,7 +8,3 @@ class DiscoError(CommandError):
 class MusicError(DiscoError):
     '''Erro padrão para o módulo de Música'''
     pass
-
-
-class WaitingForPreviousChoice(DiscoError):
-    pass

@@ -40,8 +40,8 @@ class Utils(commands.Cog):
         await ctx.send(embed=em)
 
     @commands.command(name='lyrics', aliases=['ly'])
-    @checks.requires_user_choices()
     @commands.bot_has_permissions(embed_links=True)
+    @commands.max_concurrency(1, commands.BucketType.user)
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _lyrics(self, ctx, *, query=None):
         thumb = self.disco.user.avatar_url
@@ -68,8 +68,6 @@ class Utils(commands.Cog):
             if not songs:
                 return await ctx.send(ctx.t('commands.lyrics.notFound', {"emoji": self.disco.emoji['false'],
                                                                          "author": ctx.author.name}))
-
-        self.disco._waiting_for_choice.add(ctx.author.id)
 
         options = '\n'.join(f'**`»`** `{i}` [**{song.artist} - {song}**]({song.url})'
                             for i, song in enumerate(songs, 1))
@@ -135,16 +133,14 @@ class Utils(commands.Cog):
         await q.edit(content=None, embed=em)
 
     @commands.command(name='anime')
-    @checks.requires_user_choices()
     @commands.cooldown(1, 8, commands.BucketType.user)
+    @commands.max_concurrency(1, commands.BucketType.user)
     @commands.bot_has_permissions(embed_links=True)
     async def _anime(self, ctx, *, query):
         entries = await self.kitsu.search('anime', query)
         if not entries:
             return await ctx.send(ctx.t('commands.anime.notFound', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
-
-        self.disco._waiting_for_choice.add(ctx.author.id)
 
         replace_subtypes = ['movie', 'music', 'special']
         for anime in entries:
@@ -255,16 +251,14 @@ class Utils(commands.Cog):
         await q.edit(content=None, embed=em)
 
     @commands.command(name='manga')
-    @checks.requires_user_choices()
     @commands.cooldown(1, 8, commands.BucketType.user)
+    @commands.max_concurrency(1, commands.BucketType.user)
     @commands.bot_has_permissions(embed_links=True)
     async def _manga(self, ctx, *, query):
         entries = await self.kitsu.search('manga', query)
         if not entries:
             return await ctx.send(ctx.t('commands.manga.notFound', {"emoji": self.disco.emoji["false"],
                                                                     "author": ctx.author.name}))
-
-        self.disco._waiting_for_choice.add(ctx.author.id)
 
         replace_subtypes = ['manga', 'oneshot', 'oel']
         for manga in entries:

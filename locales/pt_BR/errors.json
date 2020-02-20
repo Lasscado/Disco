@@ -9,7 +9,6 @@
     "invalidValue": "{emoji} **{author}**, você forneceu um valor inválido.",
     "notConnected": "{emoji} **{author}**, eu não estou conectado em nenhum canal de voz.",
     "notSameVoiceChannel": "{emoji} **{author}**, você precisa estar conectado ao meu canal de voz para usar esse comando.",
-    "waitingForPreviousChoice": "{emoji} **{author}**, você ainda não selecionou algo no comando anterior!",
     "userNotVoiceConnected": "{emoji} **{author}**, você precisa estar conectado em um canal de voz para usar esse comando.",
     "fullVoiceChannel": "{emoji} **{author}**, seu canal de voz está lotado!",
     "fullQueue": "{emoji} **{author}**, a fila de reprodução desse servidor está lotada! Remova alguma faixa ou tente novamente mais tarde.",
@@ -19,5 +18,8 @@
     "noMusicNodesAvailable": "{emoji} **{author}**, parece que eu não tenho nenhum servidor de áudio disponível no momento ;(\n> Ao fazer uma doação, você estará me ajudando a conseguir novos servidores de áudio: <{donate}>.",
     "unexpectedError": "{emoji} **{author}**, um erro inesperado ocorreu durante a execução do comando **`{command}`**.\nNão se preocupe, eu acabei de contar sobre isso para meu desenvolvedor e ele irá corrigir essa falha assim que possível.\n\nSe você possuir alguma dúvida sobre mim, não se esqueça de entrar em meu servidor de suporte: <{support}>.",
     "disabledCommand": "{emoji} **{author}**, o comando **`{command}`** está temporariamente desativado.\n**Motivo**: `{reason}`",
-    "hitModThreshold": "{emoji} **{author}**, você atingiu o limite de usos da ação **`{action}`**, que está definido em **`{threshold}`** vezes por dia. Peça para um Administrador aumentar esse limite ou aguarde **`{next}`** até que seu próximo uso fique disponível."
+    "hitModThreshold": "{emoji} **{author}**, você atingiu o limite de usos da ação **`{action}`**, que está definido em **`{threshold}`** vezes por dia. Peça para um Administrador aumentar esse limite ou aguarde **`{next}`** até que seu próximo uso fique disponível.",
+    "userMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** que você usou anteriormente ainda está sendo executado. Talvez ele esteja aguardando por uma resposta sua ou apenas processando alguns dados.",
+    "guildMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** ainda está sendo executado por você ou um outro membro desse servidor. Tente novamente mais tarde.",
+    "channelMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** ainda está sendo executado por você ou um outro membro nesse canal. Tente novamente mais tarde."
 }

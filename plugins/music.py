@@ -55,9 +55,9 @@ class Music(commands.Cog):
                                                              "threshold": event.threshold}))
 
     @commands.command(name='play', aliases=['p', 'tocar'])
-    @checks.requires_user_choices()
     @checks.ensure_voice_connection()
     @commands.bot_has_permissions(embed_links=True)
+    @commands.max_concurrency(1, commands.BucketType.user)
     @commands.cooldown(1, 4, commands.BucketType.user)
     async def _play(self, ctx, *, query):
         if not web_url(query):
@@ -93,8 +93,6 @@ class Music(commands.Cog):
                                                                   "length": 'LIVESTREAM' if track.is_stream else
                                                                   get_length(track.length)}))
             else:
-                self.disco._waiting_for_choice.add(ctx.author.id)
-
                 tracks = results[:8]
                 options = '\n'.join(f'**`»`** `{i}` [**{track}**]({track.uri}) `[{get_length(track.length)}]`'
                                     for i, track in enumerate(tracks, 1))

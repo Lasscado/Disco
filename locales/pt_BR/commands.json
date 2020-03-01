@@ -23,14 +23,16 @@
         },
         "notFound": "{emoji} **{author}**, eu não encontrei nenhum comando com o nome fornecido.",
         "commandName": "Comando {command}",
-        "description": "Descrição",
-        "usage": "Uso",
-        "aliases": "Alternativas",
-        "examples": "Exemplos",
+        "description": "{emoji} **Descrição**:",
+        "usage": "{emoji} **Uso**:",
+        "aliases": "{emoji} **Alternativas**: ({total})",
+        "examples": "{emoji} **Exemplos**:",
         "notSupplied": "Não fornecida.",
         "notDefined": "Não definidas.",
         "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\n**[Prefixos]:** {prefixes}\n\u200b",
         "categoryCommands": "{emoji} **Comandos de {category}**: ({total})",
+        "subCommands": "{emoji} **Sub-Comandos**: ({total})",
+        "subCommandsTip": "Digite **{invoked} {command} <Sub-Comando>** para ver mais informações sobre um sub-comando de **{command}**.",
         "tip": "Digite **{command} <Comando>** para ver mais informações sobre um comando.",
         "support": "[**DICA**]: Ficou com alguma dúvida? Entre em nosso [servidor de suporte]({link}) que iremos te ajudar!"
     },
@@ -69,136 +71,142 @@
         "localBans": "Banimentos Locais",
         "notDefined": "Não definido."
     },
-    "djrole": {
+    "config":  {
         "meta": {
-            "usage": "<@Menção|Nome|ID>",
-            "description": "Define o cargo DJ no servidor."
+            "usage": "<Sub-Comando> [Argumentos]",
+            "description": "Agrupa todos os comandos que servem para configurar a Disco em seu servidor."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Cargo DJ`** desse servidor.",
-        "update": "{emoji} **{author}**, você definiu o cargo **`{role}`** como `Cargo DJ`."
-    },
-    "disablechannel": {
-        "meta": {
-            "usage": "<#Menção|Nome|ID>",
-            "description": "Desativa ou ativa um canal em que o Bot possa ser usado."
+        "djrole": {
+            "meta": {
+                "usage": "<@Menção|Nome|ID>",
+                "description": "Define o cargo DJ no servidor."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Cargo DJ`** desse servidor.",
+            "update": "{emoji} **{author}**, você definiu o cargo **`{role}`** como `Cargo DJ`."
         },
-        "allow": "{emoji} **{author}**, você me permitiu ser usado no canal {channel}.",
-        "disallow": "{emoji} **{author}**, você me proibiu de ser usado no canal {channel}."
-    },
-    "disablerole": {
-        "meta": {
-            "usage": "<@Menção|Nome|ID>",
-            "description": "Permite ou proíbe membros com um cargo específico de usarem o Bot."
+        "disablechannel": {
+            "meta": {
+                "usage": "<#Menção|Nome|ID>",
+                "description": "Desativa ou ativa um canal em que o Bot possa ser usado."
+            },
+            "allow": "{emoji} **{author}**, você me permitiu ser usado no canal {channel}.",
+            "disallow": "{emoji} **{author}**, você me proibiu de ser usado no canal {channel}."
         },
-        "higherRole": "{emoji} **{author}**, você não pode desativar um cargo que seja igual ou maior que o seu cargo mais alto.",
-        "enabled": "{emoji} **{author}**, você me permitiu ser usado por membros com o cargo **`{role}`**.",
-        "disabled": "{emoji} **{author}**, você me proibiu de ser usado por membros com o cargo **`{role}`**."
-    },
-    "localban": {
-        "meta": {
-            "usage": "<@Menção|Nome|ID>",
-            "description": "Permite ou proíbe um membro de usar o Bot nesse servidor."
+        "disablerole": {
+            "meta": {
+                "usage": "<@Menção|Nome|ID>",
+                "description": "Permite ou proíbe membros com um cargo específico de usarem o Bot."
+            },
+            "higherRole": "{emoji} **{author}**, você não pode desativar um cargo que seja igual ou maior que o seu cargo mais alto.",
+            "enabled": "{emoji} **{author}**, você me permitiu ser usado por membros com o cargo **`{role}`**.",
+            "disabled": "{emoji} **{author}**, você me proibiu de ser usado por membros com o cargo **`{role}`**."
         },
-        "higherMember": "{emoji} **{author}**, você não pode fazer um banimento local em um membro que possua direitos equivalentes ou maiores que o seu.",
-        "unban": "{emoji} **{author}**, você me permitiu ser usado pelo membro **`{member}`** nesse servidor.",
-        "ban": "{emoji} **{author}**, você me proibiu de ser usado pelo membro **`{member}`** nesse servidor."
-    },
-    "disablecommand": {
-        "meta": {
-            "usage": "<Nome>",
-            "description": "Permite ou proíbe que um comando específico seja usado nesse servidor."
+        "localban": {
+            "meta": {
+                "usage": "<@Menção|Nome|ID>",
+                "description": "Permite ou proíbe um membro de usar o Bot nesse servidor."
+            },
+            "higherMember": "{emoji} **{author}**, você não pode fazer um banimento local em um membro que possua direitos equivalentes ou maiores que o seu.",
+            "unban": "{emoji} **{author}**, você me permitiu ser usado pelo membro **`{member}`** nesse servidor.",
+            "ban": "{emoji} **{author}**, você me proibiu de ser usado pelo membro **`{member}`** nesse servidor."
         },
-        "cantDisable": "{emoji} **{author}**, você não pode desativar esse comando.",
-        "enabled": "{emoji} **{author}**, você permitiu o uso do comando **`{command}`** nesse servidor.",
-        "disabled": "{emoji} **{author}**, você proibiu o uso do comando **`{command}`** nesse servidor."
-    },
-    "botchannel": {
-        "meta": {
-            "usage": "<#Menção|Nome|ID>",
-            "description": "Restringe o uso do Bot a apenas um canal específico."
+        "disablecommand": {
+            "meta": {
+                "usage": "<Nome>",
+                "description": "Permite ou proíbe que um comando específico seja usado nesse servidor."
+            },
+            "cantDisable": "{emoji} **{author}**, você não pode desativar esse comando.",
+            "enabled": "{emoji} **{author}**, você permitiu o uso do comando **`{command}`** nesse servidor.",
+            "disabled": "{emoji} **{author}**, você proibiu o uso do comando **`{command}`** nesse servidor."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Canal do Bot`** nesse servidor.",
-        "set": "{emoji} **{author}**, você me restringiu para ser usado apenas no canal {channel}."
-    },
-    "locale": {
-        "meta": {
-            "usage": "<Localidade>",
-            "description": "Altera a localidade/idioma das mensagens da Disco no servidor."
+        "botchannel": {
+            "meta": {
+                "usage": "<#Menção|Nome|ID>",
+                "description": "Restringe o uso do Bot a apenas um canal específico."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Canal do Bot`** nesse servidor.",
+            "set": "{emoji} **{author}**, você me restringiu para ser usado apenas no canal {channel}."
         },
-        "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Localidades Disponíveis**:\n> {available}",
-        "success": "{emoji} **{author}**, você alterou minha localidade nesse servidor para **`{locale}`**."
-    },
-    "prefix": {
-        "meta": {
-            "usage": "<Prefixo>",
-            "description": "Altera o prefixo da Disco no servidor."
+        "locale": {
+            "meta": {
+                "usage": "<Localidade>",
+                "description": "Altera a localidade/idioma das mensagens da Disco no servidor."
+            },
+            "invalid": "{emoji} Você precisa especificar a localidade que deseja que eu use, **{author}**!\n\n**Localidades Disponíveis**:\n> {available}",
+            "success": "{emoji} **{author}**, você alterou minha localidade nesse servidor para **`{locale}`**."
         },
-        "invalid": "{emoji} **{author}**, você precisa fornecer um prefixo com até 6 caracteres!",
-        "reset": "{emoji} **{author}**, você resetou meu prefixo customizado nesse servidor!",
-        "success": "{emoji} **{author}**, agora eu apenas responderei a comandos invocados com o prefixo **`{prefix}`**."
-    },
-    "defaultvolume": {
-        "meta": {
-            "usage": "<1-150>",
-            "description": "Altera o volume padrão da Disco nesse servidor. Sempre que a Disco for chamada para tocar algo, ele irá alterar o volume do player para o volume padrão."
+        "prefix": {
+            "meta": {
+                "usage": "<Prefixo>",
+                "description": "Altera o prefixo da Disco no servidor."
+            },
+            "invalid": "{emoji} **{author}**, você precisa fornecer um prefixo com até 6 caracteres!",
+            "reset": "{emoji} **{author}**, você resetou meu prefixo customizado nesse servidor!",
+            "success": "{emoji} **{author}**, agora eu apenas responderei a comandos invocados com o prefixo **`{prefix}`**."
         },
-        "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
-        "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
-        "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."
-    },
-    "modrole": {
-        "meta": {
-            "usage": "<@Cargo|Nome|ID>",
-            "description": "Define um cargo como Cargo de Moderador, dando permissões de uso dos comandos moderativos para quem possuir ele."
+        "defaultvolume": {
+            "meta": {
+                "usage": "<1-150>",
+                "description": "Altera o volume padrão da Disco nesse servidor. Sempre que a Disco for chamada para tocar algo, ele irá alterar o volume do player para o volume padrão."
+            },
+            "invalid": "{emoji} **{author}**, você precisa fornecer um valor entre **`1`** e **`150`**!",
+            "reset": "{emoji} **{author}**, você resetou meu volume padrão nesse servidor.",
+            "success": "{emoji} **{author}**, você alterou meu volume padrão para **`{volume}%`**."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Cargo de Moderador`** desse servidor.",
-        "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo de Moderador`** desse servidor. De agora em diante, quem possuir esse cargo poderá utilizar meus comandos moderativos."
-    },
-    "modlogs": {
-        "meta": {
-            "usage": "<#Canal|Nome|ID>",
-            "description": "Define um canal como Canal de Logs Moderativos, que irá receber registros de uso do meu sistema moderativo."
+        "modrole": {
+            "meta": {
+                "usage": "<@Cargo|Nome|ID>",
+                "description": "Define um cargo como Cargo de Moderador, dando permissões de uso dos comandos moderativos para quem possuir ele."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Cargo de Moderador`** desse servidor.",
+            "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo de Moderador`** desse servidor. De agora em diante, quem possuir esse cargo poderá utilizar meus comandos moderativos."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs Moderativos`** desse servidor.",
-        "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs Moderativos__:\n\n{permissions}",
-        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs Moderativos`** desse servidor."
-    },
-    "modthreshold": {
-        "meta": {
-            "usage": "<Ação> [Limite]",
-            "description": "Define o limite de usos diários para uma ação moderativa."
+        "modlogs": {
+            "meta": {
+                "usage": "<#Canal|Nome|ID>",
+                "description": "Define um canal como Canal de Logs Moderativos, que irá receber registros de uso do meu sistema moderativo."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs Moderativos`** desse servidor.",
+            "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs Moderativos__:\n\n{permissions}",
+            "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs Moderativos`** desse servidor."
         },
-        "invalidAction": "{emoji} **{author}**, você forneceu uma ação moderativa inválida!\n**Ações:** {actions}",
-        "reset": "{emoji} **{author}**, você resetou o limite de usos diários da ação **`{action}`** com sucesso!",
-        "invalidThreshold": "{emoji} **{author}**, você precisa fornecer um limite entre **`1`** e **`1000`**.",
-        "success": "{emoji} **{author}**, você definiu o limite de usos para a ação moderativa **`{action}`** para **`{threshold}`** vezes por dia."
-    },
-    "messagelogs": {
-        "meta": {
-            "usage": "<#Canal|Nome|ID>",
-            "description": "Define um canal como Canal de Logs de Mensagens, que irá receber registros sobre modificações em mensagens."
+        "modthreshold": {
+            "meta": {
+                "usage": "<Ação> [Limite]",
+                "description": "Define o limite de usos diários para uma ação moderativa."
+            },
+            "invalidAction": "{emoji} **{author}**, você forneceu uma ação moderativa inválida!\n**Ações:** {actions}",
+            "reset": "{emoji} **{author}**, você resetou o limite de usos diários da ação **`{action}`** com sucesso!",
+            "invalidThreshold": "{emoji} **{author}**, você precisa fornecer um limite entre **`1`** e **`1000`**.",
+            "success": "{emoji} **{author}**, você definiu o limite de usos para a ação moderativa **`{action}`** para **`{threshold}`** vezes por dia."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Mensagens`** desse servidor.",
-        "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Mensagens__:\n\n{permissions}",
-        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Mensagens`** desse servidor."
-    },
-    "autorole": {
-        "meta": {
-            "usage": "<@Cargo|Nome|ID>",
-            "description": "Define um cargo que será adicionado em um membro sempre que ele entrar no servidor."
+        "messagelogs": {
+            "meta": {
+                "usage": "<#Canal|Nome|ID>",
+                "description": "Define um canal como Canal de Logs de Mensagens, que irá receber registros sobre modificações em mensagens."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Mensagens`** desse servidor.",
+            "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Mensagens__:\n\n{permissions}",
+            "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Mensagens`** desse servidor."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Cargo Automático`** desse servidor.",
-        "roleIsHigherThanMine": "{emoji} **{author}**, o cargo **`{role}`** é maior ou equivalente ao meu maior cargo nesse servidor. É necessário que meu maior cargo esteja acima do cargo que você deseja definir como automático, pois só assim eu poderei adicioná-lo aos membros.",
-        "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo Automático`** desse servidor. De agora em diante, sempre que um membro entrar nesse servidor, ele irá receber esse cargo."
-    },
-    "memberlogs": {
-        "meta": {
-            "usage": "<#Canal|Nome|ID>",
-            "description": "Define um canal como Canal de Logs de Membros, que irá receber registros sobre entradas e saídas de membros."
+        "autorole": {
+            "meta": {
+                "usage": "<@Cargo|Nome|ID>",
+                "description": "Define um cargo que será adicionado em um membro sempre que ele entrar no servidor."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Cargo Automático`** desse servidor.",
+            "roleIsHigherThanMine": "{emoji} **{author}**, o cargo **`{role}`** é maior ou equivalente ao meu maior cargo nesse servidor. É necessário que meu maior cargo esteja acima do cargo que você deseja definir como automático, pois só assim eu poderei adicioná-lo aos membros.",
+            "success": "{emoji} **{author}**, você definiu o cargo **`{role}`** como **`Cargo Automático`** desse servidor. De agora em diante, sempre que um membro entrar nesse servidor, ele irá receber esse cargo."
         },
-        "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Membros`** desse servidor.",
-        "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Membros__:\n\n{permissions}",
-        "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Membros`** desse servidor."
+        "memberlogs": {
+            "meta": {
+                "usage": "<#Canal|Nome|ID>",
+                "description": "Define um canal como Canal de Logs de Membros, que irá receber registros sobre entradas e saídas de membros."
+            },
+            "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Membros`** desse servidor.",
+            "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Membros__:\n\n{permissions}",
+            "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Membros`** desse servidor."
+        }
     },
     "play": {
         "meta": {

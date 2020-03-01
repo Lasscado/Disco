@@ -16,38 +16,53 @@ class Information(commands.Cog):
     @commands.command(name='help', aliases=['ajuda', 'commands', 'cmds'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def _help(self, ctx, command=None):
-        if command:
-            cmd = self.disco.get_command(command)
+    async def _help(self, ctx, *, command_=None):
+        if command_:
+            cmd = self.disco.get_command(command_)
             if not cmd or cmd.hidden:
                 return await ctx.send(ctx.t('commands.help.notFound', {"author": ctx.author.name,
                                                                        "emoji": self.disco.emoji["false"]}))
 
             qualified_name = cmd.qualified_name
-            metadata = ctx.t(f'commands.{qualified_name}.meta') or {}
+            metadata = ctx.t(f'commands.{".".join(cmd.qualified_name.split(" "))}.meta') or {}
             description = metadata.get('description', ctx.t('commands.help.notSupplied'))
             usage = metadata.get('usage')
 
             em = discord.Embed(
                 colour=self.disco.color[0],
-                title=ctx.t('commands.help.commandName', {"command": qualified_name.title()}),
+                title=ctx.t('commands.help.commandName', {"command": cmd.name.title()}),
             ).set_author(
                 name=ctx.me.name,
                 icon_url=self.disco.user.avatar_url
             ).set_thumbnail(
                 url=self.disco.user.avatar_url
             ).add_field(
-                name=f'{self.disco.emoji["list"]} **{ctx.t("commands.help.description")}**:',
+                name=ctx.t('commands.help.description', {"emoji": self.disco.emoji["list"]}),
                 value=description,
                 inline=False
             ).add_field(
-                name=f'{self.disco.emoji["check"]} **{ctx.t("commands.help.usage")}**:',
+                name=ctx.t('commands.help.usage', {"emoji": self.disco.emoji["check"]}),
                 value=f'`{ctx.prefix}{qualified_name}{" " + usage if usage else ""}`'
             ).add_field(
-                name=f'{self.disco.emoji["dots"]} **{ctx.t("commands.help.aliases")}**:',
+                name=ctx.t('commands.help.aliases', {"emoji": self.disco.emoji["dots"],
+                                                     "total": len(cmd.aliases)}),
                 value=' | '.join([f'`{a}`' for a in cmd.aliases]) or ctx.t('commands.help.notDefined'),
                 inline=False
-            ).add_field(
+            )
+
+            if hasattr(cmd, 'commands'):
+                em.add_field(
+                    name=ctx.t('commands.help.subCommands', {"emoji": self.disco.emoji["dots"],
+                                                             "total": len(cmd.commands)}),
+                    value=' | '.join([f'`{c.name}`' for c in cmd.commands])
+                ).add_field(
+                    name='\u200b',
+                    value=ctx.t('commands.help.subCommandsTip', {"invoked": ctx.prefix + ctx.invoked_with,
+                                                                 "command": cmd.name}),
+                    inline=False
+                )
+
+            em.add_field(
                 name='\u200b',
                 value=ctx.t('commands.help.support', {"link": SUPPORT_GUILD_INVITE_URL})
             )

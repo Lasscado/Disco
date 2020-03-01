@@ -124,7 +124,7 @@ class Disco(AutoShardedBot):
 
         ctx.t = self.i18n.get_t(options['locale'])
 
-        if ctx.prefix == f'{ctx.me.mention} ':
+        if ctx.prefix == f'<@!{self.user.id}> ':
             ctx.prefix = f'@{ctx.me.name} '
 
         try:

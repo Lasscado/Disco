@@ -3,6 +3,7 @@ from os import environ
 from random import shuffle
 from math import ceil
 
+import aioredis
 import discord
 from discord.ext import commands
 from wavelink.events import TrackStart, TrackEnd, TrackException, TrackStuck
@@ -14,6 +15,7 @@ from utils import web_url, get_length, checks, DiscoTrack
 class Music(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self.redis = None
 
         disco.loop.create_task(self.initiate_nodes())
 
@@ -25,15 +27,34 @@ class Music(commands.Cog):
         for node in eval(environ['LAVALINK_NODES']):
             (await self.disco.wavelink.initiate_node(**node)).set_hook(self.on_track_event)
 
+        self.redis = await aioredis.create_redis_pool(environ['PRESENCE_REDIS_URI'])
+
     async def on_track_event(self, event):
         player = event.player
 
-        if isinstance(event, TrackStart) and not player.repeat:
+        if isinstance(event, TrackStart):
             self.disco.played_tracks += 1
-            await player.send(player.t('events.trackStart', {"track": (track := event.track),
-                                                             "emoji": self.disco.emoji["download"],
-                                                             "length": 'LIVESTREAM' if track.is_stream else
-                                                             get_length(track.length)}))
+            track = event.track
+
+            if not player.repeat:
+                await player.send(player.t('events.trackStart', {"track": track,
+                                                                 "emoji": self.disco.emoji["download"],
+                                                                 "length": 'LIVESTREAM' if track.is_stream else
+                                                                 get_length(track.length)}))
+
+            if self.redis and (vc := self.disco.get_channel(int(player.channel_id))) and vc.members:
+                payload = {
+                    "type": "track_start",
+                    "track": {
+                        "title": track.title,
+                        "author": track.author,
+                        "length": track.length,
+                        "stream": track.is_stream
+                    },
+                    "users": [member.id for member in vc.members if not member.bot]
+                }
+
+                await self.redis.publish_json('activity', payload)
 
         elif isinstance(event, TrackEnd):
             if player.repeat:
@@ -41,7 +62,17 @@ class Music(commands.Cog):
             elif player.size:
                 track = player.queue.pop(0)
             else:
-                return await player.send(player.t('events.queueEnd', {"emoji": self.disco.emoji["alert"]}))
+                await player.send(player.t('events.queueEnd', {"emoji": self.disco.emoji["alert"]}))
+
+                if self.redis and (vc := self.disco.get_channel(int(player.channel_id))) and vc.members:
+                    payload = {
+                        "type": "queue_end",
+                        "users": [member.id for member in vc.members if not member.bot]
+                    }
+
+                    await self.redis.publish_json('activity', payload)
+
+                return
 
             await player.play(track)
 
@@ -53,6 +84,17 @@ class Music(commands.Cog):
             await player.send(player.t('errors.trackStuck', {"emoji": self.disco.emoji["alert"],
                                                              "track": player.current,
                                                              "threshold": event.threshold}))
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if not member.bot and not after.channel and (channel := before.channel) \
+                and member.guild.me in channel.members and self.redis:
+            payload = {
+                "type": "user_left",
+                "users": [member.id]
+            }
+
+            await self.redis.publish_json('activity', payload)
 
     @commands.command(name='play', aliases=['p', 'tocar'])
     @checks.ensure_voice_connection()
@@ -179,6 +221,14 @@ class Music(commands.Cog):
                                                        "emoji": self.disco.emoji["true"],
                                                        "channel": ctx.me.voice.channel}))
 
+        if self.redis:
+            payload = {
+                "type": "queue_end",
+                "users": [member.id for member in ctx.author.voice.channel.members if not member.bot]
+            }
+
+            await self.redis.publish_json('activity', payload)
+
     @commands.command(name='volume', aliases=['vol', 'v'])
     @checks.staffer_or_dj_role()
     @checks.is_voice_connected()
@@ -223,6 +273,17 @@ class Music(commands.Cog):
                                                           "emoji": self.disco.emoji["pause"]}))
 
         await ctx.player.set_pause(not ctx.player.paused)
+
+        if self.redis:
+            payload = {
+                "type": "pause" if ctx.player.paused else "resume",
+                "track": {
+                    "position": ctx.player.position
+                },
+                "users": [member.id for member in ctx.author.voice.channel.members if not member.bot]
+            }
+
+            await self.redis.publish_json('activity', payload)
 
     @commands.command(name='remove', aliases=['r', 'remover', 'delete', 'del'])
     @checks.staffer_or_dj_role()

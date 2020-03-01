@@ -6,6 +6,7 @@ from json import loads
 from discord import Colour, Activity, ActivityType
 from discord.ext import commands, tasks
 from websockets.exceptions import ConnectionClosed
+from pymongo.errors import PyMongoError
 
 from utils import avatars, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
 
@@ -73,7 +74,7 @@ class Tasks(commands.Cog):
                                                                    name=message + f' [{shard}]',
                                                                    url=STREAMING_ACTIVITY_URL),
                                                  shard_id=shard)
-            except ConnectionClosed:
+            except (ConnectionClosed, PyMongoError):
                 pass
 
         self.disco.log.info('Presences alteradas.')

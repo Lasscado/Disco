@@ -28,7 +28,9 @@ class Disco(AutoShardedBot):
             activity=Game(f'Loading...')
         )
 
-        self.db = DatabaseManager(environ['DATABASE_NAME'], environ['DATABASE_URI'])
+        self.db = DatabaseManager(name=environ['DATABASE_NAME'],
+                                  uri=environ['DATABASE_URI'],
+                                  bot=self)
         self.i18n = i18n.I18N(source='pt_BR')
         self.log = log
         self.emoji = emojis
@@ -46,12 +48,36 @@ class Disco(AutoShardedBot):
         self._prefixes = {}
         self._message_logs = set()
 
+    async def _prepare(self):
+        await self.db.connect()
+
+        plugins = [p[:-3] for p in listdir('plugins') if p.endswith('.py')]
+        total_plugins = len(plugins)
+        for i, plugin in enumerate(plugins, 1):
+            try:
+                self.load_extension('plugins.' + plugin)
+            except Exception as e:
+                log.error(f'Falha ao carregar o plugin \'{plugin}\':')
+                traceback.print_exception(type(e), e, e.__traceback__)
+            else:
+                log.info(f'Plugin {plugin} carregado com sucesso. ({i}/{total_plugins})')
+
+        self.i18n.load_all_from_path()
+        log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')
+
+        self.loaded = True
+
+        log.info('Sente o GRAVE!')
+
     async def on_shard_ready(self, shard_id):
         if shard_id in self.launched_shards:
             log.info(f'Shard {shard_id} reconectada.')
         else:
             self.launched_shards.append(shard_id)
             log.info(f'Shard {shard_id} conectada.')
+
+        if not self.loaded and not self.launched_shards:
+            await self._prepare()
 
         guilds = [g for g in self.guilds if g.shard_id == shard_id]
         shard = await self.db.get_shard(shard_id)
@@ -61,35 +87,8 @@ class Disco(AutoShardedBot):
                            members=sum(g.member_count for g in guilds if not g.unavailable))
 
     async def on_ready(self):
-        if not self.loaded:
-            for plugin in [p[:-3] for p in listdir('plugins') if p.endswith('.py')]:
-                try:
-                    self.load_extension('plugins.' + plugin)
-                except Exception as e:
-                    log.error(f'Falha ao carregar o plugin \'{plugin}\':')
-                    traceback.print_exception(type(e), e, e.__traceback__)
-                else:
-                    log.info(f'Plugin {plugin} carregado com sucesso.')
-
-            log.info('Fim de carregamento dos plugins.')
-
-            for ban in await self.db.get_bans(ignore=False):
-                if ban.is_guild:
-                    self.guild_blacklist.add(ban.target_id)
-                else:
-                    self.user_blacklist.add(ban.target_id)
-
-            async for guild in self.db._guilds.find({"options.message_logs_channel": {"$ne": None}}):
-                self._message_logs.add(guild['_id'])
-
-            log.info('Lista de banidos carregada.')
-
-            self.i18n.load_all_from_path()
-            log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')
-
-            self.loaded = True
-
-        log.info('Sente o GRAVE!')
+        if not self.loaded and not self.launched_shards:
+            await self._prepare()
 
     async def on_message(self, message):
         self.read_messages += 1

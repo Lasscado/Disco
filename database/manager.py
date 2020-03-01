@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 
 from motor import motor_asyncio
@@ -5,8 +6,12 @@ from motor import motor_asyncio
 from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage
 
 
+log = logging.getLogger('disco.database')
+
+
 class DatabaseManager:
-    def __init__(self, name, uri):
+    def __init__(self, *, name, uri, bot):
+        self.bot = bot
         self._client = motor_asyncio.AsyncIOMotorClient(uri)
         self._db = db = self._client[name]
         self._bans = db.bans
@@ -39,6 +44,17 @@ class DatabaseManager:
 
     async def connect(self):
         await self._db.command('ping')
+
+        async for data in self._bans.find({"ignored": False}):
+            if data['is_guild']:
+                self.disco.guild_blacklist.add(data['target_id'])
+            else:
+                self.disco.user_blacklist.add(data['target_id'])
+
+        async for data in self._guilds.find({"options.message_logs_channel": {"$ne": None}}):
+            self.disco._message_logs.add(data['_id'])
+
+        log.info('Conectado ao banco de dados com sucesso.')
 
     async def get_guild(self, guild_id, register=True):
         if data := await self._guilds.find_one({"_id": guild_id}):

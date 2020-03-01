@@ -111,8 +111,7 @@ class Tasks(commands.Cog):
             del player.node.players[player.guild_id]
             return
         elif (player.current or player.queue) and self.has_listeners(guild) or \
-                any(m for m in guild.me.voice.channel.members
-                    if not m.bot and m.id in self.disco._waiting_for_choice):
+                any(m for m in guild.me.voice.channel.members if not m.bot):
             return
 
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')

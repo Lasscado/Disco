@@ -11,7 +11,7 @@ log = logging.getLogger('disco.database')
 
 class DatabaseManager:
     def __init__(self, *, name, uri, bot):
-        self.bot = bot
+        self.disco = bot
         self._client = motor_asyncio.AsyncIOMotorClient(uri)
         self._db = db = self._client[name]
         self._bans = db.bans

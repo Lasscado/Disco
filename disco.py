@@ -76,7 +76,7 @@ class Disco(AutoShardedBot):
             self.launched_shards.append(shard_id)
             log.info(f'Shard {shard_id} conectada.')
 
-        if not self.loaded and not self.launched_shards:
+        if not self.loaded and len(self.launched_shards) == 1:
             await self._prepare()
 
         guilds = [g for g in self.guilds if g.shard_id == shard_id]

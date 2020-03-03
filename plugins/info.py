@@ -57,7 +57,9 @@ class Information(commands.Cog):
                     value=' | '.join([f'`{c.name}`' for c in cmd.commands])
                 ).add_field(
                     name='\u200b',
-                    value=ctx.t('commands.help.subCommandsTip', {"invoked": ctx.prefix + ctx.invoked_with,
+                    value=ctx.t('commands.help.subCommandsTip', {"invoked": ctx.prefix + (ctx.invoked_with
+                                                                                          if ctx.command.name == 'help'
+                                                                                          else 'help'),
                                                                  "command": cmd.name}),
                     inline=False
                 )

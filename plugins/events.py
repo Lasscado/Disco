@@ -199,6 +199,13 @@ class Events(commands.Cog):
                                                             "command": ctx.command.qualified_name,
                                                             "support": SUPPORT_GUILD_INVITE_URL}))
 
+        # quando um check falha em um comando com MaxConcurrency, o discord.py não remove o bloqueio de uso
+        # do comando, então nós tiramos esse bloqueio aqui, para não impossibilitar os usuários de utilizarem
+        # esse mesmo comando novamente.
+        if not isinstance(e, MaxConcurrencyReached):
+            if ctx.command._max_concurrency:
+                await ctx.command._max_concurrency.release(ctx)
+
     @commands.Cog.listener()
     async def on_command(self, ctx):
         self.disco.invoked_commands += 1

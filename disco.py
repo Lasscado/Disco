@@ -84,7 +84,8 @@ class Disco(AutoShardedBot):
         await shard.update(launched_at=datetime.utcnow().timestamp(),
                            latency=self.shards[shard_id].ws.latency,
                            guilds=len(guilds),
-                           members=sum(g.member_count for g in guilds if not g.unavailable))
+                           members=sum(g.member_count for g in guilds if not g.unavailable),
+                           players=0)
 
     async def on_ready(self):
         if not self.loaded and not self.launched_shards:

@@ -27,14 +27,15 @@
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
-        "{donate}"
+        "{donate}",
+        "github.com/Naegin/Disco"
     ],
     "streaming": [
         "Music!",
         "High Quality Music!",
         "OSU!",
-        "to {guilds} servers!",
-        "music to {guilds} servers!",
+        "to {players} servers!",
+        "music to {players} servers!",
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
@@ -48,6 +49,8 @@
         "Prefix: {prefix}",
         "{website}",
         "Add me {website}",
+        "music to {players} servers!",
+        "as a DJ for {players} servers!",
         "{donate}"
     ]
 }

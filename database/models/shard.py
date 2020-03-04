@@ -19,8 +19,8 @@ class DiscoShard:
         self.players = data['players']
 
     async def update(self, **kwargs):
-        await self._db.update_one({"_id": self.id}, {"$set": {
-            **kwargs, "last_update": datetime.utcnow().timestamp()}})
+        await self._db.update_one({"_id": self.id}, {"$set": {**kwargs,
+                                                              "last_update": datetime.utcnow().timestamp()}})
 
     async def delete(self):
         await self._db.delete_one({"_id": self.id})

@@ -87,7 +87,7 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if not member.bot and not after.channel and (channel := before.channel) \
+        if not member.bot and (channel := before.channel) != after.channel \
                 and member.guild.me in channel.members and self.redis:
             payload = {
                 "type": "user_left",

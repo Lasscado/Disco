@@ -226,7 +226,7 @@ class Information(commands.Cog):
 
             table.add_row([shard.id, latency, uptime, guilds, members, players, last_update])
 
-        await ctx.send(f'```{table.get_string()}```')
+        await ctx.send(f'```apache\n{table.get_string()}```')
 
     @commands.command(name='whatsmyprefix', hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.channel)

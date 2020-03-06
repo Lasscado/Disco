@@ -116,8 +116,7 @@ class Tasks(commands.Cog):
             await player.node._send(op='destroy', guildId=str(player.guild_id))
             del player.node.players[player.guild_id]
             return
-        elif (player.current or player.queue) and self.has_listeners(guild) or \
-                any(m for m in guild.me.voice.channel.members if not m.bot):
+        elif (player.current or player.queue) and self.has_listeners(guild):
             return
 
         self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')

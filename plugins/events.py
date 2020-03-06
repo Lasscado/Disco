@@ -300,7 +300,7 @@ class Events(commands.Cog):
             return
 
         guild = self.disco.get_guild(guild_id)
-        if (author := guild.get_member(author_id)) and author.bot:
+        if (author := guild.get_member(author_id)) is None or author.bot:
             return
 
         options = (await self.disco.db.get_guild(guild_id)).options

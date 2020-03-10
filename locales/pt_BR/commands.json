@@ -206,6 +206,16 @@
             "reset": "{emoji} **{author}**, você resetou o **`Canal de Logs de Membros`** desse servidor.",
             "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Membros__:\n\n{permissions}",
             "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Membros`** desse servidor."
+        },
+        "selfroles": {
+            "meta": {
+                "usage": "<@Cargo|Nome|ID>",
+                "description": "Adiciona ou remove um cargo da lista de cargos que membros podem obter livremente."
+            },
+            "roleIsHigherThanMine": "{emoji} **{author}**, eu não possuo permissão para adicionar o cargo **`{role}`** em membros, pois ele é equivalente ou superior ao meu maior cargo.",
+            "limitReached": "{emoji} **{author}**, esse servidor atingiu o limite de **`Cargos Atribuíveis`**. Você precisa remover um cargo antes de poder adicionar outro.",
+            "added": "{emoji} **{author}**, você adicionou o cargo **`{role}`** na lista de `Cargos Atribuíveis` com sucesso!",
+            "removed": "{emoji} **{author}**, você removeu o cargo **`{role}`** da lista de `Cargos Atribuíveis` com sucesso!"
         }
     },
     "play": {
@@ -394,6 +404,19 @@
         },
         "noResults": "{emoji} **{author}**, não foi possível encontrar nenhum resultado referente ao nome fornecido.",
         "zeroNodes": "{emoji} **{author}**, infelizmente meus servidores de busca de vídeos emperraram e eu não posso executar esse comando no momento ;("
+    },
+    "selfroles": {
+        "meta": {
+            "usage": "[Nome do Cargo]",
+            "description": "Obtém um Cargo Atribuível ou visualiza a lista de todos os atribuíveis."
+        },
+        "assignableRoles": "Cargos Atribuíveis",
+        "noRoles": "Esse servidor ainda não adicionou nenhum Cargo Atribuível.",
+        "tip": "Digite \"{invocation} <Nome do Cargo>\" para obter um cargo atribuível.",
+        "roleIsHigherThanMine": "{emoji} **{author}**, eu não posso adicionar nem remover o cargo **`{role}`**, pois ele é superior ou equivalente ao meu maior cargo nesse servidor.",
+        "invalidRole": "{emoji} **{author}**, o cargo **`{role}`** não está na lista dos `Cargos Atribuíveis`.",
+        "removed": "{emoji} **{author}**, o cargo **`{role}`** foi removido com sucesso.",
+        "added": "{emoji} **{author}**, o cargo **`{role}`** foi adicionado com sucesso.,"
     },
     "kiss": {
         "meta": {

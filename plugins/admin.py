@@ -352,7 +352,8 @@ class Admin(commands.Cog):
 
     @_config.command(name='autorole', aliases=['ar', 'arole'])
     @commands.cooldown(1, 8, commands.BucketType.guild)
-    @commands.bot_has_permissions(manage_guild=True, manage_roles=True)
+    @commands.has_permissions(manage_guild=True, manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
     async def _auto_role(self, ctx, *, role: discord.Role = None):
         if role is None:
             if not ctx.gdb.options['auto_role']:
@@ -373,6 +374,35 @@ class Admin(commands.Cog):
         await ctx.send(ctx.t('commands.config.autorole.success', {"author": ctx.author.name,
                                                                   "emoji": self.disco.emoji["true"],
                                                                   "role": role.name}))
+
+    @_config.command(name='selfroles', aliases=['sroles', 'sr'])
+    @commands.cooldown(3, 12, commands.BucketType.guild)
+    @commands.has_permissions(manage_guild=True, manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    async def _self_roles(self, ctx, role: discord.Role):
+        self_roles = await self.disco.db.get_self_roles(ctx.guild.id)
+
+        if role.id in self_roles.roles:
+            await self_roles.remove(role.id)
+            return await ctx.send(ctx.t('commands.config.selfroles.removed', {"author": ctx.author.name,
+                                                                              "emoji": self.disco.emoji["true"],
+                                                                              "role": role.name}))
+
+        if role >= ctx.me.top_role:
+            return await ctx.send(ctx.t('commands.config.selfroles.roleIsHigherThanMine',
+                                        {"author": ctx.author.name,
+                                         "emoji": self.disco.emoji["false"],
+                                         "role": role.name}))
+
+        if len(self_roles.roles) > 49:
+            return await ctx.send(ctx.t('commands.config.selfroles.limitReached', {"author": ctx.author.name,
+                                                                                   "emoji": self.disco.emoji["false"],
+                                                                                   "limit": 50}))
+
+        await self_roles.add(role.id)
+        await ctx.send(ctx.t('commands.config.selfroles.added', {"author": ctx.author.name,
+                                                                 "emoji": self.disco.emoji["true"],
+                                                                 "role": role.name}))
 
 
 def setup(disco):

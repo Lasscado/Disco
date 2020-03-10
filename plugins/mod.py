@@ -289,7 +289,7 @@ class Moderation(commands.Cog):
     async def _clean(self, ctx, amount: typing.Optional[int] = 100,
                      channel: typing.Optional[discord.TextChannel] = None,
                      member: typing.Optional[discord.Member] = None, *, content=None):
-        if not 0 < amount < 101:
+        if not 0 < amount < 1001:
             return await ctx.send(ctx.t('commands.clean.invalidAmount', {"emoji": self.disco.emoji["false"],
                                                                          "author": ctx.author.name}))
 
@@ -313,7 +313,7 @@ class Moderation(commands.Cog):
         except discord.Forbidden:
             raise commands.BotMissingPermissions(['manage_messages', 'read_message_history'])
 
-        deleted = len(deleted) - 1
+        deleted = (len(deleted) - 1) or 0
 
         self.disco.loop.create_task(self._mod_log(ctx, targets=[member, channel], moderator=ctx.author, amount=deleted,
                                                   channel=channel.mention, colour=0xffe017))

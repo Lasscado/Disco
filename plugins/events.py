@@ -149,10 +149,11 @@ class Events(commands.Cog):
                                                                                "author": ctx.author.name}))
 
         elif isinstance(e, (ConversionError, UserInputError)):
-            usage = (ctx.t(f'commands.{ctx.command.qualified_name}.meta') or {}).get('usage')
+            usage = (ctx.t(f'commands.{".".join(ctx.command.qualified_name.split())}.meta') or {}).get('usage')
             await ctx.send(ctx.t('errors.inputError', {"emoji": self.disco.emoji["false"],
-                                                       "usage": f'{ctx.prefix}{ctx.invoked_with}'
-                                                                + (' ' + usage if usage else ''),
+                                                       "usage": ctx.prefix + (ctx.command.parent.name + ' '
+                                                                              if ctx.command.parent else '')
+                                                                + ctx.invoked_with + (' ' + usage if usage else ''),
                                                        "author": ctx.author.name}))
 
         elif isinstance(e, MissingPermissions):

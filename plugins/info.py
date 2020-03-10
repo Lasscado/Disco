@@ -211,14 +211,14 @@ class Information(commands.Cog):
     @commands.command(name='shards', aliases=['latencies'])
     @commands.cooldown(1, 8, commands.BucketType.user)
     async def _shards(self, ctx):
-        table = PrettyTable(['SID', 'Latency', 'Uptime', 'Guilds', 'Members', 'Players', 'Last Update'])
+        table = PrettyTable(['SID', 'Ping', 'Uptime', 'Guilds', 'Members', 'Players', 'Last Update'])
 
         for shard in sorted(await self.disco.db.get_shards(), key=lambda s: s.id):
             now = datetime.utcnow()
             latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
             guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'
             members = f'{shard.members:,}' if shard.members else 'Unknown'
-            players = f'{shard.players:,}' if shard.players else 'Unknown'
+            players = f'{shard.players:,}' if shard.players else '0'
             uptime = get_length((now - shard.launched_at).total_seconds() * 1000, True) \
                 if shard.launched_at else 'Unknown'
             last_update = get_length((now - shard.last_update).total_seconds() * 1000, True) \

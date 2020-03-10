@@ -298,7 +298,7 @@
         "skippedByRequester": "{emoji} A faixa **`{track}`** foi pulada por quem a adicionou. (**{author}**)",
         "alreadyVoted": "{emoji} **{author}**, você já votou para pular essa faixa.",
         "voteAdded": "{emoji} **{author}** votou para pular a música atual. **`({votes}/3)`**",
-        "skipped": "{emoji} A faixa **`{track}`** foi pulada pois atingiu a quantia de votos necessários."
+        "skipped": "{emoji} A faixa **`{track}`** foi pulada, pois atingiu a quantia de votos necessários."
     },
     "forceskip": {
         "meta": {
@@ -696,7 +696,7 @@
             "description": "Bane até 10 membros de uma só vez."
         },
         "successfully": "{emoji} **{member}** foi banido com sucesso!",
-        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos, pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
         "reasonNotSpecified": "Motivo não fornecido.",
         "logMessage": "**{user.name}**#{user.discriminator} foi banido por **{moderator.name}**#{moderator.discriminator}.",
         "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
@@ -707,7 +707,7 @@
             "description": "Expulsa até 10 membros de uma só vez."
         },
         "successfully": "{emoji} **{member}** foi expulso com sucesso!",
-        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser expulsos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser expulsos, pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
         "reasonNotSpecified": "Motivo não fornecido.",
         "logMessage": "**{user.name}**#{user.discriminator} foi expulso por **{moderator.name}**#{moderator.discriminator}.",
         "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
@@ -718,7 +718,7 @@
             "description": "Bane e desbane até 10 membros de uma só vez."
         },
         "successfully": "{emoji} **{member}** foi banido e desbanido com sucesso!",
-        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos e desbanidos pois eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
+        "invalidMembers": "\n\n{emoji} **`{members}`** membro(s) não puderam ser banidos e desbanidos, eles possuem cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor ou porquê você atingiu o limite de usos diários dessa ação.",
         "reasonNotSpecified": "Motivo não fornecido.",
         "logMessage": "**{user.name}**#{user.discriminator} foi soft-banido por **{moderator.name}**#{moderator.discriminator}.",
         "noMentions": "{emoji} **{author}**, você precisa mencionar ao menos um membro para que essa ação possa ser executada!"
@@ -728,9 +728,9 @@
             "usage": "<ID do Usuário> [Motivo]",
             "description": "Bane um membro que não está no servidor, através do ID dele."
         },
-        "higherRole": "{emoji} **{author}**, eu não posso banir **`{member}`** pois ele possui cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
+        "higherRole": "{emoji} **{author}**, eu não posso banir **`{member}`**, pois ele possui cargos maiores/equivalentes ao meu (ou seu) maior cargo nesse servidor.",
         "userNotFound": "{emoji} **{author}**, não foi possível encontrar um usuário com o ID fornecido.",
-        "alreadyBanned": "{emoji} **{author}**, não foi possível banir **`{user}`** pois ele já está banido desse servidor por **`{reason}`**.",
+        "alreadyBanned": "{emoji} **{author}**, não foi possível banir **`{user}`**, pois ele já está banido desse servidor por **`{reason}`**.",
         "success": "{emoji} **{author}**, você baniu **`{user}`** com sucesso!",
         "reasonNotSpecified": "Motivo não fornecido.",
         "logMessage": "**{user.name}**#{user.discriminator} foi banido a força por **{moderator.name}**#{moderator.discriminator}."

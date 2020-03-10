@@ -376,56 +376,57 @@ class Utils(commands.Cog):
 
         await ctx.send(results[0].uri)
 
-    @commands.command(name='selfroles', aliases=['sroles', 'sr'])
+    @commands.command(name='selfassignableroles', aliases=['sar'])
     @commands.cooldown(1, 8, commands.BucketType.user)
     @commands.bot_has_permissions(embed_links=True, manage_roles=True)
-    async def _self_roles(self, ctx, *, role: discord.Role = None):
+    async def _self_assignable_roles(self, ctx, *, role: discord.Role = None):
         if role is None:
-            self_roles = await self.disco.db.get_self_roles(ctx.guild.id)
+            self_assignable_roles = await self.disco.db.get_self_assignable_roles(ctx.guild.id)
             valid_roles = []
 
-            for role_id in self_roles.roles:
+            for role_id in self_assignable_roles.roles:
                 if role := ctx.guild.get_role(role_id):
                     valid_roles.append(role)
 
             em = discord.Embed(
                 colour=self.disco.color[0],
-                title=ctx.t('commands.selfroles.assignableRoles'),
+                title=ctx.t('commands.selfassignableroles.assignableRoles'),
                 description=('\n'.join(f'**`{i}`**. {r.mention}' for i, r in enumerate(valid_roles, 1))
-                             or ctx.t('commands.selfroles.noRoles'))
+                             or ctx.t('commands.selfassignableroles.noRoles'))
             ).set_author(
                 name=ctx.guild.name,
                 icon_url=ctx.guild.icon_url
             ).set_thumbnail(
                 url=TRANSPARENT_IMAGE_URL
             ).set_footer(
-                text=ctx.t('commands.selfroles.tip', {"invocation": ctx.prefix + ctx.invoked_with})
+                text=ctx.t('commands.selfassignableroles.tip', {"invocation": ctx.prefix + ctx.invoked_with})
             )
 
             return await ctx.send(ctx.author.mention, embed=em)
 
         if role >= ctx.me.top_role:
-            return await ctx.send(ctx.t('commands.selfroles.roleIsHigherThanMine', {"emoji": self.disco.emoji["false"],
-                                                                                    "author": ctx.author.name,
-                                                                                    "role": role.name}))
+            return await ctx.send(ctx.t('commands.selfassignableroles.roleIsHigherThanMine',
+                                        {"emoji": self.disco.emoji["false"],
+                                         "author": ctx.author.name,
+                                         "role": role.name}))
 
-        self_roles = await self.disco.db.get_self_roles(ctx.guild.id)
+        self_roles = await self.disco.db.get_self_assignable_roles(ctx.guild.id)
 
         if role.id not in self_roles.roles:
-            return await ctx.send(ctx.t('commands.selfroles.invalidRole', {"emoji": self.disco.emoji["false"],
-                                                                           "author": ctx.author.name,
-                                                                           "role": role.name}))
+            return await ctx.send(ctx.t('commands.selfassignableroles.invalidRole', {"emoji": self.disco.emoji["false"],
+                                                                                     "author": ctx.author.name,
+                                                                                     "role": role.name}))
 
         if role in ctx.author.roles:
-            await ctx.author.remove_roles(role, reason='Disco Self Role')
-            return await ctx.send(ctx.t('commands.selfroles.removed', {"emoji": self.disco.emoji["true"],
-                                                                       "author": ctx.author.name,
-                                                                       "role": role.name}))
+            await ctx.author.remove_roles(role, reason='Disco Self Assignable Role')
+            return await ctx.send(ctx.t('commands.selfassignableroles.removed', {"emoji": self.disco.emoji["true"],
+                                                                                 "author": ctx.author.name,
+                                                                                 "role": role.name}))
 
-        await ctx.author.add_roles(role, reason='Disco Self Role')
-        await ctx.send(ctx.t('commands.selfroles.added', {"emoji": self.disco.emoji["true"],
-                                                          "author": ctx.author.name,
-                                                          "role": role.name}))
+        await ctx.author.add_roles(role, reason='Disco Self Assignable Role')
+        await ctx.send(ctx.t('commands.selfassignableroles.added', {"emoji": self.disco.emoji["true"],
+                                                                    "author": ctx.author.name,
+                                                                    "role": role.name}))
 
 
 def setup(disco):

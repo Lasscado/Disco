@@ -207,7 +207,7 @@
             "missingPermissions": "{emoji} **{author}**, eu preciso das seguintes permissões no canal {channel} para poder defini-lo como __Canal de Logs de Membros__:\n\n{permissions}",
             "success": "{emoji} **{author}**, você definiu o canal {channel} como **`Canal de Logs de Membros`** desse servidor."
         },
-        "selfroles": {
+        "selfassignableroles": {
             "meta": {
                 "usage": "<@Cargo|Nome|ID>",
                 "description": "Adiciona ou remove um cargo da lista de cargos que membros podem obter livremente."
@@ -405,7 +405,7 @@
         "noResults": "{emoji} **{author}**, não foi possível encontrar nenhum resultado referente ao nome fornecido.",
         "zeroNodes": "{emoji} **{author}**, infelizmente meus servidores de busca de vídeos emperraram e eu não posso executar esse comando no momento ;("
     },
-    "selfroles": {
+    "selfassignableroles": {
         "meta": {
             "usage": "[Nome do Cargo]",
             "description": "Obtém um Cargo Atribuível ou visualiza a lista de todos os atribuíveis."

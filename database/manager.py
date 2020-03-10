@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from motor import motor_asyncio
 
-from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, DiscoSelfRoles
+from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, DiscoSelfAssignableRoles
 
 
 log = logging.getLogger('disco.database')
@@ -19,7 +19,7 @@ class DatabaseManager:
         self._shards = db.shards
         self._mod_logs = db.mod_logs
         self._messages = db.messages
-        self._self_roles = db.self_roles
+        self._self_assignable_roles = db.self_assignable_roles
 
     @property
     async def total_bans(self):
@@ -102,18 +102,18 @@ class DatabaseManager:
         timestamp = (datetime.utcnow() - timedelta(days=days)).timestamp()
         return (await self._messages.delete_many({"timestamp": {"$lte": timestamp}})).deleted_count
 
-    async def get_self_roles(self, guild_id, register=True):
-        if data := await self._self_roles.find_one({"_id": guild_id}):
-            return DiscoSelfRoles(data, self._self_roles)
+    async def get_self_assignable_roles(self, guild_id, register=True):
+        if data := await self._self_assignable_roles.find_one({"_id": guild_id}):
+            return DiscoSelfAssignableRoles(data, self._self_assignable_roles)
         elif register:
             data = {
                 "_id": guild_id,
-                "self_roles": []
+                "self_assignable_roles": []
             }
 
-            await self._self_roles.insert_one(data)
+            await self._self_assignable_roles.insert_one(data)
 
-            return DiscoSelfRoles(data, self._self_roles)
+            return DiscoSelfAssignableRoles(data, self._self_assignable_roles)
 
     async def register_guild(self, guild_id):
         data = {

@@ -219,7 +219,7 @@ class Moderation(commands.Cog):
         if (user := ctx.guild.get_member(user_id)) and (user.top_role >= ctx.author.top_role
                                                         or user.top_role >= ctx.me.top_role):
             return await ctx.send(ctx.t('commands.forceban.higherRole', {"emoji": self.disco.emoji["false"],
-                                                                         "author": ctx.author.member,
+                                                                         "author": ctx.author.name,
                                                                          "member": user}))
         else:
             if (user := self.disco.get_user(user_id)) is None:

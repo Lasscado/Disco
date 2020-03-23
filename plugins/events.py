@@ -214,6 +214,12 @@ class Events(commands.Cog):
         self.disco.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
                             f'em {ctx.guild} {ctx.guild.id}')
 
+        if ctx.author.id == self.disco.owner_id:
+            ctx.command.reset_cooldown(ctx)
+
+            if ctx.command.parent:
+                ctx.command.parent.reset_cooldown(ctx)
+
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 9) == 1:

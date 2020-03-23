@@ -289,7 +289,10 @@
         "meta": {
             "description": "Mostra detalhes sobre a música que estiver tocando."
         },
-        "text": "Tocando Agora: **[{track}]({track.uri})** `({length})` - {track.requester.mention}"
+        "nowPlaying": "Tocando Agora",
+        "uploader": "Autor",
+        "addedBy": "Adicionado por",
+        "position": "Posição"
     },
     "skip": {
         "meta": {

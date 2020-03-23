@@ -333,13 +333,34 @@ class Music(commands.Cog):
                                                               "emoji": self.disco.emoji["false"]}))
 
         track = player.current
+        bar = '─' * (width := 17)
+
+        if track.is_stream:
+            position = f'```{get_length(player.position)} %s LIVESTREAM```' % (bar[:-1] + '🔘')
+        else:
+            percentage = round(player.position / track.duration * width)
+            position = f'```{get_length(player.position)} %s {get_length(track.duration)}```' \
+                       % (bar[:percentage] + '🔘' + bar[percentage + 1:])
+
         em = discord.Embed(
+            title=ctx.t('commands.nowplaying.nowPlaying'),
             colour=self.disco.color[0],
-            description=ctx.t('commands.nowplaying.text', {"track": track,
-                                                           "length": get_length(track.length)})
+            description=f'[**{track}**]({track.uri})'
+        ).add_field(
+            name=ctx.t('commands.nowplaying.uploader'),
+            value=track.author
+        ).add_field(
+            name=ctx.t('commands.nowplaying.addedBy'),
+            value=track.requester.mention
+        ).add_field(
+            name=ctx.t('commands.nowplaying.position'),
+            value=position,
+            inline=False,
+        ).set_thumbnail(
+            url=track.thumb
         )
 
-        await ctx.send(embed=em, delete_after=15)
+        await ctx.send(embed=em, delete_after=30)
 
     @commands.command(name='skip', aliases=['s', 'sk', 'skp'])
     @checks.is_voice_connected()

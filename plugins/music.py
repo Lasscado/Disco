@@ -348,7 +348,7 @@ class Music(commands.Cog):
             description=f'[**{track}**]({track.uri})'
         ).add_field(
             name=ctx.t('commands.nowplaying.uploader'),
-            value=track.author
+            value=track.author or ctx.t('commons.unknown')
         ).add_field(
             name=ctx.t('commands.nowplaying.addedBy'),
             value=track.requester.mention

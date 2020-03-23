@@ -221,7 +221,7 @@ class Music(commands.Cog):
                                                        "emoji": self.disco.emoji["true"],
                                                        "channel": ctx.me.voice.channel}))
 
-        if self.redis:
+        if self.redis and ctx.author.voice:
             payload = {
                 "type": "queue_end",
                 "users": [member.id for member in ctx.author.voice.channel.members if not member.bot]

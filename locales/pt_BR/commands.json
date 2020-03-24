@@ -331,6 +331,14 @@
         },
         "success": "{emoji} **{author}**, você inverteu a fila de reprodução."
     },
+    "seek": {
+        "meta": {
+            "description": "Pula o que estiver tocando para uma parte específica.",
+            "usage": "<-45|+1:30|01:45:00>"
+        },
+        "isStream": "{emoji} **{author}**, você não pode utilizar esse comando em uma transmissão ao vivo!",
+        "success": "{emoji} **{author}**, você pulou a faixa **`{track}`** para `{position}`."
+    },
     "lyrics": {
         "meta": {
             "usage": "[Nome da Música]",

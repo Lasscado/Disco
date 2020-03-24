@@ -1,4 +1,6 @@
+import re
 from asyncio import TimeoutError as Timeout
+from datetime import timedelta
 from os import environ
 from random import shuffle
 from math import ceil
@@ -10,6 +12,9 @@ from wavelink.events import TrackStart, TrackEnd, TrackException, TrackStuck
 from wavelink.eqs import Equalizer
 
 from utils import web_url, get_length, checks, DiscoTrack
+
+
+SEEK_RX = re.compile('^[+-]?(?:([0-9]{1,2}):)?(?:([0-9]{1,2}):)?([0-9]{1,2})$')
 
 
 class Music(commands.Cog):
@@ -480,6 +485,40 @@ class Music(commands.Cog):
         ctx.player.queue.reverse()
         await ctx.send(ctx.t('commands.reverse.success', {"author": ctx.author.name,
                                                           "emoji": self.disco.emoji["shuffle"]}))
+
+    @commands.command(name='seek', aliases=['jump'])
+    @checks.staffer_or_dj_role()
+    @checks.is_voice_connected()
+    @commands.cooldown(2, 12, commands.BucketType.guild)
+    async def _seek(self, ctx, position):
+        if (current := ctx.player.current) is None:
+            return await ctx.send(ctx.t('errors.notPlaying', {"emoji": self.disco.emoji["false"],
+                                                              "author": ctx.author.name}))
+
+        if current.is_stream:
+            return await ctx.send(ctx.t('commands.seek.isStream', {"emoji": self.disco.emoji["false"],
+                                                                   "author": ctx.author.name}))
+
+        if not (position_ := SEEK_RX.match(position)):
+            raise commands.errors.UserInputError
+
+        hours, minutes, seconds = sorted(position_.groups(), key=lambda x: x is not None)
+        to_skip = timedelta(hours=int(hours.lstrip('0') or 0) if hours else 0,
+                            minutes=int(minutes.lstrip('0') or 0) if minutes else 0,
+                            seconds=int(seconds.lstrip('0') or 0) if seconds else 0)
+
+        if position.startswith('-'):
+            position = max(ctx.player.position - to_skip.total_seconds() * 1000, 0)
+        elif position.startswith('+'):
+            position = min(ctx.player.position + to_skip.total_seconds() * 1000, current.length)
+        else:
+            position = min(to_skip.total_seconds() * 1000, current.length)
+
+        await ctx.player.seek(position)
+        await ctx.send(ctx.t('commands.seek.success', {"emoji": self.disco.emoji["true"],
+                                                       "author": ctx.author.name,
+                                                       "track": current.title,
+                                                       "position": get_length(position)}))
 
 
 def setup(disco):

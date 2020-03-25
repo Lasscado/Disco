@@ -173,10 +173,15 @@ class Information(commands.Cog):
             em.add_field(
                 name=f'**LAVALINK NODE {identifier}**',
                 value=ctx.t('commands.botinfo.nodeInfo', {
+                    "status": '%s (%s)' % (ctx.t('commons.available' if node.available else 'commons.unavailable'),
+                                           ctx.t('commons.connected' if node._websocket.is_connected else
+                                                 'commons.disconnected')),
                     "region": node.region.title().replace("_", " "),
                     "uptime": get_length(stats.uptime, True),
-                    "stats": stats,
-                    "memory": naturalsize(stats.memory_used)}),
+                    "players": '%s/%s' % (stats.playing_players, stats.players),
+                    "memoryUsed": naturalsize(stats.memory_used),
+                    "cpuUsage": '%.1f' % (stats.lavalink_load * 100),
+                    "cpuCores": stats.cpu_cores}),
                 inline=False
             )
 

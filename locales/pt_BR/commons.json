@@ -29,5 +29,9 @@
     "daysAgo": "**`{days}`** dias atrás",
     "joinedAt": "Data de Entrada",
     "deletedMessages": "MensagensDeletadas",
-    "unknownUser": "Usuário Desconhecido"
+    "unknownUser": "Usuário Desconhecido",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "available": "Disponível",
+    "unavailable": "Indisponível"
 }

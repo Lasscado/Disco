@@ -14,7 +14,7 @@
         "generalInfoTitle": "**INFORMAÇÕES GERAIS**",
         "generalInfoDescLeft": "**Ping** `[Shard {shard}/{shards}]`: {ping}ms\n**Servidores**: {servers}\n**Membros**: {members}\n**Players**: {players}\n**Lavalink Nodes**: {nodes}\n\u200b",
         "generalInfoDescRight": "**Tempo Online**: {uptime}\n**Mensagens Lidas**: {messages}\n**Comandos Executados**: {commands}\n**Faixas Reproduzidas**: {played}",
-        "nodeInfo": "**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {stats.playing_players}/{stats.players}\n**Memória Usada**: {memory}"
+        "nodeInfo": "**Status**: {status}\n**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {players}\n**Memória Usada**: {memoryUsed}\n**Uso de CPU**: {cpuUsage}% ({cpuCores} cores)"
     },
     "help": {
         "meta": {

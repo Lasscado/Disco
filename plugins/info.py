@@ -173,7 +173,7 @@ class Information(commands.Cog):
             em.add_field(
                 name=f'**LAVALINK NODE {identifier}**',
                 value=ctx.t('commands.botinfo.nodeInfo', {
-                    "status": '%s (%s)' % (ctx.t('commons.available' if node.available else 'commons.unavailable'),
+                    "status": '%s (%s)' % (ctx.t('commons.available' if node.is_available else 'commons.unavailable'),
                                            ctx.t('commons.connected' if node._websocket.is_connected else
                                                  'commons.disconnected')),
                     "region": node.region.title().replace("_", " "),

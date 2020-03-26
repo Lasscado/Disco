@@ -82,7 +82,7 @@ class Tasks(commands.Cog):
 
         self.disco.log.info('Presences alteradas.')
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(seconds=30)
     async def _update_shard_stats(self):
         for shard_id in self.disco.launched_shards:
             guilds = [g for g in self.disco.guilds if g.shard_id == shard_id]

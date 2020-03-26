@@ -1,5 +1,5 @@
+import asyncio
 import traceback
-from asyncio import sleep
 from random import choice
 from json import loads
 
@@ -101,11 +101,12 @@ class Tasks(commands.Cog):
         for player in self.disco.wavelink.players.values():
             guild = self.disco.get_guild(player.guild_id)
             if guild is None or guild.unavailable or guild.me and guild.me.voice is None or \
-                    player.current is None and not player.queue or not self.has_listeners(guild):
+                    player.current is None and not player.queue and not player.waiting_for_music_choice or \
+                    not self.has_listeners(guild):
                 self.disco.loop.create_task(self._disconnect_player(player))
 
     async def _disconnect_player(self, player):
-        await sleep(60)
+        await asyncio.sleep(60)
 
         try:
             player = self.disco.wavelink.players[player.guild_id]

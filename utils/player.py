@@ -19,6 +19,7 @@ class DiscoPlayer(Player):
         self.repeat = None
         self.bass_boost = False
         self.text_channel = None
+        self.waiting_for_music_choice = set()
         self.t = bot.i18n.get_t(bot.i18n.source)
 
     @property

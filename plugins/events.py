@@ -222,6 +222,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
+        if ctx.command.name == 'play':
+            ctx.player.waiting_for_music_choice.remove(ctx.author.id)
+
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 9) == 1:
             await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
                                                           "link": PATREON_DONATE_URL}))

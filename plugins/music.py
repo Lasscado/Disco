@@ -116,6 +116,7 @@ class Music(commands.Cog):
                                                                     "emoji": self.disco.emoji["false"]}))
 
         player = ctx.player
+        player.waiting_for_music_choice.add(ctx.author.id)
 
         if hasattr(results, 'tracks'):
             total_length = 0

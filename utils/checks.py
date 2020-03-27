@@ -55,7 +55,9 @@ def is_below_mod_threshold(action=None):
     async def predicate(ctx):
         action_ = action or ctx.command.name
         if threshold := ctx.gdb.options['mod_threshold'][action_]:
-            if (count := await ctx.bot.db.total_daily_mod_logs(action_, ctx.guild.id, ctx.author.id)) > threshold:
+            if (count := await ctx.bot.db.total_daily_mod_logs(action=action_,
+                                                               guild_id=ctx.guild.id,
+                                                               moderator_id=ctx.author.id)) > threshold:
                 if last_action := await ctx.bot.db.get_last_mod_log(action=action_, guild_id=ctx.guild.id,
                                                                     moderator_id=ctx.author.id):
                     next_use = format_timedelta(datetime.utcnow() - (datetime.utcfromtimestamp(last_action.date)

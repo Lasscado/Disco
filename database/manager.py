@@ -39,7 +39,7 @@ class DatabaseManager:
     async def total_mod_logs(self, guild_id):
         return await self._mod_logs.count_documents({"guild_id": guild_id})
 
-    async def total_daily_mod_logs(self, action, guild_id, moderator_id):
+    async def total_daily_mod_logs(self, *, action, guild_id, moderator_id):
         return await self._mod_logs.count_documents({"action": action, "guild_id": guild_id,
                                                      "moderator_id": moderator_id,
                                                      "date": {
@@ -58,7 +58,7 @@ class DatabaseManager:
 
         log.info('Conectado ao banco de dados com sucesso.')
 
-    async def get_guild(self, guild_id, register=True):
+    async def get_guild(self, guild_id, *, register=True):
         if data := await self._guilds.find_one({"_id": guild_id}):
             return DiscoGuild(data, self._guilds)
         elif register:
@@ -78,7 +78,7 @@ class DatabaseManager:
     async def get_shards(self, **kwargs):
         return [DiscoShard(data, self._shards) async for data in self._shards.find(kwargs)]
 
-    async def get_shard(self, shard_id, register=True):
+    async def get_shard(self, shard_id, *, register=True):
         if data := await self._shards.find_one({"_id": shard_id}):
             return DiscoShard(data, self._shards)
         elif register:
@@ -103,7 +103,7 @@ class DatabaseManager:
         timestamp = (datetime.utcnow() - timedelta(days=days)).timestamp()
         return (await self._messages.delete_many({"timestamp": {"$lte": timestamp}})).deleted_count
 
-    async def get_self_assignable_roles(self, guild_id, register=True):
+    async def get_self_assignable_roles(self, guild_id, *, register=True):
         if data := await self._self_assignable_roles.find_one({"_id": guild_id}):
             return DiscoSelfAssignableRoles(data, self._self_assignable_roles)
         elif register:
@@ -162,7 +162,7 @@ class DatabaseManager:
 
         return DiscoGuild(data, self._guilds)
 
-    async def register_ban(self, target_id, author_id, is_guild, reason):
+    async def register_ban(self, *, target_id, author_id, is_guild, reason):
         data = {
             "target_id": target_id,
             "author_id": author_id,
@@ -193,7 +193,7 @@ class DatabaseManager:
 
         return DiscoShard(data, self._shards)
 
-    async def register_mod_log(self, action, case_id, moderator_id, guild_id, channel_id, message_id):
+    async def register_mod_log(self, *, action, case_id, moderator_id, guild_id, channel_id, message_id):
         data = {
             "action": action,
             "case_id": case_id,

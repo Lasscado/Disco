@@ -209,6 +209,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
+        ctx._begin = datetime.utcnow()
         self.disco.invoked_commands += 1
 
         self.disco.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
@@ -224,6 +225,8 @@ class Events(commands.Cog):
     async def on_command_completion(self, ctx):
         if ctx.command.name == 'play':
             ctx.player.waiting_for_music_choice.remove(ctx.author.id)
+
+        await self.disco.db.register_command_usage(ctx)
 
         if ctx.command.name not in ['donate', 'whatsmyprefix'] and randint(1, 9) == 1:
             await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],

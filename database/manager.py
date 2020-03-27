@@ -1,9 +1,11 @@
 import logging
 from datetime import datetime, timedelta
 
+from discord.ext import commands
 from motor import motor_asyncio
 
-from .models import DiscoBan, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, DiscoSelfAssignableRoles
+from .models import DiscoBan, DiscoCommandHistory, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, \
+    DiscoSelfAssignableRoles
 
 
 log = logging.getLogger('disco.database')
@@ -20,6 +22,7 @@ class DatabaseManager:
         self._mod_logs = db.mod_logs
         self._messages = db.messages
         self._self_assignable_roles = db.self_assignable_roles
+        self._command_history = db.command_history
 
     @property
     async def total_bans(self):
@@ -44,8 +47,6 @@ class DatabaseManager:
                                                      }})
 
     async def connect(self):
-        await self._db.command('ping')
-
         async for data in self._bans.find({"ignored": False}):
             if data['is_guild']:
                 self.disco.guild_blacklist.add(data['target_id'])
@@ -114,6 +115,20 @@ class DatabaseManager:
             await self._self_assignable_roles.insert_one(data)
 
             return DiscoSelfAssignableRoles(data, self._self_assignable_roles)
+
+    async def register_command_usage(self, ctx: commands.Context):
+        data = {
+            "command": ctx.command.qualified_name,
+            "user_id": ctx.author.id,
+            "guild_id": ctx.guild.id,
+            "channel_id": ctx.channel.id,
+            "timestamp": datetime.utcnow().timestamp(),
+            "duration": (datetime.utcnow() - ctx._begin).total_seconds()
+        }
+
+        await self._command_history.insert_one(data)
+
+        return DiscoCommandHistory(data)
 
     async def register_guild(self, guild_id):
         data = {

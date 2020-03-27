@@ -22,16 +22,16 @@ class Music(commands.Cog):
         self.disco = disco
         self.redis = None
 
-        disco.loop.create_task(self.initiate_nodes())
+        for node in disco.wavelink.nodes.values():
+            node.set_hook(self.on_track_event)
+
+        disco.loop.create_task(self.create_redis())
 
     def cog_unload(self):
-        for node in self.disco.wavelink.nodes.values():
-            self.disco.loop.create_task(node.destroy())
+        if self.redis is not None:
+            self.redis.close()
 
-    async def initiate_nodes(self):
-        for node in eval(environ['LAVALINK_NODES']):
-            (await self.disco.wavelink.initiate_node(**node)).set_hook(self.on_track_event)
-
+    async def create_redis(self):
         self.redis = await aioredis.create_redis_pool(environ['PRESENCE_REDIS_URI'])
 
     async def on_track_event(self, event):

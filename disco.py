@@ -51,6 +51,9 @@ class Disco(AutoShardedBot):
     async def _prepare(self):
         await self.db.connect()
 
+        for node in eval(environ['LAVALINK_NODES']):
+            await self.wavelink.initiate_node(**node)
+
         plugins = [p[:-3] for p in listdir('plugins') if p.endswith('.py')]
         total_plugins = len(plugins)
         for i, plugin in enumerate(plugins, 1):

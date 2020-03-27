@@ -1,11 +1,11 @@
 SUPPORT_GUILD_INVITE_URL = 'https://invite.gg/disco'
 BOT_INVITE_URL = 'https://is.gd/discobot'
-BOT_LIST_VOTE_URL = 'https://botsparadiscord.xyz/bots/disco/votar'
+BOT_LIST_VOTE_URL = 'https://botsparadiscord.com/bots/disco/votar'
 PATREON_DONATE_URL = 'https://patreon.com/join/discobot'
 GITHUB_REPOSITORY_URL = 'https://github.com/Naegin/Disco'
 WEBSITE_URL = 'https://is.gd/discobot'
 TRANSPARENT_IMAGE_URL = 'https://cdn.discordapp.com/attachments/359388328233140239/471181808612933634/invisible.png'
-STREAMING_ACTIVITY_URL = 'https://twitch.tv/naeg1n'
+STREAMING_ACTIVITY_URL = 'https://twitch.tv/discomusicnc'
 DEFAULT_EMBED_COLORS = [0xB70DB3, 0xFF3DD3]
 BANNER_URL = 'https://i.imgur.com/DWa6iY0.png'
 DBOTS_PAGE_URL = 'https://is.gd/disco_dbots'

@@ -39,7 +39,7 @@ class Music(commands.Cog):
 
         if isinstance(event, TrackStart):
             self.disco.played_tracks += 1
-            track = event.track
+            track = player.current
 
             if not player.repeat:
                 await player.send(player.t('events.trackStart', {"track": track,
@@ -82,12 +82,14 @@ class Music(commands.Cog):
             await player.play(track)
 
         elif isinstance(event, TrackException):
+            track = await self.disco.wavelink.build_track(event.track)
             await player.send(player.t('errors.trackException', {"emoji": self.disco.emoji["alert"],
-                                                                 "track": player.current,
+                                                                 "track": track.title,
                                                                  "error": event.error}))
         elif isinstance(event, TrackStuck):
+            track = await self.disco.wavelink.build_track(event.track)
             await player.send(player.t('errors.trackStuck', {"emoji": self.disco.emoji["alert"],
-                                                             "track": player.current,
+                                                             "track": track.title,
                                                              "threshold": event.threshold}))
 
     @commands.Cog.listener()

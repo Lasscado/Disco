@@ -161,7 +161,7 @@ class Information(commands.Cog):
             name='\u200b',
             value=ctx.t('commands.botinfo.generalInfoDescRight', {
                 "uptime": uptime,
-                "messages": f'{self.disco.read_messages:,}',
+                "messages": f'{self.disco.socket_responses["MESSAGE_CREATE"]:,}',
                 "commands": f'{self.disco.invoked_commands:,}',
                 "played": f'{self.disco.played_tracks:,}'
             })

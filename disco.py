@@ -1,6 +1,7 @@
 import logging
 import platform
 import traceback
+from collections import Counter
 from datetime import datetime
 from os import environ, listdir
 
@@ -42,11 +43,11 @@ class Disco(AutoShardedBot):
         self.guild_blacklist = set()
         self.user_blacklist = set()
         self.invoked_commands = 0
-        self.read_messages = 0
         self.played_tracks = 0
         self.prefixes = environ['PREFIXES'].split(', ')
         self._prefixes = {}
         self._message_logs = set()
+        self.socket_responses = Counter()
 
     async def _prepare(self):
         await self.db.connect()
@@ -94,9 +95,10 @@ class Disco(AutoShardedBot):
         if not self.loaded and not self.launched_shards:
             await self._prepare()
 
-    async def on_message(self, message):
-        self.read_messages += 1
+    async def on_socket_response(self, msg):
+        self.socket_responses[msg.get('t')] += 1
 
+    async def on_message(self, message):
         if not self.loaded or not message.guild:
             return
 

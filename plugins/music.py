@@ -437,11 +437,11 @@ class Music(commands.Cog):
                                                               "emoji": self.disco.emoji["false"]}))
 
         if ctx.player.bass_boost:
-            await ctx.player.set_eq(Equalizer.boost())
+            await ctx.player.set_eq(Equalizer.flat())
             await ctx.send(ctx.t('commands.bassboost.disabled', {"emoji": self.disco.emoji["volume"],
                                                                  "author": ctx.author.name}))
         else:
-            await ctx.player.set_eq(Equalizer.flat())
+            await ctx.player.set_eq(Equalizer.boost())
             await ctx.send(ctx.t('commands.bassboost.enabled', {"emoji": self.disco.emoji["volume"],
                                                                 "author": ctx.author.name}))
 

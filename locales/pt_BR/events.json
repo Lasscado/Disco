@@ -8,5 +8,6 @@
     "messageDelete": "**Mensagem de {author} deletada em {channel}**.",
     "messageEdit": "**Mensagem de {author} editada em {channel}**.\n[Clique aqui para ir até a mensagem.]({url})",
     "memberJoin": "Entrou no servidor",
-    "memberLeave": "Saiu do servidor"
+    "memberLeave": "Saiu do servidor",
+    "playerReconnectedShard": "{emoji} Conexão restabelecida ao canal de voz após falha com o Discord."
 }

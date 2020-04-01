@@ -1,5 +1,5 @@
+import asyncio
 import re
-from asyncio import TimeoutError as Timeout
 from datetime import timedelta
 from os import environ
 from random import shuffle
@@ -34,6 +34,17 @@ class Music(commands.Cog):
     async def create_redis(self):
         self.redis = await aioredis.create_redis_pool(environ['PRESENCE_REDIS_URI'])
 
+    @commands.Cog.listener('on_shard_ready')
+    async def reconnect_after_shard_dies(self, shard_id):
+        websocket = self.disco.shards[shard_id].ws
+        for player in self.disco.wavelink.players.values():
+            if player.channel_id and (guild := self.disco.get_guild(player.guild_id)) and guild.shard_id == shard_id:
+                player._voice_state.clear()
+                await websocket.voice_state(player.guild_id, player.channel_id)
+
+                self.disco.loop.create_task(player.send(player.t('events.playerReconnectedShard',
+                                                                 {"emoji": self.disco.emoji["alert"]})))
+
     async def on_track_event(self, event):
         player = event.player
 
@@ -41,7 +52,7 @@ class Music(commands.Cog):
             self.disco.played_tracks += 1
             track = player.current
 
-            if not player.repeat:
+            if not player.repeat and not hasattr(track, 'no_announcement'):
                 await player.send(player.t('events.trackStart', {"track": track,
                                                                  "emoji": self.disco.emoji["download"],
                                                                  "length": 'LIVESTREAM' if track.is_stream else
@@ -172,7 +183,7 @@ class Music(commands.Cog):
 
                 try:
                     a = await self.disco.wait_for('message', timeout=120, check=check)
-                except Timeout:
+                except asyncio.TimeoutError:
                     a = None
 
                 if not a or a.content.lower() == cancel:

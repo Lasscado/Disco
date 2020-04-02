@@ -12,9 +12,9 @@ class DiscoBan:
         self.author_id = data['author_id']
         self.is_guild = data['is_guild']
         self.reason = data['reason']
-        self.date = datetime.utcfromtimestamp(data['date'])
+        self.date = datetime.fromtimestamp(data['date'])
         self.ignore = data['ignore']
-        self.ignored_at = datetime.utcfromtimestamp(data['ignored_at']) if data['ignored_at'] \
+        self.ignored_at = datetime.fromtimestamp(data['ignored_at']) if data['ignored_at'] \
             else None
 
     def __str__(self):

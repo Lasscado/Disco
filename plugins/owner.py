@@ -1,7 +1,11 @@
+import math
 import os
-import discord
+import typing
 
+import discord
 from discord.ext import commands
+
+from utils import get_length, TRANSPARENT_IMAGE_URL
 
 
 class Owner(commands.Cog, command_attrs=dict(hidden=True)):
@@ -122,6 +126,47 @@ class Owner(commands.Cog, command_attrs=dict(hidden=True)):
         )
 
         await self.ban_logs.send(embed=em)
+
+    @commands.command(name='commandhistory', aliases=['cmdhistory'])
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.is_owner()
+    async def _command_history(self, ctx, user: typing.Union[discord.User, int], page: int = 1):
+        if type(user) is int:
+            try:
+                user = await self.disco.fetch_user(user)
+            except discord.NotFound:
+                await ctx.send(self.disco.emoji["false"] + ' Não foi possível encontrar um usuário com o ID fornecido.')
+                return
+
+        if user.bot:
+            await ctx.send('%s **`%s`** é um bot!' % (self.disco.emoji["false"], user))
+            return
+
+        if not (total_entries := await self.disco.db.total_command_history_entries_for(user.id)):
+            await ctx.send('%s Nenhum registro de comando encontrado para **`%s`**.' % (self.disco.emoji["false"],
+                                                                                        user))
+            return
+
+        total_pages = math.ceil(total_entries / (per_page := 20))
+        current_page = page if 0 < page <= total_pages else 1
+        entries = await self.disco.db.get_command_history_from(user.id, limit=per_page,
+                                                               skip=(current_page - 1) * per_page)
+
+        em = discord.Embed(
+            colour=self.disco.color[0],
+            title='Histórico de Comandos',
+            description='\n'.join('`[%s]`: __**%s**__ (%ss)' % (e.invoked_at.strftime('%d/%m/%y %H:%M'),
+                                                                e.command, e.duration) for e in entries)
+        ).set_author(
+            name=str(user),
+            icon_url=user.avatar_url
+        ).set_thumbnail(
+            url=TRANSPARENT_IMAGE_URL
+        ).set_footer(
+            text='Página %s/%s' % (current_page, total_pages)
+        )
+
+        await ctx.send(ctx.author.mention, embed=em)
 
 
 def setup(disco):

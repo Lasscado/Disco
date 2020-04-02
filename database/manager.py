@@ -46,6 +46,9 @@ class DatabaseManager:
                                                          "$gt": (datetime.utcnow() - timedelta(days=1)).timestamp()
                                                      }})
 
+    async def total_command_history_entries_for(self, user_id):
+        return await self._command_history.count_documents({"user_id": user_id})
+
     async def connect(self):
         async for data in self._bans.find({"ignored": False}):
             if data['is_guild']:
@@ -115,6 +118,19 @@ class DatabaseManager:
             await self._self_assignable_roles.insert_one(data)
 
             return DiscoSelfAssignableRoles(data, self._self_assignable_roles)
+
+    async def get_command_history_from(self, user_id, *, before=None, after=None, skip=0, limit=0, direction=-1):
+        query = {"user_id": user_id}
+        if before:
+            query['timestamp'] = {"$lte": before.timestamp()}
+        if after:
+            if 'timestamp' in query:
+                query['timestamp']['$gte'] = after.timestamp()
+            else:
+                query['timestamp'] = {"$gte": after.timestamp()}
+
+        cursor = self._command_history.find(query).sort('timestamp', direction).skip(skip).limit(limit)
+        return [DiscoCommandHistory(data) async for data in cursor]
 
     async def register_command_usage(self, ctx: commands.Context):
         data = {

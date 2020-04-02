@@ -27,7 +27,7 @@ Você pode contribuir das seguintes formas:
   - Traduzindo o bot - <https://disco.crowdin.com/disco>.
   - Enviando uma Pull Request com correção de códigos ou adição de novas funcionalidades.
   - Resolvendo as dúvidas dos usuários do Disco - <https://discord.gg/qN5886E>.
-  - Votando diariamente no site Bots Para Discord - <https://botsparadiscord.xyz/bots/disco/votar>.
+  - Votando diariamente no site Bots Para Discord - <https://botsparadiscord.com/bots/disco/votar>.
  
 <br/>
 <p align="center"><b>Disco</b> foi criado e é desenvolvido por <b>Naegin</b>.</p>

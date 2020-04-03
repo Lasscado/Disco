@@ -48,7 +48,7 @@ class Utils(commands.Cog):
 
         if not query:
             if activities := [a for a in ctx.author.activities if isinstance(a, discord.Spotify)]:
-                to_search = '{0.artist} {0.title}'.format(track := activities[0])
+                to_search = '{0.artists[0]} {0.title}'.format(track := activities[0])
                 thumb = track.album_cover_url
             elif (ctx.author.voice and ctx.me.voice) and ctx.author.voice.channel == ctx.me.voice.channel:
                 if playing := self.disco.get_player(ctx.guild.id).current:

@@ -9,7 +9,7 @@ from babel.dates import format_date, format_timedelta
 from discord.ext import commands
 from wavelink.errors import ZeroConnectedNodes
 
-from utils import checks, TRANSPARENT_IMAGE_URL
+from utils import TRANSPARENT_IMAGE_URL
 
 
 class Utils(commands.Cog):

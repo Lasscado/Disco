@@ -23,7 +23,7 @@ class Music(commands.Cog):
         self.redis = None
 
         for node in disco.wavelink.nodes.values():
-            node.set_hook(self.on_track_event)
+            node.set_hook(self.on_server_event)
 
         disco.loop.create_task(self.create_redis())
 
@@ -45,7 +45,7 @@ class Music(commands.Cog):
                 self.disco.loop.create_task(player.send(player.t('events.playerReconnectedShard',
                                                                  {"emoji": self.disco.emoji["alert"]})))
 
-    async def on_track_event(self, event):
+    async def on_server_event(self, event):
         player = event.player
 
         if isinstance(event, TrackStart):

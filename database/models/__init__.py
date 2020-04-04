@@ -1,5 +1,5 @@
 from .ban import DiscoBan
-from .command_history import DiscoCommandHistory
+from .command_history_entry import DiscoCommandHistoryEntry
 from .guild import DiscoGuild
 from .message import DiscoMessage
 from .mod_log import DiscoModLog

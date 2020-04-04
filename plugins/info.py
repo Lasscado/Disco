@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import discord
 from discord.ext import commands
@@ -12,6 +12,7 @@ from utils import get_length, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_
 class Information(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
+        self._command_usage_embed = None
 
     @commands.command(name='help', aliases=['ajuda', 'commands', 'cmds'])
     @commands.bot_has_permissions(embed_links=True)
@@ -119,60 +120,95 @@ class Information(commands.Cog):
 
         await ctx.send(content=ctx.author.mention, embed=em)
 
-    @commands.command(name='botinfo', aliases=['nodes', 'bi', 'statistics'])
+    @commands.group(name='stats', aliases=['botinfo', 'data', 'statistics', 'bi'])
     @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(1, 8, commands.BucketType.user)
-    async def _bot_info(self, ctx):
-        shard_ping = int(self.disco.shards[ctx.guild.shard_id].ws.latency * 1000)
-        uptime = get_length((datetime.utcnow() - self.disco.started_at).total_seconds() * 1000, True)
+    async def _stats(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.invoke(self.disco.get_command('help'), command_='stats')
+            return
 
-        creator = self.disco.get_user(self.disco.owner_id)
+    @_stats.command(name='commands', aliases=['cmds', 'cmd'])
+    async def _stats_command_usage(self, ctx):
+        if (em := self._command_usage_embed) and datetime.utcnow() < em.timestamp + timedelta(minutes=5):
+            await ctx.send(ctx.author.mention, embed=em)
+            return
 
-        em = discord.Embed(
+        public_commands = [c.qualified_name for c in self.disco.commands
+                           if not c.hidden and c.cog.qualified_name != 'Owner']
+
+        dt_24h = datetime.utcnow() - timedelta(hours=24)
+        dt_1w = datetime.utcnow() - timedelta(weeks=1)
+        dt_1m = datetime.utcnow() - timedelta(days=30)
+
+        last_24_hours = [(c, await self.disco.db.get_total_command_usage(c, after=dt_24h)) for c in public_commands]
+        last_week = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1w)) for c in public_commands]
+        last_month = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1m)) for c in public_commands]
+        lifetime = [(c, await self.disco.db.get_total_command_usage(c)) for c in public_commands]
+
+        last_24_hours.sort(key=lambda c: c[1], reverse=True)
+        last_week.sort(key=lambda c: c[1], reverse=True)
+        last_month.sort(key=lambda c: c[1], reverse=True)
+        lifetime.sort(key=lambda c: c[1], reverse=True)
+
+        limit = 8
+        uses = ctx.t('commons.uses')
+
+        self._command_usage_embed = em = discord.Embed(
+            title=ctx.t('commands.stats.commands.title'),
             colour=self.disco.color[0],
-            title=ctx.t('commands.botinfo.statistics'),
-            description=ctx.t('commands.botinfo.links', {
-                "support": SUPPORT_GUILD_INVITE_URL,
-                "invite": BOT_INVITE_URL,
-                "donate": PATREON_DONATE_URL,
-                "vote": BOT_LIST_VOTE_URL,
-                "github": GITHUB_REPOSITORY_URL
-            })
+            timestamp=datetime.utcnow()
         ).set_author(
-            name=ctx.me.name,
+            name=self.disco.user.name,
             icon_url=self.disco.user.avatar_url
         ).set_footer(
-            text=ctx.t('commons.createdBy', {"creator": creator}),
-            icon_url=creator.avatar_url
+            text=ctx.t('commands.stats.commands.lastUpdate')
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).add_field(
-            name=ctx.t('commands.botinfo.generalInfoTitle'),
-            value=ctx.t('commands.botinfo.generalInfoDescLeft', {
-                "shard": ctx.guild.shard_id + 1,
-                "shards": len(self.disco.shards),
-                "ping": shard_ping,
-                "servers": len(self.disco.guilds),
-                "members": len(set(self.disco.get_all_members())),
-                "players": len(self.disco.wavelink.players),
-                "nodes": len(self.disco.wavelink.nodes)
-            })
+            name=ctx.t('commands.stats.commands.last24Hours', {"total": sum(c[1] for c in last_24_hours)}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_24_hours[:limit], 1))
         ).add_field(
             name='\u200b',
-            value=ctx.t('commands.botinfo.generalInfoDescRight', {
-                "uptime": uptime,
-                "messages": f'{self.disco.socket_responses["MESSAGE_CREATE"]:,}',
-                "commands": f'{self.disco.invoked_commands:,}',
-                "played": f'{self.disco.played_tracks:,}'
-            })
+            value='\u200b'
+        ).add_field(
+            name=ctx.t('commands.stats.commands.lastWeek', {"total": sum(c[1] for c in last_week)}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_week[:limit], 1))
+        ).add_field(
+            name=ctx.t('commands.stats.commands.lastMonth', {"total": sum(c[1] for c in last_month)}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_month[:limit], 1)),
+        ).add_field(
+            name='\u200b',
+            value='\u200b'
+        ).add_field(
+            name=ctx.t('commands.stats.commands.lifetime', {"total": sum(c[1] for c in lifetime)}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(lifetime[:limit], 1))
         )
 
-        for identifier, node in self.disco.wavelink.nodes.items():
+        await ctx.send(ctx.author.mention, embed=em)
+
+    @_stats.command(name='lavalink', aliases=['nodes', 'lava', 'music', 'audio'])
+    async def _stats_lavalink(self, ctx):
+        em = discord.Embed(
+            title='Lavalink Nodes',
+            colour=self.disco.color[0],
+            timestamp=datetime.utcnow()
+        ).set_author(
+            name=self.disco.user.name,
+            icon_url=self.disco.user.avatar_url
+        ).set_footer(
+            text=ctx.t('commands.stats.lavalink.playedTracks', {"total": f"{self.disco.played_tracks:,}"})
+        )
+
+        for i, node in enumerate(self.disco.wavelink.nodes.copy().values(), 1):
+            if i % 2 == 0:
+                em.add_field(name='\u200b', value='\u200b')
+
             stats = node.stats
 
             em.add_field(
-                name=f'**LAVALINK NODE {identifier}**',
-                value=ctx.t('commands.botinfo.nodeInfo', {
+                name=f'**{node.identifier}**',
+                value=ctx.t('commands.stats.lavalink.nodeInfo', {
                     "status": '%s (%s)' % (ctx.t('commons.available' if node.is_available else 'commons.unavailable'),
                                            ctx.t('commons.connected' if node._websocket.is_connected else
                                                  'commons.disconnected')),
@@ -181,11 +217,59 @@ class Information(commands.Cog):
                     "players": '%s/%s' % (stats.playing_players, stats.players),
                     "memoryUsed": naturalsize(stats.memory_used),
                     "cpuUsage": '%.1f' % (stats.lavalink_load * 100),
-                    "cpuCores": stats.cpu_cores}),
-                inline=False
+                    "cpuCores": stats.cpu_cores})
             )
 
-        await ctx.send(content=ctx.author.mention, embed=em)
+        await ctx.send(ctx.author.mention, embed=em)
+
+    @_stats.command(name='events', aliases=['socket'])
+    async def _stats_socket_responses(self, ctx):
+        events = sorted(self.disco.socket_responses.copy().items(), key=lambda x: len(x[0] or 'UNKNOWN'), reverse=True)
+
+        space_1 = len(events[0][0]) + 5
+        space_2 = len(f'{sorted(events, key=lambda x: x[1], reverse=True)[0][1]:,}') + 5
+
+        seconds = (datetime.utcnow() - self.disco.started_at).total_seconds()
+        text = '\n'.join('%s: %s : %.4f/s' % ((event_type or 'UNKNOWN').ljust(space_1),
+                                              f'{received:,}'.ljust(space_2),
+                                              received / seconds)
+                         for event_type, received in events)
+
+        space_3 = len(text.splitlines()[1]) + 8
+
+        await ctx.send('```apache\n_​WEBSOCKET RESPONSES FROM DISCORD (Since %s)\n%s\n%s\n```' % (self.disco.started_at,
+                                                                                                  '-' * space_3,
+                                                                                                  text))
+
+    @_stats.command(name='shards', aliases=['latencies'])
+    async def _stats_shards(self, ctx):
+        table = PrettyTable(['SID', 'Ping', 'Uptime', 'Guilds', 'Members', 'Players', 'Last Update'])
+
+        shards = sorted(await self.disco.db.get_shards(), key=lambda s: s.id)
+        now = datetime.utcnow()
+
+        for shard in shards:
+            shard_id = f'{shard.id}*' if shard.id == ctx.guild.shard_id else shard.id
+            latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
+            guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'
+            members = f'{shard.members:,}' if shard.members else 'Unknown'
+            players = f'{shard.players:,}'
+            uptime = get_length((now - shard.launched_at).total_seconds() * 1000, True) \
+                if shard.launched_at else 'Unknown'
+            last_update = get_length((now - shard.last_update).total_seconds() * 1000, True) \
+                if shard.last_update else 'Unknown'
+
+            table.add_row([shard_id, latency, uptime, guilds, members, players, last_update])
+
+        ping_average = '%sms' % int(sum((s.latency * 1000 or 0) for s in shards) / len(shards))
+        total_guilds = f'{sum(s.guilds for s in shards):,}'
+        total_members = f'{sum(s.members for s in shards):,}'
+        total_players = f'{sum(s.players for s in shards):,}'
+
+        table.add_row(['-', '-', '-', '-', '-', '-', '-'])
+        table.add_row(['Total', ping_average, total_guilds, total_members, total_players, '', ''])
+
+        await ctx.send(f'```apache\n{table.get_string()}```')
 
     @commands.command(name='invite', aliases=['add', 'adicionar', 'convite', 'convidar'])
     @commands.bot_has_permissions(embed_links=True)
@@ -212,26 +296,6 @@ class Information(commands.Cog):
     async def _donate(self, ctx):
         await ctx.send(ctx.t('commands.donate.text', {"emoji": self.disco.emoji["featured"],
                                                       "link": PATREON_DONATE_URL}))
-
-    @commands.command(name='shards', aliases=['latencies'])
-    @commands.cooldown(1, 8, commands.BucketType.user)
-    async def _shards(self, ctx):
-        table = PrettyTable(['SID', 'Ping', 'Uptime', 'Guilds', 'Members', 'Players', 'Last Update'])
-
-        for shard in sorted(await self.disco.db.get_shards(), key=lambda s: s.id):
-            now = datetime.utcnow()
-            latency = f'{int(shard.latency * 1000)}ms' if shard.latency else 'Unknown'
-            guilds = f'{shard.guilds:,}' if shard.guilds else 'Unknown'
-            members = f'{shard.members:,}' if shard.members else 'Unknown'
-            players = f'{shard.players:,}' if shard.players else '0'
-            uptime = get_length((now - shard.launched_at).total_seconds() * 1000, True) \
-                if shard.launched_at else 'Unknown'
-            last_update = get_length((now - shard.last_update).total_seconds() * 1000, True) \
-                if shard.last_update else 'Unknown'
-
-            table.add_row([shard.id, latency, uptime, guilds, members, players, last_update])
-
-        await ctx.send(f'```apache\n{table.get_string()}```')
 
     @commands.command(name='whatsmyprefix', hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.channel)

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from discord.ext import commands
 from motor import motor_asyncio
 
-from .models import DiscoBan, DiscoCommandHistory, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, \
+from .models import DiscoBan, DiscoCommandHistoryEntry, DiscoGuild, DiscoModLog, DiscoShard, DiscoMessage, \
     DiscoSelfAssignableRoles
 
 
@@ -48,6 +48,13 @@ class DatabaseManager:
 
     async def total_command_history_entries_for(self, user_id):
         return await self._command_history.count_documents({"user_id": user_id})
+
+    async def get_total_command_usage(self, command, *, after=None):
+        query = {"command": command}
+        if after:
+            query["timestamp"] = {"$gte": after.timestamp()}
+
+        return await self._command_history.count_documents(query)
 
     async def connect(self):
         async for data in self._bans.find({"ignored": False}):
@@ -130,7 +137,7 @@ class DatabaseManager:
                 query['timestamp'] = {"$gte": after.timestamp()}
 
         cursor = self._command_history.find(query).sort('timestamp', direction).skip(skip).limit(limit)
-        return [DiscoCommandHistory(data) async for data in cursor]
+        return [DiscoCommandHistoryEntry(data) async for data in cursor]
 
     async def register_command_usage(self, ctx: commands.Context):
         data = {
@@ -144,7 +151,7 @@ class DatabaseManager:
 
         await self._command_history.insert_one(data)
 
-        return DiscoCommandHistory(data)
+        return DiscoCommandHistoryEntry(data)
 
     async def register_guild(self, guild_id):
         data = {

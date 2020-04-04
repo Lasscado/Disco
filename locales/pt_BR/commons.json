@@ -33,5 +33,6 @@
     "connected": "Conectado",
     "disconnected": "Desconectado",
     "available": "Disponível",
-    "unavailable": "Indisponível"
+    "unavailable": "Indisponível",
+    "uses": "usos"
 }

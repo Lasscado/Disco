@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-class DiscoCommandHistory:
+class DiscoCommandHistoryEntry:
     def __init__(self, data):
         self.id = data['_id']
         self.command = data['command']

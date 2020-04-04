@@ -3,18 +3,46 @@
         "meta": {
             "description": "Envia o link de convite para adicionar o Bot."
         },
-        "text": "[Clique aqui para adicionar o **Disco** em seu servidor]({link})"
+        "text": "[Clique aqui para adicionar a **Disco** em seu servidor]({link})"
     },
-    "botinfo": {
+    "stats": {
         "meta": {
-            "description": "Mostra informações sobre o Bot."
+            "description": "Agrupa os comandos de estatísticas sobre o Bot.",
+            "usage": "[Sub-Comando]"
         },
         "statistics": "Estatísticas",
         "links": "[**Servidor de Suporte**]({support}) | [**Adicionar**]({invite}) | [**Doar**]({donate}) | [**Votar**]({vote}) | [**GitHub**]({github})\n\u200b",
         "generalInfoTitle": "**INFORMAÇÕES GERAIS**",
         "generalInfoDescLeft": "**Ping** `[Shard {shard}/{shards}]`: {ping}ms\n**Servidores**: {servers}\n**Membros**: {members}\n**Players**: {players}\n**Lavalink Nodes**: {nodes}\n\u200b",
         "generalInfoDescRight": "**Tempo Online**: {uptime}\n**Mensagens Lidas**: {messages}\n**Comandos Executados**: {commands}\n**Faixas Reproduzidas**: {played}",
-        "nodeInfo": "**Status**: {status}\n**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {players}\n**Memória Usada**: {memoryUsed}\n**Uso de CPU**: {cpuUsage}% ({cpuCores} cores)"
+        "commands": {
+            "meta": {
+                "description": "Mostra estatísticas sobre os comandos mais usados."
+            },
+            "title": "Comandos Mais Usados",
+            "lastUpdate": "Última Atualização",
+            "last24Hours": "**ÚLTIMAS 24 HORAS** ({total})",
+            "lastWeek": "**ÚLTIMOS 7 DIAS** ({total})",
+            "lastMonth": "**ÚLTIMOS 30 DIAS** ({total})",
+            "lifetime": "**TODO O PERÍODO** ({total})"
+        },
+        "lavalink": {
+            "meta": {
+                "description": "Mostra estatísticas sobre os nodes de Lavalink."
+            },
+            "nodeInfo": "**Status**: {status}\n**Região**: {region}\n**Uptime**: {uptime}\n**Players Ativos**: {players}\n**Memória Usada**: {memoryUsed}\n**Uso de CPU**: {cpuUsage}% ({cpuCores} cores)",
+            "playedTracks": "{total} faixas reproduzidas."
+        },
+        "shards": {
+            "meta": {
+                "description": "Mostra estatísticas sobre as shards do Bot."
+            }
+        },
+        "events": {
+            "meta": {
+                "description": "Mostra estatísticas sobre os eventos recebidos pela websocket do Discord."
+            }
+        }
     },
     "help": {
         "meta": {

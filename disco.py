@@ -42,7 +42,6 @@ class Disco(AutoShardedBot):
         self.wavelink = wavelink.Client(self)
         self.guild_blacklist = set()
         self.user_blacklist = set()
-        self.invoked_commands = 0
         self.played_tracks = 0
         self.prefixes = environ['PREFIXES'].split(', ')
         self._prefixes = {}

@@ -21,5 +21,6 @@
     "hitModThreshold": "{emoji} **{author}**, você atingiu o limite de usos da ação **`{action}`**, que está definido em **`{threshold}`** vezes por dia. Peça para um Administrador aumentar esse limite ou aguarde **`{next}`** até que seu próximo uso fique disponível.",
     "userMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** que você usou anteriormente ainda está sendo executado. Talvez ele esteja aguardando por uma resposta sua ou apenas processando alguns dados.",
     "guildMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** ainda está sendo executado por você ou um outro membro desse servidor. Tente novamente mais tarde.",
-    "channelMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** ainda está sendo executado por você ou um outro membro nesse canal. Tente novamente mais tarde."
+    "channelMaxConcurrencyReached": "{emoji} **{author}**, o comando **`{command}`** ainda está sendo executado por você ou um outro membro nesse canal. Tente novamente mais tarde.",
+    "kitsuResponseError": "{emoji} **{author}**, parece que os servidores do Kitsu.io (local de onde eu pego as informações) acabaram emperrando durante a execução desse comando. Tente novamente mais tarde.\n>>> {message}"
 }

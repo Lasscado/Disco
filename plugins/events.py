@@ -4,6 +4,7 @@ from os import environ
 from random import randint
 
 import discord
+import kitsu.errors
 from babel.dates import format_datetime
 from discord.ext import commands
 from discord.ext.commands.errors import *
@@ -123,9 +124,14 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, e):
         original = e.__cause__
         if isinstance(original, (discord.NotFound, discord.Forbidden)):
-            return
+            pass
 
-        if isinstance(e, DiscoError):
+        elif isinstance(original, kitsu.errors.ResponseError):
+            await ctx.send(ctx.t('errors.kitsuResponseError', {"emoji": self.disco.emoji["false"],
+                                                               "author": ctx.author.name,
+                                                               "message": original}))
+
+        elif isinstance(e, DiscoError):
             await ctx.send(e)
 
         elif isinstance(e, CommandOnCooldown):

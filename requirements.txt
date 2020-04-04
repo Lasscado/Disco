@@ -12,5 +12,5 @@ python-dotenv==0.10.3
 wavelink==0.6.0
 git+https://github.com/DiscoMusic/i18n.git@b9812f9cef8167af18798de3fc6af64b39d3defa
 git+https://github.com/DiscoMusic/genius-wrapper.git@d0176f3c78dec646a7e531119bebaec098b340ce
-git+https://github.com/DiscoMusic/kitsu-wrapper.git@224492ca8cb3cc8857f352da66da45b0c540863c
+git+https://github.com/DiscoMusic/kitsu-wrapper.git@580c74befa6ce8ed6fadc747f44c84073d9919d6
 git+https://github.com/DiscoMusic/weeb-wrapper.git@422ed36df6437907c8ad74985c31cdf1fd9f23be

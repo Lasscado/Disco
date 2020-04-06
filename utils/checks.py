@@ -48,6 +48,8 @@ async def before_play(cog, ctx):
         raise MusicError(ctx.t('errors.fullQueue', {"author": ctx.author.name,
                                                     "emoji": ctx.bot.emoji["false"]}))
 
+    player.waiting_for_music_choice.add(ctx.author.id)
+
     return True
 
 

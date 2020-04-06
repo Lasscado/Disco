@@ -12,7 +12,7 @@ from utils import get_length, PATREON_DONATE_URL, SUPPORT_GUILD_INVITE_URL, BOT_
 class Information(commands.Cog):
     def __init__(self, disco):
         self.disco = disco
-        self._command_usage_embed = None
+        self._command_usage_cache = None
 
     @commands.command(name='help', aliases=['ajuda', 'commands', 'cmds'])
     @commands.bot_has_permissions(embed_links=True)
@@ -126,30 +126,32 @@ class Information(commands.Cog):
     async def _stats(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.invoke(self.disco.get_command('help'), command_='stats')
-            return
 
-    @_stats.command(name='commands', aliases=['cmds', 'cmd'])
+    @_stats.command(name='commands', aliases=['cmds', 'cmd', 'command'])
     async def _stats_command_usage(self, ctx):
-        if (em := self._command_usage_embed) and datetime.utcnow() < em.timestamp + timedelta(minutes=5):
-            await ctx.send(ctx.author.mention, embed=em)
-            return
+        if not (data := self._command_usage_cache) or datetime.utcnow() > data['last_update'] + timedelta(minutes=5):
+            public_commands = [c.qualified_name for c in self.disco.commands
+                               if not c.hidden and c.cog.qualified_name != 'Owner']
 
-        public_commands = [c.qualified_name for c in self.disco.commands
-                           if not c.hidden and c.cog.qualified_name != 'Owner']
+            dt_24h = datetime.utcnow() - timedelta(hours=24)
+            dt_1w = datetime.utcnow() - timedelta(weeks=1)
+            dt_1m = datetime.utcnow() - timedelta(days=30)
 
-        dt_24h = datetime.utcnow() - timedelta(hours=24)
-        dt_1w = datetime.utcnow() - timedelta(weeks=1)
-        dt_1m = datetime.utcnow() - timedelta(days=30)
+            last_24_hours = [(c, await self.disco.db.get_total_command_usage(c, after=dt_24h)) for c in public_commands]
+            last_week = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1w)) for c in public_commands]
+            last_month = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1m)) for c in public_commands]
+            lifetime = [(c, await self.disco.db.get_total_command_usage(c)) for c in public_commands]
 
-        last_24_hours = [(c, await self.disco.db.get_total_command_usage(c, after=dt_24h)) for c in public_commands]
-        last_week = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1w)) for c in public_commands]
-        last_month = [(c, await self.disco.db.get_total_command_usage(c, after=dt_1m)) for c in public_commands]
-        lifetime = [(c, await self.disco.db.get_total_command_usage(c)) for c in public_commands]
+            last_24_hours.sort(key=lambda c: c[1], reverse=True)
+            last_week.sort(key=lambda c: c[1], reverse=True)
+            last_month.sort(key=lambda c: c[1], reverse=True)
+            lifetime.sort(key=lambda c: c[1], reverse=True)
 
-        last_24_hours.sort(key=lambda c: c[1], reverse=True)
-        last_week.sort(key=lambda c: c[1], reverse=True)
-        last_month.sort(key=lambda c: c[1], reverse=True)
-        lifetime.sort(key=lambda c: c[1], reverse=True)
+            self._command_usage_cache = data = {"last_update": datetime.utcnow(),
+                                                "last_24_hours": last_24_hours,
+                                                "last_week": last_week,
+                                                "last_month": last_month,
+                                                "lifetime": lifetime}
 
         limit = 8
         uses = ctx.t('commons.uses')
@@ -157,7 +159,7 @@ class Information(commands.Cog):
         self._command_usage_embed = em = discord.Embed(
             title=ctx.t('commands.stats.commands.title'),
             colour=self.disco.color[0],
-            timestamp=datetime.utcnow()
+            timestamp=data['last_update']
         ).set_author(
             name=self.disco.user.name,
             icon_url=self.disco.user.avatar_url
@@ -166,23 +168,27 @@ class Information(commands.Cog):
         ).set_thumbnail(
             url=self.disco.user.avatar_url
         ).add_field(
-            name=ctx.t('commands.stats.commands.last24Hours', {"total": sum(c[1] for c in last_24_hours)}),
-            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_24_hours[:limit], 1))
+            name=ctx.t('commands.stats.commands.last24Hours', {"total": sum(c[1] for c in data['last_24_hours'])}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})'
+                            for i, c in enumerate(data['last_24_hours'][:limit], 1))
         ).add_field(
             name='\u200b',
             value='\u200b'
         ).add_field(
-            name=ctx.t('commands.stats.commands.lastWeek', {"total": sum(c[1] for c in last_week)}),
-            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_week[:limit], 1))
+            name=ctx.t('commands.stats.commands.lastWeek', {"total": sum(c[1] for c in data['last_week'])}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})'
+                            for i, c in enumerate(data['last_week'][:limit], 1))
         ).add_field(
-            name=ctx.t('commands.stats.commands.lastMonth', {"total": sum(c[1] for c in last_month)}),
-            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(last_month[:limit], 1)),
+            name=ctx.t('commands.stats.commands.lastMonth', {"total": sum(c[1] for c in data['last_month'])}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})'
+                            for i, c in enumerate(data['last_month'][:limit], 1)),
         ).add_field(
             name='\u200b',
             value='\u200b'
         ).add_field(
-            name=ctx.t('commands.stats.commands.lifetime', {"total": sum(c[1] for c in lifetime)}),
-            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})' for i, c in enumerate(lifetime[:limit], 1))
+            name=ctx.t('commands.stats.commands.lifetime', {"total": sum(c[1] for c in data['lifetime'])}),
+            value='\n'.join(f'**`{i}`**. **{c[0]}** ({c[1]} {uses})'
+                            for i, c in enumerate(data['lifetime'][:limit], 1))
         )
 
         await ctx.send(ctx.author.mention, embed=em)
@@ -230,16 +236,20 @@ class Information(commands.Cog):
         space_2 = len(f'{sorted(events, key=lambda x: x[1], reverse=True)[0][1]:,}') + 5
 
         seconds = (datetime.utcnow() - self.disco.started_at).total_seconds()
-        text = '\n'.join('%s: %s : %.4f/s' % ((event_type or 'UNKNOWN').ljust(space_1),
-                                              f'{received:,}'.ljust(space_2),
-                                              received / seconds)
-                         for event_type, received in events)
 
-        space_3 = len(text.splitlines()[1]) + 8
+        lines = ['%s: %s : %.4f/s' % ((event_type or 'UNKNOWN').ljust(space_1),
+                                      f'{received:,}'.ljust(space_2),
+                                      received / seconds)
+                 for event_type, received in events]
 
-        await ctx.send('```apache\n_​WEBSOCKET RESPONSES FROM DISCORD (Since %s)\n%s\n%s\n```' % (self.disco.started_at,
+        space_3 = len(lines[0]) + 8
+
+        await ctx.send('```apache\n_ WEBSOCKET RESPONSES FROM DISCORD (Since %s)\n%s\n%s\n```' % (self.disco.started_at,
                                                                                                   '-' * space_3,
-                                                                                                  text))
+                                                                                                  '\n'.join(lines[:20])))
+
+        if len(lines) > 20:
+            await ctx.send('```apache\n%s\n```' % '\n'.join(lines[20:]))
 
     @_stats.command(name='shards', aliases=['latencies'])
     async def _stats_shards(self, ctx):
@@ -267,7 +277,7 @@ class Information(commands.Cog):
         total_players = f'{sum(s.players for s in shards):,}'
 
         table.add_row(['-', '-', '-', '-', '-', '-', '-'])
-        table.add_row(['Total', ping_average, total_guilds, total_members, total_players, '', ''])
+        table.add_row(['Total', ping_average, '', total_guilds, total_members, total_players, ''])
 
         await ctx.send(f'```apache\n{table.get_string()}```')
 

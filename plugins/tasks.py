@@ -44,8 +44,8 @@ class Tasks(commands.Cog):
 
     @tasks.loop(hours=1)
     async def _delete_messages_days(self):
-        deleted = await self.disco.db.delete_messages_days(14)
-        self.disco.log.info(f'{deleted} mensagens com mais de 14 dias foram deletadas do banco de dados.')
+        deleted = await self.disco.db.delete_messages_days(7)
+        self.disco.log.info(f'{deleted} mensagens com mais de 7 dias foram deletadas do banco de dados.')
 
     @tasks.loop(minutes=30)
     async def _change_avatar(self):

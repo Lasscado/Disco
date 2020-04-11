@@ -58,7 +58,7 @@ class Music(commands.Cog):
                                                                  "length": 'LIVESTREAM' if track.is_stream else
                                                                  get_length(track.length)}))
 
-            if self.redis and (vc := self.disco.get_channel(int(player.channel_id))) and vc.members:
+            if self.redis and (vc := self.disco.get_channel(int(player.channel_id or 0))) and vc.members:
                 payload = {
                     "type": "track_start",
                     "track": {
@@ -80,7 +80,7 @@ class Music(commands.Cog):
             else:
                 await player.send(player.t('events.queueEnd', {"emoji": self.disco.emoji["alert"]}))
 
-                if self.redis and (vc := self.disco.get_channel(int(player.channel_id))) and vc.members:
+                if self.redis and (vc := self.disco.get_channel(int(player.channel_id or 0))) and vc.members:
                     payload = {
                         "type": "queue_end",
                         "users": [member.id for member in vc.members if not member.bot]

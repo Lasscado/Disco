@@ -6,6 +6,7 @@ from datetime import datetime
 from os import environ, listdir
 
 import i18n
+import sentry_sdk
 import wavelink
 from discord import Game
 from discord.ext.commands import AutoShardedBot
@@ -15,6 +16,9 @@ from utils import emojis, custom_prefix, DiscoPlayer, DEFAULT_EMBED_COLORS
 
 
 log = logging.getLogger('disco')
+
+if (env := environ['ENVIRONMENT']) in ['staging', 'prod']:
+    sentry_sdk.init(dsn=environ['SENTRY_DSN'], environment=env)
 
 
 class Disco(AutoShardedBot):

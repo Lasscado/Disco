@@ -6,6 +6,7 @@ from random import randint
 
 import discord
 import kitsu.errors
+import sentry_sdk
 from babel.dates import format_datetime
 from discord.ext import commands
 from discord.ext.commands.errors import *
@@ -125,6 +126,10 @@ class Events(commands.Cog):
         await self.guild_logs.send(embed=em)
 
     @commands.Cog.listener()
+    async def on_error(self, error):
+        sentry_sdk.capture_exception(error)
+
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, e):
         original = e.__cause__
         if isinstance(original, (discord.NotFound, discord.Forbidden)):
@@ -188,6 +193,7 @@ class Events(commands.Cog):
                                                                       or ctx.t('commons.unknown')}))
 
         else:
+            sentry_sdk.capture_exception(e)
             traceback_ = ''.join(traceback.format_exception(type(e), e, e.__traceback__))
 
             em = discord.Embed(

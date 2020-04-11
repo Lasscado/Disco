@@ -100,7 +100,7 @@ class Tasks(commands.Cog):
 
         log.info('As estatísticas das Shards foram atualizadas.')
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(seconds=30)
     async def _disconnect_inactive_players(self):
         log.info('Procurando por players inativos')
         dt_now = datetime.utcnow()

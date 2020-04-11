@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import traceback
 from datetime import datetime, timedelta
 from random import choice
@@ -10,6 +11,9 @@ from websockets.exceptions import ConnectionClosed
 from pymongo.errors import PyMongoError
 
 from utils import avatars, DiscoPlayer, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
+
+
+log = logging.getLogger('disco.tasks')
 
 
 class Tasks(commands.Cog):
@@ -38,15 +42,15 @@ class Tasks(commands.Cog):
             try:
                 task.cancel()
             except Exception as e:
-                self.disco.log.error(f'Falha ao cancelar a task \'{name}\':')
+                log.error(f'Falha ao cancelar a task \'{name}\':')
                 traceback.print_exception(type(e), e, e.__traceback__)
             else:
-                self.disco.log.info(f'Task \'{name}\' cancelada com sucesso.')
+                log.info(f'Task \'{name}\' cancelada com sucesso.')
 
     @tasks.loop(hours=1)
     async def _delete_messages_days(self):
         deleted = await self.disco.db.delete_messages_days(7)
-        self.disco.log.info(f'{deleted} mensagens com mais de 7 dias foram deletadas do banco de dados.')
+        log.info(f'{deleted} mensagens com mais de 7 dias foram deletadas do banco de dados.')
 
     @tasks.loop(minutes=30)
     async def _change_avatar(self):
@@ -55,7 +59,7 @@ class Tasks(commands.Cog):
         rgb = info['rgb']
         self.disco.color = [Colour.from_rgb(*rgb[0]), Colour.from_rgb(*rgb[1])]
         await self.disco.user.edit(avatar=avatar)
-        self.disco.log.info('Avatar alterado')
+        log.info('Avatar alterado')
 
     @tasks.loop(minutes=1)
     async def _change_presence(self):
@@ -64,7 +68,7 @@ class Tasks(commands.Cog):
         guilds = sum(shard.guilds for shard in shards)
         players = sum(shard.players for shard in shards)
 
-        self.disco.log.info('Alterando Presences em todas as Shards...')
+        log.info('Alterando Presences em todas as Shards...')
         for shard in self.disco.shards:
             activity = choice(self._activities)
             message = choice(messages[activity.name]).format(website=WEBSITE_URL,
@@ -81,7 +85,7 @@ class Tasks(commands.Cog):
             except (ConnectionClosed, PyMongoError):
                 pass
 
-        self.disco.log.info('Presences alteradas.')
+        log.info('Presences alteradas.')
 
     @tasks.loop(seconds=30)
     async def _update_shard_stats(self):
@@ -94,11 +98,11 @@ class Tasks(commands.Cog):
                                members=sum(g.member_count for g in guilds if not g.unavailable),
                                players=len(players))
 
-        self.disco.log.info('As estatísticas das Shards foram atualizadas.')
+        log.info('As estatísticas das Shards foram atualizadas.')
 
     @tasks.loop(seconds=5)
     async def _disconnect_inactive_players(self):
-        self.disco.log.info('Procurando por players inativos')
+        log.info('Procurando por players inativos')
         dt_now = datetime.utcnow()
         for player in self.disco.wavelink.players.copy().values():
             if player.last_inactivity_check + timedelta(minutes=4) > dt_now or not player.node._websocket.is_connected:
@@ -116,8 +120,6 @@ class Tasks(commands.Cog):
 
     async def _disconnect_player(self, player: DiscoPlayer, *, timeout: int = 120, alert: bool = True):
         if not timeout:
-            self.disco.log.info(f'Desconectando de <{player.guild_id}> devido à inatividade')
-
             await player.destroy()
 
             if alert:

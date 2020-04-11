@@ -33,7 +33,6 @@ class Disco(AutoShardedBot):
                                   uri=environ['DATABASE_URI'],
                                   bot=self)
         self.i18n = i18n.I18N(source='pt_BR')
-        self.log = log
         self.emoji = emojis
         self.color = DEFAULT_EMBED_COLORS
         self.loaded = False

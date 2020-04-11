@@ -1,3 +1,4 @@
+import logging
 import traceback
 from datetime import datetime
 from os import environ
@@ -11,6 +12,9 @@ from discord.ext.commands.errors import *
 
 from utils import TextUploader, SUPPORT_GUILD_INVITE_URL, PATREON_DONATE_URL, BANNER_URL, DBOTS_PAGE_URL
 from utils.errors import DiscoError
+
+
+log = logging.getLogger('disco.events')
 
 
 class Events(commands.Cog):
@@ -217,8 +221,7 @@ class Events(commands.Cog):
     async def on_command(self, ctx):
         ctx._begin = datetime.utcnow()
 
-        self.disco.log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} '
-                            f'em {ctx.guild} {ctx.guild.id}')
+        log.info(f'Comando "{ctx.command}" usado por {ctx.author} {ctx.author.id} em {ctx.guild} {ctx.guild.id}')
 
         if ctx.author.id == self.disco.owner_id:
             ctx.command.reset_cooldown(ctx)

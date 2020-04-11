@@ -1,5 +1,6 @@
 {
-    "disconnectPlayer": "{emoji} Desconectei do canal de voz porque ninguém estava me usando para ouvir música.",
+    "playerDisconnected": "{emoji} Desconectei do canal de voz porque ninguém estava me usando para ouvir música.",
+    "playerDisconnecting": "{emoji} Desconectando do canal de voz em **`{minutes}`** minutos, pois ninguém está me usando para ouvir música.",
     "queueEnd": "{emoji} A fila de reprodução acabou.",
     "trackStart": "{emoji} Tocando agora: **`{track}`** `({length})`. Requisitado por **{track.requester.name}**.",
     "bulkMessageDelete": "**`{amount}` mensagens foram deletadas em massa no canal {channel}**.\nOpções: [`Ler`]({view}) | [`Baixar`]({download}) ({saved} mensagens salvas)",

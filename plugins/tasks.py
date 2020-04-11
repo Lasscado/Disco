@@ -1,5 +1,6 @@
 import asyncio
 import traceback
+from datetime import datetime, timedelta
 from random import choice
 from json import loads
 
@@ -8,7 +9,7 @@ from discord.ext import commands, tasks
 from websockets.exceptions import ConnectionClosed
 from pymongo.errors import PyMongoError
 
-from utils import avatars, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
+from utils import avatars, DiscoPlayer, WEBSITE_URL, PATREON_DONATE_URL, STREAMING_ACTIVITY_URL
 
 
 class Tasks(commands.Cog):
@@ -95,35 +96,51 @@ class Tasks(commands.Cog):
 
         self.disco.log.info('As estatísticas das Shards foram atualizadas.')
 
-    @tasks.loop(minutes=2)
+    @tasks.loop(seconds=5)
     async def _disconnect_inactive_players(self):
         self.disco.log.info('Procurando por players inativos')
-        for player in self.disco.wavelink.players.values():
+        dt_now = datetime.utcnow()
+        for player in self.disco.wavelink.players.copy().values():
+            if player.last_inactivity_check + timedelta(minutes=4) > dt_now or not player.node._websocket.is_connected:
+                continue
+
             guild = self.disco.get_guild(player.guild_id)
-            if guild is None or guild.unavailable or guild.me and guild.me.voice is None or \
-                    player.current is None and not player.queue and not player.waiting_for_music_choice or \
+            if guild is None or guild.unavailable:
+                self.disco.loop.create_task(self._disconnect_player(player, timeout=0, alert=False))
+            elif guild.me and guild.me.voice is None:
+                self.disco.loop.create_task(self._disconnect_player(player, timeout=0))
+            elif player.current is None and not player.queue and not player.waiting_for_music_choice or \
                     not self.has_listeners(guild):
+                player.last_inactivity_check = dt_now
                 self.disco.loop.create_task(self._disconnect_player(player))
 
-    async def _disconnect_player(self, player):
-        await asyncio.sleep(60)
+    async def _disconnect_player(self, player: DiscoPlayer, *, timeout: int = 120, alert: bool = True):
+        if not timeout:
+            self.disco.log.info(f'Desconectando de <{player.guild_id}> devido à inatividade')
+
+            await player.destroy()
+
+            if alert:
+                await player.send(player.t('events.playerDisconnected', {"emoji": self.disco.emoji["alert"]}))
+
+            return
+
+        await player.send(player.t('events.playerDisconnecting', {"emoji": self.disco.emoji["alert"],
+                                                                  "minutes": round(timeout / 60)}))
+        await asyncio.sleep(timeout)
 
         try:
             player = self.disco.wavelink.players[player.guild_id]
         except KeyError:
             return
 
-        if not (guild := self.disco.get_guild(player.guild_id)) or guild.unavailable or not guild.me.voice:
-            await player.node._send(op='destroy', guildId=str(player.guild_id))
-            del player.node.players[player.guild_id]
-            return
+        if (guild := self.disco.get_guild(player.guild_id)) is None or guild.unavailable or not guild.me.voice:
+            await player.destroy()
         elif (player.current or player.queue) and self.has_listeners(guild):
-            return
-
-        self.disco.log.info(f'Desconectando de {guild} {guild.id} devido a inatividade')
-
-        await player.destroy()
-        await player.send(player.t('events.disconnectPlayer', {"emoji": self.disco.emoji["alert"]}))
+            pass
+        else:
+            await player.destroy()
+            await player.send(player.t('events.playerDisconnected', {"emoji": self.disco.emoji["alert"]}))
 
     @staticmethod
     def has_listeners(guild):

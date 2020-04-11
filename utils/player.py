@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from wavelink.player import Player, Track
 from wavelink.events import TrackEnd, TrackException, TrackStuck
 from discord import Forbidden, NotFound
@@ -21,6 +23,7 @@ class DiscoPlayer(Player):
         self.text_channel = None
         self.waiting_for_music_choice = set()
         self.t = bot.i18n.get_t(bot.i18n.source)
+        self.last_inactivity_check = datetime.utcnow()
 
     @property
     def size(self):

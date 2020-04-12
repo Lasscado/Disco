@@ -57,16 +57,16 @@ class Disco(AutoShardedBot):
         for node in eval(environ['LAVALINK_NODES']):
             await self.wavelink.initiate_node(**node)
 
-        plugins = [p[:-3] for p in listdir('plugins') if p.endswith('.py')]
-        total_plugins = len(plugins)
-        for i, plugin in enumerate(plugins, 1):
+        cogs = [c[:-3] for c in listdir('cogs') if c.endswith('.py')]
+        total_cogs = len(cogs)
+        for i, cog in enumerate(cogs, 1):
             try:
-                self.load_extension('plugins.' + plugin)
+                self.load_extension('cogs.' + cog)
             except Exception as e:
-                log.error(f'Falha ao carregar o plugin \'{plugin}\':')
+                log.error(f'Falha ao carregar a Cog \'{cog}\':')
                 traceback.print_exception(type(e), e, e.__traceback__)
             else:
-                log.info(f'Plugin {plugin} carregado com sucesso. ({i}/{total_plugins})')
+                log.info(f'Cog {cog} carregada com sucesso. ({i}/{total_cogs})')
 
         self.i18n.load_all_from_path()
         log.info(f'{len(self.i18n.strings)} locale(s) carregada(s).')

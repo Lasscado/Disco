@@ -32,6 +32,11 @@ Você pode contribuir das seguintes formas:
 <br/>
 <p align="center"><b>Disco</b> foi criado e é desenvolvido por <b>Naegin</b>.</p>
 
+## Patrocínios
+
+[![JetBrains][jetbrains-logo]][jetbrains-url]
+[![Sentry][sentry-logo]][sentry-url]
+
 [bot-invite-url]: https://is.gd/disco_github
 
 [discord-badge]: https://img.shields.io/discord/516346444463210542?label=chat&logo=discord
@@ -45,3 +50,9 @@ Você pode contribuir das seguintes formas:
 
 [twitter-badge]: https://img.shields.io/twitter/follow/DiscoTheBot
 [twitter-url]: https://twitter.com/DiscoTheBot
+
+[jetbrains-logo]: https://i.imgur.com/sawuNl5.png
+[jetbrains-url]: https://www.jetbrains.com/
+
+[sentry-logo]: https://i.imgur.com/BIVgc65.png
+[sentry-url]: https://sentry.io/

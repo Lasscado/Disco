@@ -73,7 +73,7 @@ class Information(commands.Cog):
             return await ctx.send(content=ctx.author.mention, embed=em)
 
         custom_prefix = ctx.gdb.options['prefix']
-        prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
+        prefixes = [*([custom_prefix] if custom_prefix else self.disco.default_prefixes)]
 
         command = ctx.t('commons.command')
 
@@ -312,7 +312,7 @@ class Information(commands.Cog):
     async def _whats_my_prefix(self, ctx):
         command = ctx.t('commons.command')
         custom_prefix = ctx.gdb.options['prefix']
-        prefixes = [*([custom_prefix] if custom_prefix else self.disco.prefixes)]
+        prefixes = [*([custom_prefix] if custom_prefix else self.disco.default_prefixes)]
 
         await ctx.send(ctx.t('commands.whatsmyprefix.message', {"author": ctx.author.name,
                                                                 "prefixes": ' | '.join(

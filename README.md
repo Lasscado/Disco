@@ -52,11 +52,11 @@ Você pode contribuir das seguintes formas:
 [twitter-badge]: https://img.shields.io/twitter/follow/DiscoTheBot
 [twitter-url]: https://twitter.com/DiscoTheBot
 
-[jetbrains-logo]: https://i.imgur.com/b71fvWj.png
+[jetbrains-logo]: https://i.imgur.com/sawuNl5.png
 [jetbrains-url]: https://www.jetbrains.com/
 
-[sentry-logo]: https://i.imgur.com/k90dQTE.png
+[sentry-logo]: https://i.imgur.com/BIVgc65.png
 [sentry-url]: https://sentry.io/
 
-[crowdin-logo]: https://i.imgur.com/XTL3NSV.png
+[crowdin-logo]: https://i.imgur.com/SDmVGrj.png
 [crowdin-url]: https://crowdin.com/

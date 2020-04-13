@@ -120,7 +120,9 @@ class Tasks(commands.Cog):
 
     async def _disconnect_player(self, player: DiscoPlayer, *, timeout: int = 120, alert: bool = True):
         if not timeout:
-            await player.destroy()
+            await player.node._send(op='stop', guildId=str(player.guild_id))
+            await player.node._send(op='destroy', guildId=str(player.guild_id))
+            del player.node.players[player.guild_id]
 
             if alert:
                 await player.send(player.t('events.playerDisconnected', {"emoji": self.disco.emoji["alert"]}))

@@ -158,7 +158,7 @@ class Admin(commands.Cog):
                 raise commands.UserInputError
 
             await ctx.gdb.set({"options.prefix": None})
-            self.disco._prefixes[ctx.guild.id] = None
+            self.disco.guild_prefixes[ctx.guild.id] = None
             return await ctx.send(ctx.t('commands.config.prefix.reset', {"author": ctx.author.name,
                                                                          "emoji": self.disco.emoji["true"]}))
 
@@ -167,7 +167,7 @@ class Admin(commands.Cog):
                                                                            "emoji": self.disco.emoji["false"]}))
 
         await ctx.gdb.set({"options.prefix": prefix})
-        self.disco._prefixes[ctx.guild.id] = prefix
+        self.disco.guild_prefixes[ctx.guild.id] = prefix
         await ctx.send(ctx.t('commands.config.prefix.success', {"author": ctx.author.name,
                                                                 "emoji": self.disco.emoji["true"],
                                                                 "prefix": prefix}))

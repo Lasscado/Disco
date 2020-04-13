@@ -5,9 +5,10 @@ async def custom_prefix(disco, message):
     guild_id = message.guild.id
 
     try:
-        prefix = disco._prefixes[guild_id]
+        prefix = disco.guild_prefixes[guild_id]
     except KeyError:
         guild = await disco.db.get_guild(guild_id)
-        disco._prefixes[guild_id] = prefix = guild.options['prefix']
+        disco.guild_prefixes[guild_id] = prefix = guild.options['prefix']
 
-    return when_mentioned_or(prefix)(disco, message) if prefix else when_mentioned_or(*disco.prefixes)(disco, message)
+    return when_mentioned_or(prefix)(disco, message) if prefix else \
+        when_mentioned_or(*disco.default_prefixes)(disco, message)

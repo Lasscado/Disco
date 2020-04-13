@@ -72,7 +72,7 @@ class Tasks(commands.Cog):
         for shard in self.disco.shards:
             activity = choice(self._activities)
             message = choice(messages[activity.name]).format(website=WEBSITE_URL,
-                                                             prefix=self.disco.prefixes[0],
+                                                             prefix=self.disco.default_prefixes[0],
                                                              guilds=guilds,
                                                              donate=PATREON_DONATE_URL,
                                                              players=players)

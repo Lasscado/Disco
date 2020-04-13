@@ -46,8 +46,8 @@ class Disco(AutoShardedBot):
         self.guild_blacklist = set()
         self.user_blacklist = set()
         self.played_tracks = 0
-        self.prefixes = environ['PREFIXES'].split(', ')
-        self._prefixes = {}
+        self.default_prefixes = environ['PREFIXES'].split(', ')
+        self.guild_prefixes = {}
         self._message_logs = set()
         self.socket_responses = Counter()
 

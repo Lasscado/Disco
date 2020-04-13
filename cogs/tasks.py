@@ -137,7 +137,9 @@ class Tasks(commands.Cog):
             return
 
         if (guild := self.disco.get_guild(player.guild_id)) is None or guild.unavailable or not guild.me.voice:
-            await player.destroy()
+            await player.node._send(op='stop', guildId=str(player.guild_id))
+            await player.node._send(op='destroy', guildId=str(player.guild_id))
+            del player.node.players[player.guild_id]
         elif (player.current or player.queue) and self.has_listeners(guild):
             pass
         else:
